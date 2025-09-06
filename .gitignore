@@ -37,3 +37,16 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+.yarn/
+.vscode/
+.env
+
+.yarn/
+.vscode/
+.cursor/
+
+yarn.lock
+package-lock.json
+package.json
+yarn.lock
