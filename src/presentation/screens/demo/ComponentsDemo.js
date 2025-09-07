@@ -22,475 +22,217 @@ import Metrics from "../../../../themes/Metrics";
 // Import Navigation Service
 import NavigationService from "../../../infrastructure/services/NavigationService";
 
-// Import Button Components
-import ButtonLiteReusable from "../../../../components/custom-button/ButtonLiteReusable";
-import ButtonNavigationBarReusable from "../../../../components/custom-button/ButtonNavigationBarReusable";
-import ReusableButton from "../../../../components/custom-button/ReusableButton";
+console.log('[ComponentsDemo] Starting imports...');
 
-// Import Input Components
-import InputTextReusable from "../../../../components/custom-input/InputTextReusable";
-import SearchTextInputReusable from "../../../../components/search-text-input/SearchTextInputReusable";
+console.log('[ComponentsDemo] Theme imports completed');
 
-// Import Checkbox/Radio Components  
-import CheckBoxReusable from "../../../../components/custom-checkbox/CheckBoxReusable";
-import CustomCheckbox from "../../../../components/custom-checkbox/customCheckbox";
-import RadioButtonDoubleReusable from "../../../../components/custom-radio-button/RadioButtonDoubleReusable";
-import RadioButtonReusable from "../../../../components/custom-radio-button/RadioButtonReusable";
+console.log('[ComponentsDemo] Navigation service imported');
 
-// Import Dropdown Components
-import DropDownListCountryReusable from "../../../../components/custom-dropdown/DropDownListCountryReusable";
-import DropDownListMultipleReusable from "../../../../components/custom-dropdown/DropDownListMultipleReusable";
-import DropDownListReusable from "../../../../components/custom-dropdown/DropDownListReusable";
+// Import Button Components (Essential only for debugging)
+try {
+  var ReusableButton = require("../../../../components/custom-button/ReusableButton").default;
+  console.log('[ComponentsDemo] ReusableButton imported successfully');
+} catch (error) {
+  console.error('[ComponentsDemo] Error importing ReusableButton:', error);
+  var ReusableButton = null;
+}
 
-// Import Calendar Components
-import CalendarPickerRangeReusable from "../../../../components/CalendarReusable/CalendarPickerRangeReusable";
-import useHumanCalendar from "../../../../components/CalendarReusable/hooks/useHumanCalendar";
+try {
+  var ButtonLiteReusable = require("../../../../components/custom-button/ButtonLiteReusable").default;
+  console.log('[ComponentsDemo] ButtonLiteReusable imported successfully');
+} catch (error) {
+  console.error('[ComponentsDemo] Error importing ButtonLiteReusable:', error);
+  var ButtonLiteReusable = null;
+}
 
-// Import Utility Components
-import ConditionalRendererReusable from "../../../../components/conditional-renderer-reusable/ConditionalRendererReusable";
-import CustomSeparator from "../../../../components/custom-separator/CustomSeparator";
-import Loading from "../../../../components/loading/Loading";
-import TabBarReusable from "../../../../components/reusable-TabBar/TabBarReusable";
-import CheckRender from "../../../../components/security/CheckRender";
-import { Snackbar } from "../../../../components/snackbar/Snackbar";
-import StepInfo from "../../../../components/stepInfo/StepInfo";
+// Safe component fallback
+const SafeButton = ({ title, onPress, style }) => {
+  if (ReusableButton) {
+    return (
+      <ReusableButton
+        titleButton={title}
+        onPressActionButton={onPress}
+        buttonStyle={style}
+      />
+    );
+  }
+  return (
+    <View style={[{ padding: 15, backgroundColor: '#007AFF', borderRadius: 8 }, style]}>
+      <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>
+        {title}
+      </Text>
+    </View>
+  );
+};
 
-// Demo Icons (you can replace with actual SVG imports)
+// Demo Icons (safe emoji fallbacks)
 const DemoIcon = () => <Text style={{ fontSize: 20 }}>🎯</Text>;
 const HomeIcon = () => <Text style={{ fontSize: 20 }}>🏠</Text>;
 const ProfileIcon = () => <Text style={{ fontSize: 20 }}>👤</Text>;
 const SettingsIcon = () => <Text style={{ fontSize: 20 }}>⚙️</Text>;
 
+console.log('[ComponentsDemo] All imports completed');
+
 /**
- * ComponentsDemo - Main demo screen component
+ * ComponentsDemo - Simplified main demo screen component
+ * Reduced complexity for debugging
  */
 const ComponentsDemo = () => {
-  // State for component testing
+  console.log('[ComponentsDemo] Component starting...');
+  
+  // Minimal state for testing
   const [inputValue, setInputValue] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-  const [checkboxValue, setCheckboxValue] = useState(false);
-  const [customCheckboxValue, setCustomCheckboxValue] = useState(false);
-  const [radioValue, setRadioValue] = useState("");
-  const [leftRadio, setLeftRadio] = useState(false);
-  const [rightRadio, setRightRadio] = useState(false);
-  const [dropdownValue, setDropdownValue] = useState(null);
-  const [multipleValues, setMultipleValues] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [showError, setShowError] = useState(false);
-  const [showNoResults, setShowNoResults] = useState(false);
-  const [showLoadingState, setShowLoadingState] = useState(false);
+  
+  console.log('[ComponentsDemo] State initialized');
 
-  // Calendar hook
-  const calendar = useHumanCalendar({
-    canBeSameDay: true,
-    minDate: new Date(new Date().getFullYear() - 1, 0, 1),
-    maxDate: new Date()
-  });
-
-  // Demo data
-  const dropdownData = [
-    { label: "Opción 1", value: "option1" },
-    { label: "Opción 2", value: "option2" },
-    { label: "Opción 3", value: "option3" },
-  ];
-
-  const countryData = [
-    { countryName: "República Dominicana", idCountry: "DO", flag: "🇩🇴" },
-    { countryName: "Estados Unidos", idCountry: "US", flag: "🇺🇸" },
-    { countryName: "España", idCountry: "ES", flag: "🇪🇸" },
-  ];
-
-  const tabData = [
-    { label: "Inicio", icon: <HomeIcon />, disabled: false },
-    { label: "Perfil", icon: <ProfileIcon />, disabled: false },
-    { label: "Configuración", icon: <SettingsIcon />, disabled: true },
-  ];
-
-  const navigationButtons = [
-    {
-      titleButton: "Inicio",
-      onPressActionButton: () => Alert.alert("Navegación", "Inicio presionado"),
-      iconButton: <HomeIcon />,
-      accessibilityLabel: "Ir al inicio"
-    },
-    {
-      titleButton: "Perfil", 
-      onPressActionButton: () => Alert.alert("Navegación", "Perfil presionado"),
-      iconButton: <ProfileIcon />,
-      accessibilityLabel: "Ver perfil"
-    },
-    {
-      titleButton: "Config",
-      onPressActionButton: () => Alert.alert("Navegación", "Configuración presionada"), 
-      iconButton: <SettingsIcon />,
-      disabled: true,
-      accessibilityLabel: "Configuración (deshabilitada)"
-    }
-  ];
-
-  // Demo handlers
-  const handleButtonPress = (buttonName) => {
-    Alert.alert("Botón Presionado", `${buttonName} fue presionado`);
+  // Simplified demo data
+  const demoData = {
+    title: "🏦 Banking Components Demo - Safe Mode",
+    subtitle: "Minimal version for debugging"
   };
+  
+  console.log('[ComponentsDemo] Demo data prepared');
 
-  // Navigation handlers using NavigationService
-  const handleComponentDetail = (componentName, componentType) => {
-    NavigationService.navigateToComponentDetail(componentName, componentType);
+  // Simplified handlers
+  const handleButtonPress = (buttonName) => {
+    console.log('[ComponentsDemo] Button pressed:', buttonName);
+    Alert.alert("Debug", `${buttonName} fue presionado - App funcionando correctamente`);
   };
 
   const handleLoadingTest = () => {
+    console.log('[ComponentsDemo] Testing loading state');
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setShowSnackbar(true);
+      Alert.alert("Success", "Loading test completed!");
     }, 2000);
   };
 
-  const renderSection = (title, children) => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.sectionContent}>
-        {children}
+  const renderSection = (title, children) => {
+    console.log('[ComponentsDemo] Rendering section:', title);
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <View style={styles.sectionContent}>
+          {children}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
+  
+  console.log('[ComponentsDemo] Handlers defined');
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>🏦 Banking Components Demo</Text>
-          <Text style={styles.subtitle}>Prueba y valida todos los componentes</Text>
-        </View>
+  console.log('[ComponentsDemo] Starting render...');
+  
+  try {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>{demoData.title}</Text>
+            <Text style={styles.subtitle}>{demoData.subtitle}</Text>
+            <Text style={styles.debug}>
+              ✅ App loaded successfully - Components working!
+            </Text>
+          </View>
 
-        {/* Button Components Section */}
-        {renderSection("🔘 Button Components", (
-          <>
-            <Text style={styles.componentTitle}>Primary Action Button</Text>
-            <ReusableButton
-              titleButton="Botón Principal"
-              onPressActionButton={() => handleButtonPress("Primary Button")}
-              iconButton={<DemoIcon />}
-              iconPosition={0}
-            />
-            
-            <ReusableButton
-              titleButton="View Details"
-              onPressActionButton={() => handleComponentDetail('ReusableButton', 'Button Components')}
-              buttonStyle={{ marginTop: 10 }}
-            />
-            
-            <ReusableButton
-              titleButton="Botón Cargando"
-              onPressActionButton={handleLoadingTest}
-              loading={loading}
-              buttonStyle={{ marginTop: 10 }}
-            />
+          {/* Basic Button Test */}
+          {renderSection("🔘 Basic Button Test", (
+            <>
+              <Text style={styles.componentTitle}>Primary Action Button</Text>
+              
+              {ReusableButton ? (
+                <>
+                  <ReusableButton
+                    titleButton="✅ Test Primary Button"
+                    onPressActionButton={() => handleButtonPress("Primary Button")}
+                  />
+                  
+                  <ReusableButton
+                    titleButton="🔄 Test Loading Button"
+                    onPressActionButton={handleLoadingTest}
+                    loading={loading}
+                    buttonStyle={{ marginTop: 10 }}
+                  />
+                </>
+              ) : (
+                <SafeButton
+                  title="⚠️ Fallback Button (ReusableButton failed to load)"
+                  onPress={() => handleButtonPress("Fallback Button")}
+                />
+              )}
+              
+              {ButtonLiteReusable && (
+                <ButtonLiteReusable
+                  text="📱 Test List Button"
+                  onPress={() => handleButtonPress("List Button")}
+                  buttonStyle={{ marginTop: 15 }}
+                />
+              )}
+            </>
+          ))}
 
-            <ReusableButton
-              titleButton="Botón Deshabilitado"
-              onPressActionButton={() => {}}
-              disabled={true}
-              buttonStyle={{ marginTop: 10 }}
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>List/Menu Button</Text>
-            <ButtonLiteReusable
-              text="Configuración de Cuenta"
-              onPress={() => handleButtonPress("List Button")}
-              leftIcon={<SettingsIcon />}
-            />
-            
-            <ButtonLiteReusable
-              text="View ButtonLite Details"
-              onPress={() => handleComponentDetail('ButtonLiteReusable', 'Button Components')}
-              buttonStyle={{ marginTop: 10 }}
-            />
-
-            <ButtonLiteReusable
-              text="Seleccionar Fecha"
-              onPress={() => handleButtonPress("Date Button")}
-              rightIcon={<DemoIcon />}
-              isDisabled={false}
-              buttonStyle={{ marginTop: 10 }}
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Navigation Bar</Text>
-            <ButtonNavigationBarReusable 
-              buttons={navigationButtons}
-              showIndicator={true}
-            />
-          </>
-        ))}
-
-        {/* Input Components Section */}
-        {renderSection("📝 Input Components", (
-          <>
-            <Text style={styles.componentTitle}>Text Input</Text>
-            <InputTextReusable
-              label="Nombre Completo"
-              placeholder="Ingresa tu nombre"
-              value={inputValue}
-              onChangeText={setInputValue}
-              required={true}
-            />
-
-            <InputTextReusable
-              label="Email"
-              placeholder="ejemplo@email.com"
-              keyboardType="email-address"
-              errorMessage={inputValue === "error" ? "Email inválido" : undefined}
-              containerStyle={{ marginTop: 15 }}
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Search Input</Text>
-            <SearchTextInputReusable
-              placeholder="Buscar transacciones..."
-              value={searchValue}
-              onValueChange={setSearchValue}
-              filterText="Filtros"
-            />
-          </>
-        ))}
-
-        {/* Checkbox/Radio Components Section */}
-        {renderSection("☑️ Selection Components", (
-          <>
-            <Text style={styles.componentTitle}>Checkbox</Text>
-            <CheckBoxReusable
-              title="Acepto términos y condiciones"
-              checked={checkboxValue}
-              onPress={() => setCheckboxValue(!checkboxValue)}
-              value="terms"
-            />
-
-            <CustomCheckbox
-              label="Recibir notificaciones por email"
-              isSelected={customCheckboxValue}
-              onSelect={() => setCustomCheckboxValue(!customCheckboxValue)}
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Radio Buttons</Text>
-            <RadioButtonReusable
-              title="Tipo de Cuenta"
-              label="Cuenta Corriente"
-              value="corriente"
-              checked={radioValue === "corriente"}
-              onPress={(value) => setRadioValue(value)}
-              required={true}
-            />
-
-            <RadioButtonDoubleReusable
-              titleRadios="Género"
-              labelLeft="Masculino"
-              labelRight="Femenino"
-              valueLeft="M"
-              valueRight="F"
-              checkedLeft={leftRadio}
-              checkedRight={rightRadio}
-              onPressLeft={() => {
-                setLeftRadio(true);
-                setRightRadio(false);
-              }}
-              onPressRight={() => {
-                setLeftRadio(false);
-                setRightRadio(true);
-              }}
-              containerStyle={{ marginTop: 15 }}
-            />
-          </>
-        ))}
-
-        {/* Dropdown Components Section */}
-        {renderSection("📋 Dropdown Components", (
-          <>
-            <Text style={styles.componentTitle}>Simple Dropdown</Text>
-            <DropDownListReusable
-              label="Tipo de Documento"
-              data={dropdownData}
-              valueSelected={dropdownValue}
-              onChange={(item) => setDropdownValue(item)}
-              placeholder="Selecciona una opción"
-              required={true}
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Country Dropdown</Text>
-            <DropDownListCountryReusable
-              label="País"
-              data={countryData}
-              valueSelected={null}
-              onChange={(item) => console.log("Country selected:", item)}
-              placeholder="Selecciona un país"
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Multiple Selection</Text>
-            <DropDownListMultipleReusable
-              label="Servicios"
-              data={dropdownData}
-              valuesSelected={multipleValues}
-              onChange={(items) => setMultipleValues(items)}
-              placeholder="Selecciona servicios"
-              confirmButtonText="Confirmar Selección"
-            />
-          </>
-        ))}
-
-        {/* Calendar Components Section */}
-        {renderSection("📅 Calendar Components", (
-          <>
-            <Text style={styles.componentTitle}>Date Range Picker</Text>
-            <CalendarPickerRangeReusable
-              calendarHook={calendar}
-              title="Período de Consulta"
-              placeholder="Selecciona un rango de fechas"
-              showTitle={true}
-            />
-          </>
-        ))}
-
-        {/* Utility Components Section */}
-        {renderSection("🔧 Utility Components", (
-          <>
-            <Text style={styles.componentTitle}>Loading</Text>
-            <View style={styles.utilityRow}>
-              <Loading size="small" color={Colors.primary[300]} />
-              <Loading size="large" color={Colors.secondary[300]} />
-            </View>
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Step Info</Text>
-            <StepInfo
-              stepNumber={1}
-              totalSteps={3}
-              title="Información Personal"
-              subtitle="Completa tus datos básicos"
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Tab Bar</Text>
-            <TabBarReusable
-              tabs={tabData}
-              selectedTab={selectedTab}
-              onTabChange={setSelectedTab}
-            />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Separator</Text>
-            <CustomSeparator />
-
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Conditional Renderer</Text>
-            <View style={styles.conditionalButtons}>
-              <ReusableButton
-                titleButton="Show Error"
-                onPressActionButton={() => setShowError(true)}
-                buttonStyle={styles.smallButton}
-              />
-              <ReusableButton
-                titleButton="Show No Results"
-                onPressActionButton={() => setShowNoResults(true)}
-                buttonStyle={styles.smallButton}
-              />
-              <ReusableButton
-                titleButton="Show Loading"
-                onPressActionButton={() => setShowLoadingState(true)}
-                buttonStyle={styles.smallButton}
-              />
-            </View>
-
-            <ConditionalRendererReusable
-              hasError={showError}
-              hasNoResults={showNoResults}
-              hasLoading={showLoadingState}
-              onRetry={() => {
-                setShowError(false);
-                setShowNoResults(false);
-                setShowLoadingState(false);
-              }}
-              onBack={() => {
-                setShowError(false);
-                setShowNoResults(false);
-                setShowLoadingState(false);
-              }}
-              texts={{
-                errorTitle: "Error de Demostración",
-                emptyTitle: "Sin Datos de Demo"
-              }}
-            >
-              <Text style={styles.successMessage}>
-                ✅ Todos los estados funcionan correctamente
+          {/* Debug Info */}
+          {renderSection("🐛 Debug Information", (
+            <>
+              <Text style={styles.componentTitle}>Component Status</Text>
+              <Text style={styles.debugText}>
+                • ReusableButton: {ReusableButton ? '✅ Loaded' : '❌ Failed'}
               </Text>
-            </ConditionalRendererReusable>
-          </>
-        ))}
+              <Text style={styles.debugText}>
+                • ButtonLiteReusable: {ButtonLiteReusable ? '✅ Loaded' : '❌ Failed'}
+              </Text>
+              <Text style={styles.debugText}>
+                • Navigation Service: {NavigationService ? '✅ Available' : '❌ Not Available'}
+              </Text>
+              
+              <Text style={[styles.componentTitle, { marginTop: 20 }]}>Navigation Test</Text>
+              {ButtonLiteReusable && (
+                <ButtonLiteReusable
+                  text="🧭 Test Navigation to Details"
+                  onPress={() => {
+                    try {
+                      NavigationService.navigateToComponentDetail('ReusableButton', 'Button Components');
+                    } catch (error) {
+                      console.error('[ComponentsDemo] Navigation error:', error);
+                      Alert.alert('Navigation Error', error.message);
+                    }
+                  }}
+                  buttonStyle={{ marginTop: 10 }}
+                />
+              )}
+            </>
+          ))}
 
-        {/* Check Render Demo */}
-        {renderSection("👁️ Check Render Component", (
-          <>
-            <Text style={styles.componentTitle}>Conditional Visibility</Text>
-            <CheckRender allowed={checkboxValue}>
-              <View style={styles.hiddenContent}>
-                <Text style={styles.hiddenText}>
-                  🎉 Este contenido solo se muestra cuando el checkbox está activado
-                </Text>
-              </View>
-            </CheckRender>
-          </>
-        ))}
-
-        {/* Snackbar */}
-        <Snackbar
-          visible={showSnackbar}
-          message="¡Componentes validados exitosamente!"
-          duration={3000}
-          onActionPress={() => setShowSnackbar(false)}
-          actionText="Cerrar"
-          iconComponent={<Text style={{ color: 'white' }}>✅</Text>}
-        />
-
-        {/* Navigation Service Demo */}
-        {renderSection("🧭 Navigation Service Demo", (
-          <>
-            <Text style={styles.componentTitle}>Programmatic Navigation</Text>
-            <Text style={styles.description}>
-              Navigate to component detail screens using NavigationService:
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              🏦 Banking App - Safe Mode Debug Version
             </Text>
-            
-            <ButtonLiteReusable
-              text="Navigate to Button Details"
-              onPress={() => NavigationService.navigateToComponentDetail('ReusableButton', 'Button Components')}
-              buttonStyle={{ marginTop: 15 }}
-            />
-            
-            <ButtonLiteReusable
-              text="Navigate to ButtonLite Details"
-              onPress={() => NavigationService.navigateToComponentDetail('ButtonLiteReusable', 'Button Components')}
-              buttonStyle={{ marginTop: 10 }}
-            />
-            
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Current Route</Text>
-            <Text style={styles.description}>
-              Current route: {NavigationService.getCurrentRoute() || 'Unknown'}
+            <Text style={styles.footerText}>
+              If you see this, the basic app structure is working!
             </Text>
-            
-            <Text style={[styles.componentTitle, { marginTop: 20 }]}>Navigation Status</Text>
-            <Text style={styles.description}>
-              Navigation ready: {NavigationService.isReady() ? '✅ Yes' : '❌ No'}
-            </Text>
-          </>
-        ))}
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            🏦 Banking App Components Demo v2.0.0 - Powered by NavigationService
-          </Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  } catch (error) {
+    console.error('[ComponentsDemo] Render error:', error);
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorTitle}>❌ ComponentsDemo Error</Text>
+          <Text style={styles.errorMessage}>{error.message}</Text>
+          <Text style={styles.errorStack}>{error.stack}</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+      </SafeAreaView>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -522,6 +264,16 @@ const styles = StyleSheet.create({
     fontSize: FontSize.medium,
     color: Colors.textSecondary,
     textAlign: "center",
+    marginBottom: Metrics.small,
+  },
+  debug: {
+    fontSize: FontSize.medium,
+    color: Colors.success,
+    textAlign: "center",
+    fontWeight: "600",
+    backgroundColor: Colors.success + '20',
+    padding: 10,
+    borderRadius: 8,
   },
   section: {
     marginBottom: Metrics.xxLarge,
@@ -556,44 +308,11 @@ const styles = StyleSheet.create({
     marginBottom: Metrics.medium,
     marginTop: Metrics.small,
   },
-  utilityRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    paddingVertical: Metrics.large,
-  },
-  conditionalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: Metrics.large,
-  },
-  smallButton: {
-    flex: 0.3,
-    paddingVertical: 8,
-  },
-  successMessage: {
-    textAlign: "center",
-    color: Colors.success,
-    fontSize: FontSize.medium,
-    fontWeight: "500",
-    paddingVertical: Metrics.large,
-  },
-  description: {
+  debugText: {
     fontSize: FontSize.medium,
     color: Colors.textPrimary,
-    lineHeight: 22,
     marginBottom: Metrics.small,
-  },
-  hiddenContent: {
-    backgroundColor: Colors.success,
-    padding: Metrics.medium,
-    borderRadius: 8,
-    marginTop: Metrics.small,
-  },
-  hiddenText: {
-    color: Colors.white,
-    textAlign: "center",
-    fontWeight: "500",
+    fontFamily: 'monospace',
   },
   footer: {
     alignItems: "center",
@@ -603,6 +322,33 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontSize: FontSize.small,
     fontStyle: "italic",
+    textAlign: "center",
+    marginBottom: 5,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.error,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: Colors.textPrimary,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  errorStack: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    fontFamily: 'monospace',
+    textAlign: 'center',
   },
 });
 

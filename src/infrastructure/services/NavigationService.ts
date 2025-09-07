@@ -30,6 +30,7 @@ export interface DemoNavigationParamList extends ParamListBase {
   ComponentDetail: {
     componentName: string;
     componentType: string;
+    [key: string]: any; // Allow additional parameters
   };
   // Add more screen parameters as needed
 }
@@ -82,7 +83,7 @@ export const navigationRef = createNavigationContainerRef<DemoNavigationParamLis
  */
 const navigate = (name: keyof DemoNavigationParamList, params?: any): void => {
   if (navigationRef.isReady()) {
-    navigationRef.navigate(name, params);
+    navigationRef.navigate(name as any, params);
   } else {
     console.warn('NavigationService: Navigation container is not ready');
   }
@@ -101,7 +102,7 @@ const navigate = (name: keyof DemoNavigationParamList, params?: any): void => {
  */
 const push = (routeName: keyof DemoNavigationParamList, params?: any): void => {
   if (navigationRef.isReady()) {
-    navigationRef.dispatch(StackActions.push(routeName, params));
+    navigationRef.dispatch(StackActions.push(routeName as string, params));
   } else {
     console.warn('NavigationService: Navigation container is not ready');
   }
@@ -127,7 +128,7 @@ const navigateAndReset = (routeName: keyof DemoNavigationParamList, params?: any
         index: 0,
         routes: [
           {
-            name: routeName,
+            name: routeName as string,
             params
           }
         ]
@@ -177,7 +178,7 @@ const toggleDrawer = (): void => {
  * const componentName = NavigationService.getParam(route, 'componentName');
  */
 const getParam = (route: RouteProp<DemoNavigationParamList>, param: string): any => {
-  return route?.params?.[param];
+  return (route?.params as any)?.[param];
 };
 
 /**
@@ -205,7 +206,7 @@ const getAllParams = (route: RouteProp<DemoNavigationParamList>): any => {
  */
 const getParams = (route: RouteProp<DemoNavigationParamList>, params: string[]): Record<string, any> => {
   return params.reduce((parameters: Record<string, any>, param: string) => {
-    parameters[param] = route?.params?.[param];
+    parameters[param] = (route?.params as any)?.[param];
     return parameters;
   }, {});
 };

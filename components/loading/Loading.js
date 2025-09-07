@@ -4,6 +4,7 @@ import { ActivityIndicator } from "react-native";
 
 import Colors from "../../themes/Colors";
 import Metrics from "../../themes/Metrics";
+import CustomSeparator from "../custom-separator/CustomSeparator";
 import CheckRender from "../security/CheckRender";
 
 /**
@@ -35,10 +36,10 @@ const Loading = (props) => (
     <ActivityIndicator
       {...props}
       color={props.color}
-      size={(props.size === "large" && scaleModerate(30)) || (props.size === "small" && scaleModerate(20)) || props.size}
+      size={(props.size === "large" && 30) || (props.size === "small" && 20) || props.size}
     />
     <CheckRender allowed={props.bottomSeparate}>
-      <Separator />
+      <CustomSeparator />
     </CheckRender>
   </CheckRender>
 );
@@ -47,7 +48,7 @@ const defaultProps = {
   size: "large",
   color: Colors.primary,
   style: {
-    padding: scaleModerate(Metrics.medium)
+    padding: Metrics.medium
   },
   isLoading: false
 };

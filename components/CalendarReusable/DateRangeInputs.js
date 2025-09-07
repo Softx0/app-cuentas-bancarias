@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import moment from "moment";
 import { StyleSheet, Text, View } from "react-native";
-import DateTimePicker from "react-native-modal-datetime-picker";
+
+import DateTimePickerReusable from "../DateTimePickerReusable";
 
 import Colors from "../../themes/Colors";
 import { FontSize } from "../../themes/Fonts";
@@ -39,7 +39,15 @@ const DateRangeInputs = ({
   const formatDate = (date) => {
     if (!date) return "";
 
-    return moment(date).format(dateFormat);
+    // Convert dateFormat from moment to native JS format
+    // Default format: "DD MMM, YYYY"
+    const options = {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    };
+
+    return date.toLocaleDateString('es-ES', options);
   };
 
   const handleStartDateConfirm = (date) => {
@@ -82,7 +90,7 @@ const DateRangeInputs = ({
       </View>
 
       {/* DatePicker para fecha de inicio */}
-      <DateTimePicker
+      <DateTimePickerReusable
         isVisible={showStartPicker}
         mode="date"
         onConfirm={handleStartDateConfirm}
@@ -98,7 +106,7 @@ const DateRangeInputs = ({
       />
 
       {/* DatePicker para fecha de fin */}
-      <DateTimePicker
+      <DateTimePickerReusable
         isVisible={showEndPicker}
         mode="date"
         onConfirm={handleEndDateConfirm}

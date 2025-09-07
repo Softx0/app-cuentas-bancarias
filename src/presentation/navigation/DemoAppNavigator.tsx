@@ -11,13 +11,13 @@
  */
 
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
 
 // Import theme
 import Colors from "../../../themes/Colors";
 
-// Import navigation service with types
+// Import navigation service with types (using TypeScript version)
 import {
   DemoNavigationParamList,
   navigationRef
@@ -72,7 +72,7 @@ const DemoAppNavigator = (): React.ReactElement => {
         <Stack.Screen
           name="ComponentDetail"
           component={ComponentDetailScreen}
-          options={({ route }) => ({
+          options={({ route }: { route: NativeStackScreenProps<DemoNavigationParamList, 'ComponentDetail'>['route'] }) => ({
             title: `${route.params?.componentName || 'Component'} Details`,
             headerBackTitle: "Back",
             gestureEnabled: true,

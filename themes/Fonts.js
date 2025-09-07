@@ -9,6 +9,8 @@
  * @author Eduardo Valenzuela
  */
 
+import { Platform } from 'react-native';
+
 // ===========================
 // FONT SIZES
 // ===========================
@@ -63,10 +65,11 @@ export const FontWeight = {
 
 /**
  * Font families used in the application
+ * Using system fonts to prevent crashes on devices without custom fonts
  */
 export const FontFamily = {
-  primary: "SF Pro",
-  secondary: "Roboto",
+  primary: Platform.OS === 'ios' ? "System" : "Roboto",
+  secondary: Platform.OS === 'ios' ? "Helvetica" : "sans-serif",
   system: "System"
 };
 

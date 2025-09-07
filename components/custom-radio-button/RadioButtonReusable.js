@@ -5,10 +5,12 @@ import React, { useCallback, useMemo } from "react";
 
 import PropTypes from "prop-types";
 import { StyleSheet, Text, View } from "react-native";
-import { CheckBox } from "react-native-elements";
 
-import CheckedSVG from "../../assets/icons/icon-checked.svg";
-import CheckboxSVG from "../../assets/icons/icon-unchecked.svg";
+import CheckBoxReusable from "../CheckBoxReusable";
+
+
+import CheckedSVG from "../../assets/icons/radiobutton-checked-icon.svg";
+import CheckboxSVG from "../../assets/icons/radiobutton-unchecked-icon.svg";
 import Colors from "../../themes/Colors";
 import { IS_IOS } from "../../utils/StyleHelpers";
 
@@ -89,8 +91,6 @@ const RadioButtonReusable = ({
     [showError, titleStyle]
   );
 
-  // Generación de ID único para el botón (para accesibilidad)
-  const radioId = useMemo(() => `radio-${label?.replace(/\s+/g, "-")?.toLowerCase() || ""}`, [label]);
 
   return (
     <View
@@ -115,7 +115,7 @@ const RadioButtonReusable = ({
 
       {/* Contenedor del RadioButton */}
       <View style={styles.radioButtonContainer}>
-        <CheckBox
+        <CheckBoxReusable
           title={label}
           checkedIcon={CheckedIconComponent}
           uncheckedIcon={UncheckedIconComponent}

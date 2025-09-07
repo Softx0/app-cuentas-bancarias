@@ -4,12 +4,12 @@
 import React from "react";
 
 import { StyleSheet } from "react-native";
-import { CheckBox } from "react-native-elements";
 
 import IconCheckboxBlueLlenoSVG from "../../assets/icons/checbox-blue-lleno.svg";
 import IconCheckboxVacioSVG from "../../assets/icons/checkbox-vacio.svg";
 import Colors from "../../themes/Colors";
 import { IS_IOS } from "../../utils/StyleHelpers";
+import CheckBoxReusable from "../CheckBoxReusable";
 
 /**
  * Componente reutilizable de checkbox con iconos SVG personalizados
@@ -25,12 +25,12 @@ import { IS_IOS } from "../../utils/StyleHelpers";
  * @param {string} props.position - Posición del ícono ('left' o 'right')
  * @returns {React.Element} Componente CheckBoxReusable
  */
-const CheckBoxReusable = ({ value, checked, onPress, title, textStyle, containerStyle, disabled, position }) => {
+const CheckBoxReusableWrapper = ({ value, checked, onPress, title, textStyle, containerStyle, disabled, position }) => {
   const CheckedIconComponent = <IconCheckboxBlueLlenoSVG width={22} height={22} />;
   const UncheckedIconComponent = <IconCheckboxVacioSVG width={22} height={22} opacity={0.5} />;
 
   return (
-    <CheckBox
+    <CheckBoxReusable
       title={title}
       checkedIcon={CheckedIconComponent}
       uncheckedIcon={UncheckedIconComponent}
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   }
 });
 
-CheckBoxReusable.defaultProps = {
+CheckBoxReusableWrapper.defaultProps = {
   value: "checkbox",
   checked: false,
   onPress: () => {
@@ -72,4 +72,4 @@ CheckBoxReusable.defaultProps = {
   position: "left"
 };
 
-export default CheckBoxReusable;
+export default CheckBoxReusableWrapper;

@@ -1,10 +1,6 @@
 // ============= IMPORTACIONES =============
 // Importaciones de React y React Native
 import React from "react";
-
-// Importaciones de iconos
-import IconSearch from "../../assets/icons/feather-search-black.svg";
-import IconXClose from "../../assets/icons/x-close.svg";
 // Importaciones de componentes
 import CustomSeparator from "../../components/custom-separator/CustomSeparator";
 import CheckRender from "../../components/security/CheckRender";
@@ -17,6 +13,25 @@ import { IS_IOS } from "../../utils/StyleHelpers";
 
 
 import Colors from "../../themes/Colors";
+
+// Importaciones de iconos - Safe import with fallback
+let IconSearch, IconXClose;
+
+try {
+  IconSearch = require("../../assets/icons/feather-search-black.svg").default;
+  console.log('[SearchTextInput] IconSearch imported successfully');
+} catch (error) {
+  console.warn('[SearchTextInput] Failed to import IconSearch:', error);
+  IconSearch = () => <Text style={{ fontSize: 18 }}>🔍</Text>;
+}
+
+try {
+  IconXClose = require("../../assets/icons/x-close.svg").default;
+  console.log('[SearchTextInput] IconXClose imported successfully');
+} catch (error) {
+  console.warn('[SearchTextInput] Failed to import IconXClose:', error);
+  IconXClose = () => <Text style={{ fontSize: 18 }}>✕</Text>;
+}
 
 // ============= DOCUMENTACIÓN DE PROPIEDADES =============
 /**

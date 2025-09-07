@@ -1,13 +1,13 @@
 import React from "react";
 
 import themes from "../../themes";
-import CustomLoading from "../CustomLoading";
 import HayErrorResultadosReusable from "../hay-error-resultados/HayErrorResultadosReusable";
+import Loading from "../loading/Loading";
 import NoHayResultadosReusable from "../no-hay-resultados/NoHayResultadosReusable";
 
 /**
  * Componente contenedor que muestra dinámicamente un mensaje de error o de "no hay resultados" o un loading,
- * según los estados recibidos por props. Si no hay ningún estado especial activo, renderiza los children.
+* según los estados recibidos por props. Si no hay ningún estado especial activo, renderiza los children.
  *
  * @component
  *
@@ -68,7 +68,7 @@ const ConditionalRendererReusable = ({
   }
 
   if (hasLoading) {
-    return <CustomLoading color={loadingColor} />;
+    return <Loading color={loadingColor} isLoading={true} />;
   }
 
   // Si no hay ningún estado especial activo, renderizar los children

@@ -11,7 +11,6 @@ import { startOfMonth } from "date-fns/startOfMonth";
 import { subMonths } from "date-fns/subMonths";
 import { Dimensions, Text, View } from "react-native";
 
-import { LoggerService } from "../../services/Logger.service";
 import { ButtonCalendarReusable } from "../ButtonCalendarReusable/ButtonCalendarReusable";
 import DateRangeInputs from "./DateRangeInputs";
 import DaysGridView from "./DaysGridView";
@@ -60,7 +59,7 @@ export class Calendar extends Component {
     scrollable: false,
     scrollDecelerationRate: "normal",
     onDateChange: () => {
-      LoggerService.log("onDateChange() not provided");
+      console.log("onDateChange() not provided");
     },
     enableDateChange: true,
     headingLevel: 1,

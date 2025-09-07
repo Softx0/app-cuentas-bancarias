@@ -5,7 +5,8 @@ import React, { useCallback, useMemo } from "react";
 
 import PropTypes from "prop-types";
 import { StyleSheet, Text, View } from "react-native";
-import { CheckBox } from "react-native-elements";
+
+import CheckBoxReusable from "../CheckBoxReusable";
 
 import CheckedSVG from "../../assets/icons/radiobutton-checked-icon.svg";
 import CheckboxSVG from "../../assets/icons/radiobutton-unchecked-icon.svg";
@@ -39,7 +40,7 @@ const RadioButtonDouble = ({ value, checked, onPress, title, textStyle, containe
   }, [onPress, value]);
 
   return (
-    <CheckBox
+    <CheckBoxReusable
       title={title}
       checkedIcon={CheckedIconComponent}
       uncheckedIcon={UncheckedIconComponent}
@@ -175,8 +176,6 @@ const RadioButtonDoubleReusable = ({
     [showError, titleStyle]
   );
 
-  // Generación de ID único para el grupo de radio buttons (para accesibilidad)
-  const radioGroupId = useMemo(() => `radio-group-${titleRadios.replace(/\s+/g, "-").toLowerCase()}`, [titleRadios]);
 
   return (
     <View
@@ -204,7 +203,7 @@ const RadioButtonDoubleReusable = ({
         {/* RadioButton Izquierdo */}
         {showLeft && (
           <View style={buttonLeftStyle}>
-            <CheckBox
+            <CheckBoxReusable
               title={labelLeft}
               checkedIcon={getCheckedIcon(checkedColorLeft)}
               uncheckedIcon={getUncheckedIcon(uncheckedColorLeft)}
@@ -228,7 +227,7 @@ const RadioButtonDoubleReusable = ({
         {/* RadioButton Derecho */}
         {showRight && (
           <View style={buttonRightStyle}>
-            <CheckBox
+            <CheckBoxReusable
               title={labelRight}
               checkedIcon={getCheckedIcon(checkedColorRight)}
               uncheckedIcon={getUncheckedIcon(uncheckedColorRight)}
