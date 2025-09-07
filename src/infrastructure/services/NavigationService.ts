@@ -13,27 +13,17 @@ import {
   CommonActions,
   createNavigationContainerRef,
   DrawerActions,
-  ParamListBase,
   RouteProp,
   StackActions
 } from "@react-navigation/native";
 
+// Import types from demo screens
+import { ComponentCategory } from "../../presentation/screens/demo/types/ComponentDemo.types";
+import { DemoNavigationParamList } from "../../presentation/screens/demo/types/NavigationDemo.types";
+
 // ========================================================================================
 // TYPES AND INTERFACES
 // ========================================================================================
-
-/**
- * Navigation parameters for demo screens
- */
-export interface DemoNavigationParamList extends ParamListBase {
-  ComponentsDemo: undefined;
-  ComponentDetail: {
-    componentName: string;
-    componentType: string;
-    [key: string]: any; // Allow additional parameters
-  };
-  // Add more screen parameters as needed
-}
 
 /**
  * Navigation service interface
@@ -281,6 +271,7 @@ const getCurrentRoute = (): string | undefined => {
   return undefined;
 };
 
+
 // ========================================================================================
 // DEMO-SPECIFIC NAVIGATION FUNCTIONS
 // ========================================================================================
@@ -290,12 +281,13 @@ const getCurrentRoute = (): string | undefined => {
  * 
  * @param componentName - Name of the component
  * @param componentType - Type/category of the component
+ * @param category - Optional component category for better navigation
  * 
  * @example
- * NavigationService.navigateToComponentDetail('ReusableButton', 'Button Components');
+ * NavigationService.navigateToComponentDetail('ReusableButton', 'Button Components', ComponentCategory.BUTTON);
  */
-const navigateToComponentDetail = (componentName: string, componentType: string): void => {
-  navigate('ComponentDetail', { componentName, componentType });
+const navigateToComponentDetail = (componentName: string, componentType: string, category?: ComponentCategory): void => {
+  navigate('ComponentDetail', { componentName, componentType, category });
 };
 
 /**

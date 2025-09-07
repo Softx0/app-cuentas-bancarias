@@ -5,8 +5,8 @@
  * This navigator is designed for testing and validating components during development.
  * Integrates with NavigationService for programmatic navigation.
  * 
- * @description Demo navigation setup with ComponentsDemo as main screen
- * @version 2.0.0
+ * @description Demo navigation setup with ComponentsDemo as main screen  
+ * @version 3.0.0
  * @author Eduardo Valenzuela
  */
 
@@ -17,11 +17,11 @@ import React from "react";
 // Import theme
 import Colors from "../../../themes/Colors";
 
-// Import navigation service with types (using TypeScript version)
-import {
-  DemoNavigationParamList,
-  navigationRef
-} from "../../infrastructure/services/NavigationService";
+// Import navigation service with updated types
+import { navigationRef } from "../../infrastructure/services/NavigationService";
+
+// Import demo screen types
+import { DemoNavigationParamList } from "../screens/demo/types/NavigationDemo.types";
 
 // Import demo screens
 import ComponentDetailScreen from "../screens/demo/ComponentDetailScreen";
@@ -72,7 +72,7 @@ const DemoAppNavigator = (): React.ReactElement => {
         <Stack.Screen
           name="ComponentDetail"
           component={ComponentDetailScreen}
-          options={({ route }: { route: NativeStackScreenProps<DemoNavigationParamList, 'ComponentDetail'>['route'] }) => ({
+          options={({ route }: NativeStackScreenProps<DemoNavigationParamList, 'ComponentDetail'>) => ({
             title: `${route.params?.componentName || 'Component'} Details`,
             headerBackTitle: "Back",
             gestureEnabled: true,
