@@ -6,9 +6,9 @@
 
 import CryptoJS from 'expo-crypto';
 
+import { SECURITY_CONSTANTS } from '../../shared/constants';
 import { appConfig } from '../config/app.config';
 import { logger } from './logger';
-import { SECURITY_CONSTANTS } from '../../shared/constants';
 
 /**
  * Encrypted data structure

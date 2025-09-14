@@ -27,7 +27,7 @@ import { Colors, Metrics } from '../../../../themes';
 import type { RootStackParamList } from '../../../../types/navigation';
 import { mockAuthService } from '../../../infrastructure/services/mock/AuthService';
 import type { RegisterRequest } from '../../../infrastructure/services/mock/types/ApiTypes';
-import { handleApiError, handleJavaScriptError, handleValidationErrors } from '../../../infrastructure/utils/errorHandler';
+import { handleApiError, handleJavaScriptError } from '../../../infrastructure/utils/errorHandler';
 import { logger } from '../../../infrastructure/utils/logger';
 
 /**

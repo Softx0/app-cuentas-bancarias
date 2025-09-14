@@ -6,11 +6,11 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
-  AccessibilityInfo,
-  AccessibilityRole,
-  AccessibilityState,
-  Dimensions,
-  Platform
+    AccessibilityInfo,
+    AccessibilityRole,
+    AccessibilityState,
+    Dimensions,
+    Platform
 } from 'react-native';
 
 import { logger } from '../../infrastructure/utils/logger';
