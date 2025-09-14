@@ -222,7 +222,7 @@ export const BankingProvider: React.FC<BankingProviderProps> = ({ children }) =>
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      const transactions = getFilteredTransactions({ accountIds }, 100, 0);
+      const transactions = getFilteredTransactions({ accountId: accountIds?.[0] }, 100, 0);
       
       dispatch({ type: 'TRANSACTIONS_LOADED', payload: transactions });
       

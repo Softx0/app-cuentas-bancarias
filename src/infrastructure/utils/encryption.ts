@@ -40,7 +40,10 @@ class EncryptionUtil {
   private generateIV(): string {
     try {
       const randomBytes = CryptoJS.getRandomBytes(SECURITY_CONSTANTS.IV_LENGTH);
-      return this.arrayBufferToHex(randomBytes);
+      // Convert Uint8Array directly to hex without using ArrayBuffer
+      return Array.from(randomBytes)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
     } catch (error) {
       logger.error('Failed to generate IV', error, 'ENCRYPTION');
       throw new Error('Encryption initialization failed');

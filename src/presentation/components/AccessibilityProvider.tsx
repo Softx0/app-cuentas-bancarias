@@ -164,12 +164,15 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
 
   /**
    * Sets focus to element with specific ID
+   * Note: In React Native 0.81+, AccessibilityInfo.setAccessibilityFocus requires a node handle (number)
+   * This function needs to be updated to work with refs when actually used
    */
   const setFocusToElementWithId = (id: string) => {
     if (isScreenReaderEnabled) {
-      AccessibilityInfo.setAccessibilityFocus(id);
+      // TODO: Update this to use findNodeHandle with a ref instead of string ID
+      // AccessibilityInfo.setAccessibilityFocus requires a node handle in RN 0.81+
       if (enableLogging) {
-        logger.debug('🎯 Accessibility focus set', { id }, 'ACCESSIBILITY');
+        logger.debug('🎯 Accessibility focus requested (needs ref implementation)', { id }, 'ACCESSIBILITY');
       }
     }
   };

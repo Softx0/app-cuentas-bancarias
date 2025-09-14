@@ -250,7 +250,7 @@ export const RegisterScreen: React.FC = () => {
       const userMessage = handleApiError(error);
       setFormState(prev => ({
         ...prev,
-        errors: handleValidationErrors(error) || prev.errors,
+        errors: {}, // Clear form errors since this is an API error, not validation error
       }));
       showSnackbar(userMessage.message, true);
       
