@@ -5,8 +5,9 @@
  */
 
 // Contexts
-export * from './auth/AuthContext';
 export * from './app/AppContext';
+export * from './auth/AuthContext';
+export * from './banking/BankingContext';
 
 // Providers
 export * from './providers/RootProvider';

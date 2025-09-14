@@ -8,13 +8,13 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RootStackNavigationProp } from '../../../../types/navigation';
 
@@ -174,7 +174,7 @@ const HomeScreen: React.FC = () => {
         navigation.navigate('Transfer' as any);
         break;
       default:
-        showSnackbar('Acción no implementada', true);
+        showSnackbar('Función no disponible', true);
     }
   }, [navigation, showSnackbar]);
 
@@ -189,11 +189,11 @@ const HomeScreen: React.FC = () => {
    * Format currency
    */
   const formatCurrency = useCallback((amount: number): string => {
-    return new Intl.NumberFormat('es-CO', {
+    return new Intl.NumberFormat('es-DO', {
       style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      currency: 'DOP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(amount);
   }, []);
 
@@ -252,7 +252,7 @@ const HomeScreen: React.FC = () => {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.welcomeText}>¡Bienvenido de vuelta!</Text>
+          <Text style={styles.welcomeText}>Bienvenido</Text>
           <Text style={styles.timeText}>{getGreeting}</Text>
         </View>
 
@@ -271,8 +271,8 @@ const HomeScreen: React.FC = () => {
           <View style={styles.noAccountsCard}>
             <Text style={styles.noAccountsTitle}>Sin Cuentas</Text>
             <Text style={styles.noAccountsMessage}>
-              No tienes cuentas bancarias registradas.{'\n'}
-              Contacta a tu banco para más información.
+              No posee cuentas bancarias registradas.{'\n'}
+              Comuníquese con su banco para más información.
             </Text>
           </View>
         )}
@@ -327,7 +327,7 @@ const HomeScreen: React.FC = () => {
                     {transaction.description}
                   </Text>
                   <Text style={styles.transactionDate}>
-                    {new Date(transaction.date).toLocaleDateString('es-CO')}
+                    {new Date(transaction.date).toLocaleDateString('es-DO')}
                   </Text>
                 </View>
                 <Text style={[

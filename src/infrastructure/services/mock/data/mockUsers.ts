@@ -40,6 +40,27 @@ export const mockUsers: User[] = [
     lastLogin: new Date(Date.now() - 172800000), // 2 days ago
     isActive: true,
   },
+  // Demo users for testing
+  {
+    id: 'user_demo_001',
+    firstName: 'Demo',
+    lastName: 'User',
+    username: 'demo.user',
+    email: 'demo@banking.com',
+    createdAt: new Date('2024-01-01T00:00:00Z'),
+    lastLogin: new Date(),
+    isActive: true,
+  },
+  {
+    id: 'user_test_001',
+    firstName: 'Test',
+    lastName: 'User',
+    username: 'test.user',
+    email: 'test@banking.com',
+    createdAt: new Date('2024-01-01T00:00:00Z'),
+    lastLogin: new Date(),
+    isActive: true,
+  },
 ];
 
 /**

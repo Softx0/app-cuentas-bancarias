@@ -4,18 +4,18 @@
  * @version 1.0.0
  */
 
-import { useFocusEffect } from '@react-navigation/native';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   FlatList,
   RefreshControl,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import DropDownListReusable from '../../../../components/custom-dropdown/DropDownListReusable';
 import CustomLoading from '../../../../components/custom-loading-reusable/CustomLoading';
@@ -65,6 +65,12 @@ interface TransactionHistoryState {
  * Displays transaction history with advanced filtering options
  */
 export const TransactionHistoryScreen: React.FC = () => {
+  // Get navigation parameters for account context
+  const route = useRoute();
+  const navigationParams = route.params as any;
+  const contextAccountId = navigationParams?.accountId;
+  const contextAccountData = navigationParams?.accountData;
+
   // Component state
   const [state, setState] = useState<TransactionHistoryState>({
     transactions: [],
@@ -75,7 +81,7 @@ export const TransactionHistoryScreen: React.FC = () => {
     error: null,
     hasMoreData: true,
     showFilters: false,
-    filters: {},
+    filters: contextAccountId ? { accountId: contextAccountId } : {}, // Pre-filter by account if provided
     page: 1,
     limit: 20,
   });
@@ -203,6 +209,23 @@ export const TransactionHistoryScreen: React.FC = () => {
   );
 
   /**
+   * Handle account context from navigation
+   */
+  useEffect(() => {
+    if (contextAccountId && contextAccountData) {
+      logger.info('📊 Transaction history with account context', { 
+        accountId: contextAccountId,
+        accountType: contextAccountData.accountType,
+      }, 'TRANSACTION_HISTORY_SCREEN');
+      
+      // Show helpful message to user
+      const accountTypeText = contextAccountData.accountType === 'savings' ? 'Ahorros' : 'Corriente';
+      const accountNumber = contextAccountData.accountNumber.slice(-4);
+      showSnackbar(`Mostrando transacciones para cuenta ${accountTypeText} *${accountNumber}`, false);
+    }
+  }, [contextAccountId, contextAccountData, showSnackbar]);
+
+  /**
    * Pull to refresh handler
    */
   const handleRefresh = useCallback(() => {
@@ -267,11 +290,16 @@ export const TransactionHistoryScreen: React.FC = () => {
    * Utility functions
    */
   const formatCurrency = useCallback((amount: number): string => {
-    return `$${amount.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+    return new Intl.NumberFormat('es-DO', {
+      style: 'currency',
+      currency: 'DOP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
   }, []);
 
   const formatTransactionDate = useCallback((date: Date): string => {
-    return date.toLocaleDateString('es-CO', { 
+    return date.toLocaleDateString('es-DO', { 
       day: 'numeric',
       month: 'short',
       year: 'numeric',

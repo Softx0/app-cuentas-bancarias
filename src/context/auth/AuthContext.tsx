@@ -7,7 +7,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useCallback, useContext, useEffect, useReducer } from 'react';
 
+import { appConfig, isDevelopment } from '../../infrastructure/config/app.config';
 import { apiService } from '../../infrastructure/services/api.service';
+import { mockAuthService } from '../../infrastructure/services/mock/AuthService';
 import { inactivityManager } from '../../infrastructure/utils/inactivity';
 import { jwtUtil } from '../../infrastructure/utils/jwt';
 import { logger } from '../../infrastructure/utils/logger';
@@ -204,10 +206,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       logger.info('Attempting user login', { email }, 'AUTH');
       
-      const response = await apiService.post<{ user: User; tokens: AuthToken }>('/auth/login', {
-        email,
-        password,
-      });
+      // Use mock service in development, real API in production
+      let response;
+      if (isDevelopment() || appConfig.apiUrl.includes('example.com')) {
+        logger.info('🧪 Using mock authentication service', { email }, 'AUTH');
+        const mockResponse = await mockAuthService.login({ email, password });
+        
+        if (!mockResponse.success) {
+          throw new Error(mockResponse.message || 'Authentication failed');
+        }
+        
+        const { user, tokens } = mockResponse.data;
+        response = { data: { user, tokens } };
+      } else {
+        logger.info('🌐 Using real API authentication service', { email }, 'AUTH');
+        response = await apiService.post<{ user: User; tokens: AuthToken }>('/auth/login', {
+          email,
+          password,
+        });
+      }
       
       const { user, tokens } = response.data;
       
@@ -237,7 +254,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       logger.info('Attempting user registration', { email: userData.email }, 'AUTH');
       
-      const response = await apiService.post<{ user: User; tokens: AuthToken }>('/auth/register', userData);
+      // Use mock service in development, real API in production
+      let response;
+      if (isDevelopment() || appConfig.apiUrl.includes('example.com')) {
+        logger.info('🧪 Using mock registration service', { email: userData.email }, 'AUTH');
+        const mockResponse = await mockAuthService.register(userData as any);
+        
+        if (!mockResponse.success) {
+          throw new Error(mockResponse.message || 'Registration failed');
+        }
+        
+        const { user, tokens } = mockResponse.data;
+        response = { data: { user, tokens } };
+      } else {
+        logger.info('🌐 Using real API registration service', { email: userData.email }, 'AUTH');
+        response = await apiService.post<{ user: User; tokens: AuthToken }>('/auth/register', userData);
+      }
       
       const { user, tokens } = response.data;
       

@@ -4,18 +4,18 @@
  * @version 1.0.0
  */
 
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import type { RootStackNavigationProp } from '../../../../types/navigation';
 
@@ -79,12 +79,18 @@ interface TransferState {
 export const TransferScreen: React.FC = () => {
   // Navigation
   const navigation = useNavigation<RootStackNavigationProp<'Transfer'>>();
+  const route = useRoute();
+
+  // Get navigation parameters
+  const navigationParams = route.params as any;
+  const prefilledFromAccountId = navigationParams?.fromAccountId;
+  const prefilledFromAccountData = navigationParams?.fromAccountData;
 
   // Component state
   const [state, setState] = useState<TransferState>({
     accounts: [],
     formData: {
-      fromAccountId: '',
+      fromAccountId: prefilledFromAccountId || '',
       toAccountId: '',
       amount: '',
       description: '',
@@ -176,6 +182,22 @@ export const TransferScreen: React.FC = () => {
   );
 
   /**
+   * Handle prefilled account data from navigation
+   */
+  useEffect(() => {
+    if (prefilledFromAccountId && prefilledFromAccountData && state.accounts.length > 0) {
+      logger.info('💸 Transfer screen with prefilled account', { 
+        accountId: prefilledFromAccountId,
+        accountType: prefilledFromAccountData.accountType,
+        balance: prefilledFromAccountData.balance,
+      }, 'TRANSFER_SCREEN');
+      
+      // Show helpful message to user
+      showSnackbar(`Cuenta ${prefilledFromAccountData.accountType === 'savings' ? 'de Ahorros' : 'Corriente'} preseleccionada`, false);
+    }
+  }, [prefilledFromAccountId, prefilledFromAccountData, state.accounts.length, showSnackbar]);
+
+  /**
    * Validates transfer form
    */
   const validateForm = useCallback((formData: TransferFormData): TransferValidation => {
@@ -199,9 +221,9 @@ export const TransferScreen: React.FC = () => {
     } else {
       const amount = parseFloat(formData.amount);
       if (isNaN(amount) || amount <= 0) {
-        errors.amount = 'El monto debe ser mayor a cero';
-      } else if (amount > 50000) {
-        errors.amount = 'El monto máximo por transferencia es $50,000';
+        errors.amount = 'El monto debe ser mayor que cero';
+      } else if (amount > 2700000) {
+        errors.amount = 'El monto máximo por transferencia es RD$2,700,000';
       } else if (formData.fromAccountId) {
         // Check sufficient balance
         const fromAccount = state.accounts.find(acc => acc.id === formData.fromAccountId);
@@ -213,7 +235,7 @@ export const TransferScreen: React.FC = () => {
 
     // Description validation
     if (!formData.description.trim()) {
-      errors.description = 'Agrega una descripción para la transferencia';
+        errors.description = 'Ingrese una descripción para la transferencia';
     } else if (formData.description.length < 3) {
       errors.description = 'La descripción debe tener al menos 3 caracteres';
     } else if (formData.description.length > 100) {
@@ -357,13 +379,18 @@ export const TransferScreen: React.FC = () => {
       showSnackbar(userMessage.message, true);
       logger.error('❌ Transfer failed', error, 'TRANSFER_SCREEN');
     }
-  }, [state.formData, showSnackbar]);
+  }, [state.formData, showSnackbar, navigation]);
 
   /**
    * Utility functions
    */
   const formatCurrency = useCallback((amount: number): string => {
-    return `$${amount.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+    return new Intl.NumberFormat('es-DO', {
+      style: 'currency',
+      currency: 'DOP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
   }, []);
 
   const getAccountDisplayName = useCallback((account: BankAccount): string => {
@@ -439,9 +466,9 @@ export const TransferScreen: React.FC = () => {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Transferir Dinero</Text>
+          <Text style={styles.headerTitle}>Transferencia de Fondos</Text>
           <Text style={styles.headerSubtitle}>
-            Transfiere dinero entre tus cuentas de forma segura
+            Transfiera fondos entre sus cuentas de forma segura
           </Text>
         </View>
 
@@ -504,7 +531,7 @@ export const TransferScreen: React.FC = () => {
               style={styles.input}
             />
             <Text style={styles.limitInfo}>
-              Límite máximo: $50,000 por transferencia
+              Límite máximo: RD$2,700,000 por transferencia
             </Text>
           </View>
 
@@ -570,7 +597,7 @@ export const TransferScreen: React.FC = () => {
         {/* Submit Button */}
         <View style={styles.buttonContainer}>
           <ReusableButton
-            titleButton={state.submitting ? "Procesando..." : "Transferir Dinero"}
+            titleButton={state.submitting ? "Procesando..." : "Ejecutar Transferencia"}
             onPressActionButton={showTransferConfirmation}
             disabled={!state.validation.isValid || state.submitting}
             loading={state.submitting}

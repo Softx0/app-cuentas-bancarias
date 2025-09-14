@@ -4,12 +4,12 @@
  * @version 1.0.0
  */
 
-import { SignJWT, jwtVerify, JWTPayload } from 'jose';
+import { JWTPayload, SignJWT, jwtVerify } from 'jose';
 
-import { appConfig } from '../config/app.config';
-import { logger } from './logger';
 import { AUTH_CONSTANTS } from '../../shared/constants';
-import type { User, AuthToken } from '../../shared/types';
+import type { AuthToken, User } from '../../shared/types';
+import { appConfig, isDevelopment } from '../config/app.config';
+import { logger } from './logger';
 
 /**
  * JWT payload interface extending the standard JWT payload
@@ -61,6 +61,11 @@ class JWTUtil {
     try {
       logger.debug('Generating access token for user', { userId: user.id }, 'JWT');
 
+      // Use simple mock tokens in development to avoid React Native compatibility issues
+      if (isDevelopment()) {
+        return this.generateMockAccessToken(user, additionalClaims);
+      }
+
       const now = Math.floor(Date.now() / 1000);
       const expirationTime = now + appConfig.tokenExpiration;
 
@@ -96,6 +101,11 @@ class JWTUtil {
   public async generateRefreshToken(user: User): Promise<string> {
     try {
       logger.debug('Generating refresh token for user', { userId: user.id }, 'JWT');
+
+      // Use simple mock tokens in development to avoid React Native compatibility issues
+      if (isDevelopment()) {
+        return this.generateMockRefreshToken(user);
+      }
 
       const now = Math.floor(Date.now() / 1000);
       const expirationTime = now + (appConfig.tokenExpiration * 24 * 7); // 7 days
@@ -168,6 +178,11 @@ class JWTUtil {
       }
 
       logger.debug('Verifying JWT token', undefined, 'JWT');
+
+      // Use simple mock token verification in development
+      if (isDevelopment()) {
+        return this.verifyMockToken(token);
+      }
 
       const { payload } = await jwtVerify(token, this.secretKey, {
         issuer: this.issuer,
@@ -258,6 +273,124 @@ class JWTUtil {
       logger.warn('Failed to get token expiration', error, 'JWT');
       return null;
     }
+  }
+
+  /**
+   * Verifies a mock token for development
+   * @param token Mock token to verify
+   * @returns Token verification result
+   */
+  private verifyMockToken(token: string): TokenVerificationResult {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        return {
+          isValid: false,
+          error: 'Invalid token format',
+        };
+      }
+
+      const payload = JSON.parse(atob(parts[1])) as CustomJWTPayload;
+      const now = Math.floor(Date.now() / 1000);
+      
+      // Check if token is expired
+      if (payload.exp && payload.exp < now) {
+        logger.debug('🧪 Mock token is expired', { 
+          expiration: new Date(payload.exp * 1000).toISOString(),
+        }, 'JWT');
+        
+        return {
+          isValid: false,
+          error: 'Token has expired',
+          isExpired: true,
+        };
+      }
+
+      logger.debug('🧪 Mock token verified successfully', { userId: payload.userId }, 'JWT');
+
+      return {
+        isValid: true,
+        payload,
+      };
+    } catch (error) {
+      logger.warn('🧪 Mock token verification failed', error, 'JWT');
+      return {
+        isValid: false,
+        error: 'Invalid mock token',
+      };
+    }
+  }
+
+  /**
+   * Generates a simple mock access token for development (React Native compatible)
+   * @param user User data to encode in token
+   * @param additionalClaims Additional claims to include
+   * @returns Simple base64 encoded mock token
+   */
+  private generateMockAccessToken(user: User, additionalClaims?: Record<string, any>): string {
+    const now = Math.floor(Date.now() / 1000);
+    const expirationTime = now + appConfig.tokenExpiration;
+
+    const payload = {
+      userId: user.id,
+      email: user.email,
+      role: 'user',
+      sessionId: this.generateSessionId(),
+      type: 'access',
+      iat: now,
+      exp: expirationTime,
+      iss: this.issuer,
+      aud: this.audience,
+      sub: user.id,
+      ...additionalClaims,
+    };
+
+    // Create a simple mock JWT structure: header.payload.signature
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const encodedPayload = btoa(JSON.stringify(payload));
+    const signature = btoa(`mock-signature-${user.id}-${now}`); // Simple mock signature
+
+    const token = `${header}.${encodedPayload}.${signature}`;
+    
+    logger.info('🧪 Mock access token generated', { 
+      userId: user.id, 
+      expiresAt: new Date(expirationTime * 1000).toISOString(),
+    }, 'JWT');
+    
+    return token;
+  }
+
+  /**
+   * Generates a simple mock refresh token for development (React Native compatible)
+   * @param user User data to encode in token
+   * @returns Simple base64 encoded mock refresh token
+   */
+  private generateMockRefreshToken(user: User): string {
+    const now = Math.floor(Date.now() / 1000);
+    const expirationTime = now + (appConfig.tokenExpiration * 24 * 7); // 7 days
+
+    const payload = {
+      userId: user.id,
+      email: user.email,
+      type: 'refresh',
+      sessionId: this.generateSessionId(),
+      iat: now,
+      exp: expirationTime,
+      iss: this.issuer,
+      aud: this.audience,
+      sub: user.id,
+    };
+
+    // Create a simple mock JWT structure: header.payload.signature
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const encodedPayload = btoa(JSON.stringify(payload));
+    const signature = btoa(`mock-refresh-signature-${user.id}-${now}`); // Simple mock signature
+
+    const token = `${header}.${encodedPayload}.${signature}`;
+    
+    logger.info('🧪 Mock refresh token generated', { userId: user.id }, 'JWT');
+    
+    return token;
   }
 
   /**

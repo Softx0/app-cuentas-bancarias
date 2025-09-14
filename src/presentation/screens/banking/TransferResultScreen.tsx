@@ -4,11 +4,9 @@
  * @version 1.0.0
  */
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import {
-  Alert,
-  SafeAreaView,
   ScrollView,
   Share,
   StyleSheet,
@@ -16,6 +14,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { RootStackNavigationProp } from '../../../../types/navigation';
 
 import ReusableButton from '../../../../components/custom-button/ReusableButton';
 import { Snackbar } from '../../../../components/snackbar/Snackbar';
@@ -54,6 +55,9 @@ interface TransferResultProps {
 export const TransferResultScreen: React.FC<TransferResultProps> = ({ 
   transactionId = 'txn_004' // Mock transaction ID for demo
 }) => {
+  // Navigation
+  const navigation = useNavigation<RootStackNavigationProp<'TransferResult'>>();
+
   // Component state
   const [state, setState] = useState<TransferResultState>({
     transaction: null,
@@ -152,32 +156,85 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
    */
   const handleBackToHome = useCallback(() => {
     logger.info('🏠 Navigate back to home', undefined, 'TRANSFER_RESULT_SCREEN');
-    // TODO: Navigate to HomeScreen
-    Alert.alert(
-      'Navegación',
-      'Navegación a inicio no implementada aún',
-      [{ text: 'Entendido' }]
-    );
-  }, []);
+    
+    try {
+      // Option 1: Reset navigation to TabMenu with Home tab
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'TabMenu' as any,
+            state: {
+              routes: [{ name: 'Home' }],
+              index: 0,
+            },
+          },
+        ],
+      });
+      
+      showSnackbar('Regresando al inicio', false);
+    } catch (error) {
+      // Fallback option: Simple navigation to TabMenu
+      logger.warn('Reset failed, using fallback navigation', error, 'TRANSFER_RESULT_SCREEN');
+      
+      navigation.popToTop();
+      navigation.navigate('TabMenu' as any);
+      showSnackbar('Regresando al inicio', false);
+    }
+  }, [navigation, showSnackbar]);
 
   const handleNewTransfer = useCallback(() => {
     logger.info('💸 Navigate to new transfer', undefined, 'TRANSFER_RESULT_SCREEN');
-    // TODO: Navigate to TransferScreen
-    Alert.alert(
-      'Nueva Transferencia',
-      'Navegación a nueva transferencia no implementada aún',
-      [{ text: 'Entendido' }]
-    );
-  }, []);
+    
+    // Navigate to Transfer screen
+    navigation.navigate('Transfer' as any);
+    showSnackbar('Abriendo nueva transferencia', false);
+  }, [navigation, showSnackbar]);
 
   const handleViewTransactionHistory = useCallback(() => {
     logger.info('📊 Navigate to transaction history', undefined, 'TRANSFER_RESULT_SCREEN');
-    // TODO: Navigate to TransactionHistoryScreen
-    Alert.alert(
-      'Historial de Transacciones',
-      'Navegación a historial no implementada aún',
-      [{ text: 'Entendido' }]
-    );
+    
+    // Navigate to Transaction History screen
+    navigation.navigate('TransactionHistory' as any);
+    showSnackbar('Abriendo historial de transacciones', false);
+  }, [navigation, showSnackbar]);
+
+  /**
+   * Utility functions
+   */
+  const formatCurrency = useCallback((amount: number): string => {
+    return new Intl.NumberFormat('es-DO', {
+      style: 'currency',
+      currency: 'DOP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  }, []);
+
+  const formatTransactionDate = useCallback((date: Date): string => {
+    return date.toLocaleDateString('es-DO', { 
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }, []);
+
+  const getAccountDisplayName = useCallback((account: BankAccount): string => {
+    const type = account.accountType === 'savings' ? 'Cuenta de Ahorros' : 'Cuenta Corriente';
+    const lastFour = account.accountNumber.slice(-4);
+    return `${type} *${lastFour}`;
+  }, []);
+
+  const getStatusText = useCallback((status: 'completed' | 'pending' | 'failed'): string => {
+    switch (status) {
+      case 'completed': return 'Completada';
+      case 'pending': return 'Pendiente';
+      case 'failed': return 'Fallida';
+      default: return 'Desconocido';
+    }
   }, []);
 
   /**
@@ -203,7 +260,7 @@ ${getAccountDisplayName(state.toAccount)}
 📝 Descripción: ${state.transaction.description}
 ✅ Estado: ${getStatusText(state.transaction.status)}
 
-¡Transferencia completada exitosamente!
+Transferencia completada exitosamente.
       `.trim();
 
       await Share.share({
@@ -218,40 +275,7 @@ ${getAccountDisplayName(state.toAccount)}
       logger.error('❌ Failed to share receipt', error, 'TRANSFER_RESULT_SCREEN');
       showSnackbar('Error al compartir comprobante', true);
     }
-  }, [state.transaction, state.fromAccount, state.toAccount, showSnackbar]);
-
-  /**
-   * Utility functions
-   */
-  const formatCurrency = useCallback((amount: number): string => {
-    return `$${amount.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
-  }, []);
-
-  const formatTransactionDate = useCallback((date: Date): string => {
-    return date.toLocaleDateString('es-CO', { 
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-  }, []);
-
-  const getAccountDisplayName = useCallback((account: BankAccount): string => {
-    const type = account.accountType === 'savings' ? 'Cuenta de Ahorros' : 'Cuenta Corriente';
-    const lastFour = account.accountNumber.slice(-4);
-    return `${type} *${lastFour}`;
-  }, []);
-
-  const getStatusText = useCallback((status: 'completed' | 'pending' | 'failed'): string => {
-    switch (status) {
-      case 'completed': return 'Completada';
-      case 'pending': return 'Pendiente';
-      case 'failed': return 'Fallida';
-      default: return 'Desconocido';
-    }
-  }, []);
+  }, [state.transaction, state.fromAccount, state.toAccount, showSnackbar, formatCurrency, formatTransactionDate, getAccountDisplayName, getStatusText]);
 
   const getStatusIcon = useCallback((status: 'completed' | 'pending' | 'failed'): string => {
     switch (status) {
@@ -328,7 +352,7 @@ ${getAccountDisplayName(state.toAccount)}
             {getStatusIcon(transaction.status)}
           </Text>
           <Text style={styles.statusTitle}>
-            {transaction.status === 'completed' ? '¡Transferencia Exitosa!' :
+            {transaction.status === 'completed' ? 'Transferencia Exitosa' :
              transaction.status === 'pending' ? 'Transferencia Pendiente' :
              'Transferencia Fallida'}
           </Text>
@@ -403,9 +427,9 @@ ${getAccountDisplayName(state.toAccount)}
         {transaction.status === 'completed' && (
           <View style={styles.successCard}>
             <Text style={styles.successIcon}>🎉</Text>
-            <Text style={styles.successTitle}>¡Operación Completada!</Text>
+            <Text style={styles.successTitle}>Operación Completada</Text>
             <Text style={styles.successMessage}>
-              Tu transferencia ha sido procesada exitosamente. Los fondos ya están disponibles en la cuenta de destino.
+              Su transferencia ha sido procesada exitosamente. Los fondos están disponibles en la cuenta de destino.
             </Text>
           </View>
         )}
@@ -416,7 +440,7 @@ ${getAccountDisplayName(state.toAccount)}
             <Text style={styles.warningIcon}>⏳</Text>
             <Text style={styles.warningTitle}>Procesando Transferencia</Text>
             <Text style={styles.warningMessage}>
-              Tu transferencia está siendo procesada. Los fondos estarán disponibles en la cuenta de destino en unos minutos.
+              Su transferencia está siendo procesada. Los fondos estarán disponibles en la cuenta de destino en unos minutos.
             </Text>
           </View>
         )}
@@ -427,7 +451,7 @@ ${getAccountDisplayName(state.toAccount)}
             <Text style={styles.failedIcon}>❌</Text>
             <Text style={styles.failedTitle}>Transferencia Fallida</Text>
             <Text style={styles.failedMessage}>
-              No se pudo completar la transferencia. Los fondos no fueron debitados de tu cuenta. Por favor, intenta nuevamente.
+              No se pudo completar la transferencia. Los fondos no fueron debitados de su cuenta. Favor intentar nuevamente.
             </Text>
           </View>
         )}
@@ -453,7 +477,7 @@ ${getAccountDisplayName(state.toAccount)}
           />
           
           <ReusableButton
-            titleButton="Ver Historial"
+            titleButton="Consultar Historial"
             onPressActionButton={handleViewTransactionHistory}
             buttonStyle={[styles.actionButton, styles.historyButton]}
             textButtonStyle={styles.historyButtonText}
@@ -461,7 +485,7 @@ ${getAccountDisplayName(state.toAccount)}
         </View>
         
         <ReusableButton
-          titleButton="Volver al Inicio"
+          titleButton="Regresar al Inicio"
           onPressActionButton={handleBackToHome}
           buttonStyle={styles.homeButton}
           textButtonStyle={styles.homeButtonText}
@@ -691,17 +715,24 @@ const styles = StyleSheet.create({
   shareButtonText: {
     color: Colors.white,
     fontSize: 16,
+    paddingVertical: Metrics.medium,
     fontWeight: '600',
   },
   buttonRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     gap: Metrics.medium,
-    marginBottom: Metrics.medium,
+    marginVertical: Metrics.xxLarge,
   },
   actionButton: {
     flex: 1,
     paddingVertical: Metrics.medium,
+    paddingHorizontal: Metrics.small,
     borderRadius: 12,
+    minHeight: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   transferButton: {
     backgroundColor: Colors.primary[400],
@@ -710,6 +741,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 14,
     fontWeight: '600',
+    textAlign: 'center',
   },
   historyButton: {
     backgroundColor: Colors.neutral[300],
@@ -718,6 +750,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: '600',
+    textAlign: 'center',
   },
   homeButton: {
     backgroundColor: Colors.neutral[200],
@@ -727,6 +760,7 @@ const styles = StyleSheet.create({
   homeButtonText: {
     color: Colors.textPrimary,
     fontSize: 16,
+    paddingVertical: Metrics.medium,
     fontWeight: '500',
   },
   loadingContainer: {

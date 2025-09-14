@@ -40,18 +40,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'Login',
     component: LoginScreen,
     options: {
-      title: 'Iniciar Sesión',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -59,18 +48,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'Register',
     component: RegisterScreen,
     options: {
-      title: 'Crear Cuenta',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -80,18 +58,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'AccountList',
     component: AccountListScreen,
     options: {
-      title: 'Mis Cuentas',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -99,18 +66,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'AccountDetail',
     component: AccountDetailScreen,
     options: {
-      title: 'Detalle de Cuenta',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -118,18 +74,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'TransactionHistory',
     component: TransactionHistoryScreen,
     options: {
-      title: 'Historial de Transacciones',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -137,18 +82,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'Transfer',
     component: TransferScreen,
     options: {
-      title: 'Transferir Dinero',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -156,18 +90,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'TransferResult',
     component: TransferResultScreen,
     options: {
-      title: 'Resultado de Transferencia',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -175,18 +98,7 @@ const STACK_ROUTES: StackRouteConfig[] = [
     name: 'BalanceInquiry',
     component: BalanceInquiryScreen,
     options: {
-      title: 'Consulta de Saldo',
-      headerShown: true,
-      headerStyle: {
-        backgroundColor: Colors.primary[400],
-      },
-      headerTintColor: Colors.white,
-      headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-      },
-      headerTitleAlign: 'center',
-      headerBackTitle: 'Atrás',
+      headerShown: false,
       gestureEnabled: true,
     },
   },
@@ -201,17 +113,8 @@ const STACK_ROUTES: StackRouteConfig[] = [
  */
 export const STACK_NAVIGATOR_OPTIONS = {
   screenOptions: {
-    // Default header styling
-    headerStyle: {
-      backgroundColor: Colors.primary[300],
-    },
-    headerTintColor: Colors.white,
-    headerTitleStyle: {
-      fontWeight: 'bold' as const,
-      fontSize: 18,
-    },
-    headerTitleAlign: 'center' as const,
-    headerBackTitle: 'Back',
+    // Header configuration
+    headerShown: false,
     
     // Gesture handling
     gestureEnabled: true,

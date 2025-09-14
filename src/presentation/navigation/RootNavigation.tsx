@@ -20,6 +20,12 @@ import { RootStackParamList, TabParamList } from '../../../types/navigation';
 
 // Import theme
 
+// Import contexts
+import { useAuth } from '../../context/auth/AuthContext';
+
+// Import screens
+import { LoginScreen, RegisterScreen } from '../screens/auth';
+
 // Import navigation service
 import { navigationRef } from '../../infrastructure/services/NavigationService';
 
@@ -30,6 +36,41 @@ import TAB_ROUTES, { TAB_NAVIGATOR_OPTIONS } from '../routes/TabRoutes';
 // Create navigators with proper typing
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
+
+/**
+ * Authentication Stack Navigator
+ * 
+ * Stack navigator for login and registration screens.
+ */
+const AuthStack: React.FC = () => {
+  console.log('🔐 [AuthStack] Component rendered');
+
+  return (
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 /**
  * Tab Navigation Component
@@ -58,24 +99,63 @@ const TabNavigation: React.FC = () => {
 };
 
 /**
+ * App Stack Navigator
+ * 
+ * Main app stack with tabs and additional screens.
+ */
+const AppStack: React.FC = () => {
+  console.log('📱 [AppStack] Component rendered');
+
+  return (
+    <Stack.Navigator
+      initialRouteName={STACK_NAVIGATOR_OPTIONS.initialRouteName}
+      screenOptions={STACK_NAVIGATOR_OPTIONS.screenOptions}
+    >
+      {/* Main Tab Menu Screen */}
+      <Stack.Screen
+        name="TabMenu"
+        component={TabNavigation}
+        options={{
+          headerShown: false,
+          gestureEnabled: false, // Disable back gesture for main screen
+        }}
+      />
+
+      {/* Additional Stack Screens */}
+      {STACK_ROUTES.map((route, index) => (
+        <Stack.Screen
+          key={`stack_route_${route.name}_${index}`}
+          name={route.name}
+          component={route.component}
+          options={route.options}
+        />
+      ))}
+    </Stack.Navigator>
+  );
+};
+
+/**
  * Main Root Navigation Component
  * 
- * Root stack navigator that includes the tab navigation as main screen
- * and additional stack screens from StackRoutes configuration.
+ * Root navigation with conditional routing based on authentication state.
+ * Shows AuthStack when not authenticated, AppStack when authenticated.
  */
 const RootNavigation: React.FC = () => {
   console.log('🧭 [RootNavigation] Component rendered');
 
+  // Get authentication state
+  const { isAuthenticated, isLoading } = useAuth();
+
   // Navigation ready handler
   const handleNavigationReady = useCallback(() => {
-    console.log('🧭 [RootNavigation] Navigation is ready');
+    console.log('🧭 [RootNavigation] Navigation is ready', { isAuthenticated, isLoading });
     
     // Log initial navigation state for debugging
     if (__DEV__) {
       const state = navigationRef.getState();
       console.log('🧭 [RootNavigation] Initial state:', JSON.stringify(state, null, 2));
     }
-  }, []);
+  }, [isAuthenticated, isLoading]);
 
   // Navigation state change handler for debugging
   const handleNavigationStateChange = useCallback((state: any) => {
@@ -83,10 +163,19 @@ const RootNavigation: React.FC = () => {
       console.log('🧭 [RootNavigation] State changed:', {
         routeName: navigationRef.getCurrentRoute()?.name,
         params: navigationRef.getCurrentRoute()?.params,
+        isAuthenticated,
         timestamp: new Date().toISOString(),
       });
     }
-  }, []);
+  }, [isAuthenticated]);
+
+  // Show loading screen while checking auth state
+  if (isLoading) {
+    console.log('🔄 [RootNavigation] Auth loading...');
+    return null; // Or a loading screen component
+  }
+
+  console.log('🧭 [RootNavigation] Rendering navigation', { isAuthenticated });
 
   return (
     <NavigationContainer 
@@ -94,30 +183,7 @@ const RootNavigation: React.FC = () => {
       onReady={handleNavigationReady}
       onStateChange={handleNavigationStateChange}
     >
-      <Stack.Navigator
-        initialRouteName={STACK_NAVIGATOR_OPTIONS.initialRouteName}
-        screenOptions={STACK_NAVIGATOR_OPTIONS.screenOptions}
-      >
-        {/* Main Tab Menu Screen */}
-        <Stack.Screen
-          name="TabMenu"
-          component={TabNavigation}
-          options={{
-            headerShown: false,
-            gestureEnabled: false, // Disable back gesture for main screen
-          }}
-        />
-
-        {/* Additional Stack Screens */}
-        {STACK_ROUTES.map((route, index) => (
-          <Stack.Screen
-            key={`stack_route_${route.name}_${index}`}
-            name={route.name}
-            component={route.component}
-            options={route.options}
-          />
-        ))}
-      </Stack.Navigator>
+      {isAuthenticated ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };
@@ -129,10 +195,12 @@ const RootNavigation: React.FC = () => {
  */
 if (__DEV__) {
   console.log('🏗️ [RootNavigation] Navigation Structure:', {
+    authScreens: ['Login', 'Register'],
     tabRoutes: TAB_ROUTES.map(route => route.name),
     stackRoutes: STACK_ROUTES.map(route => route.name),
-    totalScreens: TAB_ROUTES.length + STACK_ROUTES.length + 1, // +1 for TabMenu
-    navigationService: 'Enhanced with error handling and logging',
+    totalScreens: TAB_ROUTES.length + STACK_ROUTES.length + 3, // +3 for TabMenu, Login, Register
+    navigationService: 'Enhanced with conditional auth routing',
+    authIntegration: 'Full AuthContext integration',
     typeSupport: 'Full TypeScript support',
     performance: 'Optimized with useCallback and proper cleanup',
   });

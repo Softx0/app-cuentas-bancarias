@@ -13,9 +13,13 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Import main navigator
 import RootNavigation from "./src/presentation/navigation/RootNavigation";
+
+// Import root provider
+import { RootProvider } from "./src/context/providers/RootProvider";
 
 /**
  * Error Boundary Component for catching JavaScript errors
@@ -86,17 +90,19 @@ export default function App() {
     
     return (
       <ErrorBoundary>
-        <>
-          {/* Main Navigation with Tab and Stack Support */}
-          <RootNavigation />
-          
-          {/* Status Bar Configuration */}
-          <StatusBar 
-            style="light" 
-            backgroundColor="#1E5AA8" 
-            translucent={false}
-          />
-        </>
+        <SafeAreaProvider>
+          <RootProvider>
+            {/* Main Navigation with Tab and Stack Support */}
+            <RootNavigation />
+            
+            {/* Status Bar Configuration for Edge-to-Edge */}
+            <StatusBar 
+              style="light" 
+              backgroundColor="transparent"
+              translucent={true}
+            />
+          </RootProvider>
+        </SafeAreaProvider>
       </ErrorBoundary>
     );
   } catch (error) {

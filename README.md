@@ -297,12 +297,28 @@ yarn lint:fix          # Corregir automáticamente
 yarn format            # Formatear con Prettier
 ```
 
+### 🔐 **Credenciales de Prueba para Desarrollo**
+
+Una vez que la aplicación esté funcionando, usa estas credenciales predefinidas para probar el login:
+
+```bash
+# === CUENTAS DE PRUEBA DISPONIBLES ===
+✅ eduardo@example.com    / password123
+✅ maria@example.com      / password123  
+✅ carlos@example.com     / password123
+✅ demo@banking.com       / demo123
+✅ test@banking.com       / test123
+```
+
+> **💡 Nota:** Estas credenciales funcionan con el sistema de autenticación mock integrado para desarrollo. No necesitas configurar un backend real para probar la aplicación.
+
 ### 📲 **Probar en Dispositivos**
 
 #### **1. Expo Go (Más fácil para testing)**
 1. Instalar **Expo Go** desde App Store/Google Play
 2. Escanear QR code que aparece en terminal
 3. La app se carga automáticamente
+4. **Usar las credenciales de arriba para hacer login**
 
 #### **2. Development Build (Recomendado para features nativas)**
 ```bash
@@ -430,7 +446,21 @@ yarn add -D react-native-svg-transformer
 grep -r "SF Pro" src/ themes/
 ```
 
-#### **4. Problemas con React 19**
+#### **4. Problemas con Login/Authentication**
+```bash
+# Si el login falla con error "structuredClone doesn't exist":
+# Ya está solucionado con sistema mock para desarrollo
+
+# Verificar que estás usando las credenciales correctas:
+✅ eduardo@example.com / password123
+✅ demo@banking.com / demo123
+
+# Si persisten problemas de JWT:
+# La app usa tokens mock en desarrollo automáticamente
+# No necesitas configurar JWT real para testing
+```
+
+#### **5. Problemas con React 19**
 ```bash
 # Considerar downgrade si hay incompatibilidades
 yarn add react@18.2.0 react-dom@18.2.0
@@ -536,13 +566,40 @@ app-cuentas-bancarias/
 - **Frontend**: React Native 0.79.5
 - **Framework**: Expo 53.x
 - **Navigation**: React Navigation 7.x
-- **State Management**: React Hooks + Context
+- **State Management**: React Hooks + Context API + BankingContext
 - **Styling**: StyleSheet + Design System
 - **Icons**: React Native SVG
 - **Development**: TypeScript + ESLint + Prettier
 - **Build**: EAS Build
 - **Deployment**: Expo Updates
+- **Authentication**: JWT + AsyncStorage + Mock Auth System (Development) + Expo SecureStore
+- **Banking Logic**: Mock services with real-time data consistency
+- **Development Mode**: React Native compatible mock JWT tokens
+- **Production Mode**: Real JWT with jose library
 
 ---
 
-**🏦 Banking Application v1.0.0** - Desarrollado con ❤️ por Eduardo Valenzuela
+## 🆕 Últimas Actualizaciones (Septiembre 2025)
+
+### **Características Implementadas:**
+- ✅ **Sistema de Autenticación Mock**: Login funcional con credenciales predefinidas para desarrollo
+- ✅ **Compatibilidad React Native**: JWT tokens mock compatibles con Hermes engine
+- ✅ **Interfaz en Español**: Localización completa para usuarios hispanohablantes
+- ✅ **Navegación Mejorada**: TabBar con mejor espaciado y consistencia de iconos
+- ✅ **Gestión de Sesión**: Logout funcional con limpieza completa de datos
+- ✅ **Contexto Bancario**: Sistema de estado unificado para balances y transacciones
+- ✅ **Navegación Inteligente**: Pre-llenado de formularios y contexto de cuenta
+- ✅ **Consistencia de Datos**: Una sola fuente de verdad para información bancaria
+- ✅ **Experiencia de Usuario**: Alertas informativas y flujos de navegación optimizados
+- ✅ **Desarrollo Sin Backend**: Sistema completamente funcional con datos mock
+
+### **Estado Actual del Proyecto:**
+- 🏗️ **Arquitectura Limpia**: Implementación completa siguiendo principios SOLID
+- 🔒 **Seguridad**: Manejo seguro de tokens JWT y datos sensibles
+- 📱 **UX/UI**: Interfaz intuitiva con manejo de errores en español
+- ⚡ **Rendimiento**: Optimizaciones con useMemo, useCallback y componentes memoizados
+- 🧪 **Calidad**: Código TypeScript con linting y formateo automático
+
+---
+
+**🏦 Banking Application v2.0.0** - Desarrollado con ❤️ por Eduardo Valenzuela

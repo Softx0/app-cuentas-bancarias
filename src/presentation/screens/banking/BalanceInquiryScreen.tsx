@@ -4,12 +4,11 @@
  * @version 1.0.0
  */
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   Share,
   StyleSheet,
@@ -17,6 +16,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { RootStackNavigationProp } from '../../../../types/navigation';
 
 import ReusableButton from '../../../../components/custom-button/ReusableButton';
 import DropDownListReusable from '../../../../components/custom-dropdown/DropDownListReusable';
@@ -55,6 +57,9 @@ interface BalanceInquiryState {
  * Displays detailed account balance information and statistics
  */
 export const BalanceInquiryScreen: React.FC = () => {
+  // Navigation
+  const navigation = useNavigation<RootStackNavigationProp<'BalanceInquiry'>>();
+
   // Component state
   const [state, setState] = useState<BalanceInquiryState>({
     accounts: [],
@@ -265,22 +270,40 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
    * Navigation handlers
    */
   const handleTransferMoney = useCallback(() => {
-    logger.info('💸 Navigate to transfer from balance inquiry', { accountId: state.selectedAccountId }, 'BALANCE_INQUIRY_SCREEN');
-    Alert.alert(
-      'Transferir Dinero',
-      'Navegación a transferencias no implementada aún',
-      [{ text: 'Entendido' }]
-    );
-  }, [state.selectedAccountId]);
+    if (!state.selectedAccount) {
+      showSnackbar('Por favor selecciona una cuenta', true);
+      return;
+    }
+
+    logger.info('💸 Navigate to transfer from balance inquiry', { 
+      accountId: state.selectedAccountId,
+      accountBalance: state.selectedAccount.balance
+    }, 'BALANCE_INQUIRY_SCREEN');
+    
+    // Navigate to TransferScreen with the selected account pre-filled
+    navigation.navigate('Transfer' as any, {
+      fromAccountId: state.selectedAccountId,
+      fromAccountData: state.selectedAccount,
+    });
+  }, [state.selectedAccountId, state.selectedAccount, navigation, showSnackbar]);
 
   const handleViewTransactions = useCallback(() => {
-    logger.info('📊 Navigate to transactions from balance inquiry', { accountId: state.selectedAccountId }, 'BALANCE_INQUIRY_SCREEN');
-    Alert.alert(
-      'Historial de Transacciones',
-      'Navegación a historial no implementada aún',
-      [{ text: 'Entendido' }]
-    );
-  }, [state.selectedAccountId]);
+    if (!state.selectedAccount) {
+      showSnackbar('Por favor selecciona una cuenta', true);
+      return;
+    }
+
+    logger.info('📊 Navigate to transactions from balance inquiry', { 
+      accountId: state.selectedAccountId,
+      accountType: state.selectedAccount.accountType
+    }, 'BALANCE_INQUIRY_SCREEN');
+    
+    // Navigate to TransactionHistoryScreen with account context
+    navigation.navigate('TransactionHistory' as any, {
+      accountId: state.selectedAccountId,
+      accountData: state.selectedAccount,
+    });
+  }, [state.selectedAccountId, state.selectedAccount, navigation, showSnackbar]);
 
   const handleAccountDetail = useCallback(() => {
     logger.info('📋 Navigate to account detail from balance inquiry', { accountId: state.selectedAccountId }, 'BALANCE_INQUIRY_SCREEN');
@@ -295,7 +318,12 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
    * Utility functions
    */
   const formatCurrency = useCallback((amount: number): string => {
-    return `$${amount.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
+    return new Intl.NumberFormat('es-DO', {
+      style: 'currency',
+      currency: 'DOP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
   }, []);
 
   const formatAccountNumber = useCallback((accountNumber: string): string => {
@@ -311,7 +339,7 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
   }, []);
 
   const formatLastUpdateDate = useCallback((date: Date): string => {
-    return date.toLocaleDateString('es-CO', {
+    return date.toLocaleDateString('es-DO', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -373,7 +401,7 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Consulta de Saldo</Text>
         <Text style={styles.headerSubtitle}>
-          Información detallada de tus cuentas bancarias
+          Información detallada de sus cuentas bancarias
         </Text>
       </View>
 
@@ -510,7 +538,7 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
             <Text style={styles.emptyIcon}>🏦</Text>
             <Text style={styles.emptyTitle}>Sin Cuentas Disponibles</Text>
             <Text style={styles.emptyMessage}>
-              No tienes cuentas bancarias activas para consultar.
+              No posee cuentas bancarias activas para consultar.
             </Text>
           </View>
         )}

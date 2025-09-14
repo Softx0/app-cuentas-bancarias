@@ -6,9 +6,10 @@
 
 import React, { memo } from 'react';
 
+import { logger } from '../../infrastructure/utils/logger';
 import { AppProvider } from '../app/AppContext';
 import { AuthProvider } from '../auth/AuthContext';
-import { logger } from '../../infrastructure/utils/logger';
+import { BankingProvider } from '../banking/BankingContext';
 
 /**
  * Root provider props interface
@@ -28,7 +29,9 @@ const RootProvider: React.FC<RootProviderProps> = memo(({ children }) => {
   return (
     <AppProvider>
       <AuthProvider>
-        {children}
+        <BankingProvider>
+          {children}
+        </BankingProvider>
       </AuthProvider>
     </AppProvider>
   );

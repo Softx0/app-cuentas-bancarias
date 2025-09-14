@@ -7,23 +7,23 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ReusableButton from '../../../../components/custom-button/ReusableButton';
 import InputTextReusable from '../../../../components/custom-input/InputTextReusable';
 import CustomLoading from '../../../../components/custom-loading-reusable/CustomLoading';
 import { Snackbar } from '../../../../components/snackbar/Snackbar';
 import { Colors, Metrics } from '../../../../themes';
-import { mockAuthService } from '../../../infrastructure/services/mock/AuthService';
-import type { LoginRequest } from '../../../infrastructure/services/mock/types/ApiTypes';
-import { handleApiError, handleJavaScriptError, handleValidationErrors } from '../../../infrastructure/utils/errorHandler';
+import { useAuth } from '../../../context/auth/AuthContext';
+import { handleJavaScriptError, handleValidationErrors } from '../../../infrastructure/utils/errorHandler';
 import { logger } from '../../../infrastructure/utils/logger';
 
 /**
@@ -49,6 +49,9 @@ interface LoginFormState {
  * Handles user authentication with comprehensive error handling
  */
 export const LoginScreen: React.FC = () => {
+  // Auth context
+  const { login } = useAuth();
+
   // Form state
   const [formState, setFormState] = useState<LoginFormState>({
     email: '',
@@ -153,43 +156,12 @@ export const LoginScreen: React.FC = () => {
 
       setFormState(prev => ({ ...prev, isSubmitting: true }));
 
-      // Prepare login data
-      const loginData: LoginRequest = {
-        email: formState.email.trim().toLowerCase(),
-        password: formState.password,
-      };
+      // Call authentication context login
+      await login(formState.email.trim().toLowerCase(), formState.password);
 
-      // Call authentication service
-      const response = await mockAuthService.login(loginData);
-
-      if (response.success) {
-        logger.info('✅ Login successful', { userId: response.data.user.id }, 'LOGIN_SCREEN');
-        
-        showSnackbar('¡Inicio de sesión exitoso!', false);
-        
-        // TODO: Navigate to main app screens
-        // TODO: Store authentication tokens
-        // TODO: Update global auth state
-        
-        // Simulate navigation delay
-        setTimeout(() => {
-          Alert.alert(
-            '¡Bienvenido!',
-            `Hola ${response.data.user.firstName}, has iniciado sesión correctamente.`,
-            [{ text: 'Continuar' }]
-          );
-        }, 1000);
-
-      } else {
-        // Handle API error
-        const userMessage = handleApiError(response, {
-          screen: 'LoginScreen',
-          action: 'login'
-        });
-        showSnackbar(userMessage.message, true);
-        
-        logger.warn('❌ Login failed', { error: response.error }, 'LOGIN_SCREEN');
-      }
+      // If we get here, login was successful - navigation will be handled automatically by RootNavigation
+      logger.info('✅ Login successful', { email: formState.email }, 'LOGIN_SCREEN');
+      showSnackbar('Inicio de sesión exitoso', false);
 
     } catch (error) {
       // Handle unexpected errors
@@ -203,7 +175,7 @@ export const LoginScreen: React.FC = () => {
     } finally {
       setFormState(prev => ({ ...prev, isSubmitting: false }));
     }
-  }, [formState.email, formState.password, validateForm, showSnackbar]);
+  }, [formState.email, formState.password, validateForm, showSnackbar, login]);
 
   /**
    * Handles forgot password
@@ -237,10 +209,11 @@ export const LoginScreen: React.FC = () => {
   }), [formState.isSubmitting]);
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView 
+        style={styles.keyboardContainer} 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -304,7 +277,8 @@ export const LoginScreen: React.FC = () => {
 
           {/* Register Link */}
           <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>¿No tienes una cuenta? </Text>
+            <Text style={styles.registerText}>{`¿No tienes una cuenta?`}</Text>
+            
             <ReusableButton
               titleButton="Regístrate aquí"
               onPressActionButton={handleNavigateToRegister}
@@ -312,6 +286,7 @@ export const LoginScreen: React.FC = () => {
               textButtonStyle={{ color: Colors.primary[400] }}
               disabled={formState.isSubmitting}
             />
+            
           </View>
         </View>
       </ScrollView>
@@ -334,7 +309,8 @@ export const LoginScreen: React.FC = () => {
         }}
         duration={3000}
       />
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
@@ -342,6 +318,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  keyboardContainer: {
+    flex: 1,
   },
   scrollView: {
     flex: 1,
@@ -384,10 +363,10 @@ const styles = StyleSheet.create({
     paddingVertical: Metrics.medium,
   },
   registerContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    flexWrap: 'wrap',
+    // flexWrap: 'wrap',
   },
   registerText: {
     fontSize: 16,

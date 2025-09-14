@@ -100,7 +100,7 @@ export interface BankAccount {
   accountNumber: string;
   accountType: 'savings' | 'checking';
   balance: number;
-  currency: 'USD' | 'EUR' | 'COP';
+  currency: 'USD' | 'EUR' | 'COP' | 'DOP';
   isActive: boolean;
   createdAt: Date;
   lastTransactionDate: Date;

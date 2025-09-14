@@ -26,22 +26,26 @@ import ProfileScreen from '../screens/profile/ProfileScreen';
  * Tab Icon Component
  * 
  * Renders appropriate icon based on route name and focus state.
- * Uses emoji icons for simplicity - in production, use icon libraries like react-native-vector-icons.
+ * Uses consistent emoji icons - focused state changes opacity only for better UX.
  */
 const TabIcon: React.FC<{ route: string } & TabIconProps> = ({ route, focused, color, size }) => {
   const getIcon = () => {
     switch (route) {
       case 'Home':
-        return focused ? '🏠' : '🏡';
+        return '🏠';
       case 'Profile':
-        return focused ? '👤' : '👥';
+        return '👤';
       default:
         return '📱';
     }
   };
 
   return (
-    <Text style={{ fontSize: size - 4, opacity: focused ? 1 : 0.7 }}>
+    <Text style={{ 
+      fontSize: size - 2, 
+      opacity: focused ? 1 : 0.6,
+      transform: focused ? [{ scale: 1.1 }] : [{ scale: 1.0 }]
+    }}>
       {getIcon()}
     </Text>
   );
@@ -58,8 +62,8 @@ const TAB_ROUTES: TabRouteConfig[] = [
     name: 'Home',
     component: HomeScreen,
     options: {
-      title: 'Home',
-      tabBarLabel: 'Home',
+      title: 'Inicio',
+      tabBarLabel: 'Inicio',
       tabBarIcon: ({ focused, color, size }: TabIconProps) => (
         <TabIcon route="Home" focused={focused} color={color} size={size} />
       ),
@@ -69,8 +73,8 @@ const TAB_ROUTES: TabRouteConfig[] = [
     name: 'Profile',
     component: ProfileScreen,
     options: {
-      title: 'Profile',
-      tabBarLabel: 'Profile',
+      title: 'Perfil',
+      tabBarLabel: 'Perfil',
       tabBarIcon: ({ focused, color, size }: TabIconProps) => (
         <TabIcon route="Profile" focused={focused} color={color} size={size} />
       ),
@@ -93,9 +97,9 @@ export const TAB_NAVIGATOR_OPTIONS = {
       backgroundColor: Colors.white,
       borderTopColor: Colors.border,
       borderTopWidth: 1,
-      paddingBottom: 8,
+      paddingBottom: 20, // Increased padding for better spacing from bottom
       paddingTop: 8,
-      height: 70,
+      height: 82, // Increased height to accommodate more padding
       shadowColor: Colors.black,
       shadowOffset: { width: 0, height: -2 },
       shadowOpacity: 0.1,

@@ -11,8 +11,8 @@
 
 import React, { useCallback, useMemo, useState } from 'react';
 import {
+  Alert,
   Image,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Switch,
@@ -20,12 +20,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Import types
 import { ProfileScreenProps } from '../../../../types/navigation';
 
 // Import theme
 import Colors from '../../../../themes/Colors';
+
+// Import contexts
+import { useAuth } from '../../../context/auth/AuthContext';
 
 // Import navigation service
 import NavigationService from '../../../infrastructure/services/NavigationService';
@@ -38,6 +42,9 @@ import NavigationService from '../../../infrastructure/services/NavigationServic
  */
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   console.log('👤 [ProfileScreen] Component rendered');
+
+  // Auth context
+  const { logout } = useAuth();
 
   // Local state for toggles - In real app, this would be in global state
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -64,38 +71,103 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   // Profile action handlers
   const handleEditProfile = useCallback(() => {
     console.log('✏️ [ProfileScreen] Edit Profile action triggered');
-    alert('Edit Profile functionality - Navigate to Edit Profile Screen');
+    Alert.alert(
+      'Editar Perfil',
+      'Esta funcionalidad no está disponible en este momento.',
+      [{ text: 'Entendido' }]
+    );
   }, []);
 
   const handleSecuritySettings = useCallback(() => {
     console.log('🔒 [ProfileScreen] Security Settings action triggered');
-    alert('Security Settings functionality - Navigate to Security Screen');
+    Alert.alert(
+      'Configuración de Seguridad',
+      'Esta funcionalidad no está disponible en este momento.',
+      [{ text: 'Entendido' }]
+    );
   }, []);
 
   const handleSupport = useCallback(() => {
     console.log('📞 [ProfileScreen] Support action triggered');
-    alert('Support functionality - Navigate to Support Screen');
+    Alert.alert(
+      'Soporte',
+      'Esta funcionalidad no está disponible en este momento.',
+      [{ text: 'Entendido' }]
+    );
   }, []);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
     console.log('🚪 [ProfileScreen] Logout action triggered');
-    alert('Logout functionality - Clear session and navigate to Login');
-  }, []);
+    
+    Alert.alert(
+      'Cerrar Sesión',
+      '¿Estás seguro de que deseas cerrar sesión?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Cerrar Sesión',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              console.log('🚪 [ProfileScreen] Performing logout...');
+              await logout();
+              console.log('✅ [ProfileScreen] Logout successful');
+              // Navigation will be handled by the auth state change
+            } catch (error) {
+              console.error('❌ [ProfileScreen] Logout failed:', error);
+              Alert.alert(
+                'Error',
+                'No se pudo cerrar la sesión. Inténtalo de nuevo.',
+                [{ text: 'Entendido' }]
+              );
+            }
+          },
+        },
+      ]
+    );
+  }, [logout]);
 
   // Toggle handlers
   const handleNotificationsToggle = useCallback((value: boolean) => {
     console.log('🔔 [ProfileScreen] Notifications toggle:', value);
     setNotificationsEnabled(value);
+    
+    if (value) {
+      Alert.alert(
+        'Notificaciones',
+        'La configuración de notificaciones no está disponible en este momento.',
+        [{ text: 'Entendido' }]
+      );
+    }
   }, []);
 
   const handleBiometricsToggle = useCallback((value: boolean) => {
     console.log('👆 [ProfileScreen] Biometrics toggle:', value);
     setBiometricsEnabled(value);
+    
+    if (value) {
+      Alert.alert(
+        'Autenticación Biométrica',
+        'La autenticación biométrica no está disponible en este momento.',
+        [{ text: 'Entendido' }]
+      );
+    }
   }, []);
 
   const handleDarkModeToggle = useCallback((value: boolean) => {
     console.log('🌙 [ProfileScreen] Dark mode toggle:', value);
     setDarkModeEnabled(value);
+    
+    if (value) {
+      Alert.alert(
+        'Modo Oscuro',
+        'La configuración de tema oscuro no está disponible en este momento.',
+        [{ text: 'Entendido' }]
+      );
+    }
   }, []);
 
   return (
@@ -108,9 +180,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
         {/* Header Section */}
         <View style={styles.header}>
           <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-            <Text style={styles.backButtonText}>← Back</Text>
+            <Text style={styles.backButtonText}>← Atrás</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Profile</Text>
+          <Text style={styles.headerTitle}>Perfil</Text>
           <View style={styles.headerSpacer} />
         </View>
 
@@ -128,38 +200,38 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
           <View style={styles.profileInfo}>
             <Text style={styles.userName}>{userData.name}</Text>
             <Text style={styles.userEmail}>{userData.email}</Text>
-            <Text style={styles.accountType}>{userData.accountType} Account</Text>
-            <Text style={styles.memberSince}>Member since {userData.accountSince}</Text>
+            <Text style={styles.accountType}>Cuenta {userData.accountType}</Text>
+            <Text style={styles.memberSince}>Cliente desde {userData.accountSince}</Text>
           </View>
           
           <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-            <Text style={styles.editButtonText}>Edit</Text>
+            <Text style={styles.editButtonText}>Editar</Text>
           </TouchableOpacity>
         </View>
 
         {/* Account Information */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account Information</Text>
+          <Text style={styles.sectionTitle}>Información de la Cuenta</Text>
           
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Phone Number</Text>
+            <Text style={styles.infoLabel}>Número de Teléfono</Text>
             <Text style={styles.infoValue}>{userData.phone}</Text>
           </View>
           
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Last Login</Text>
+            <Text style={styles.infoLabel}>Último Acceso</Text>
             <Text style={styles.infoValue}>{userData.lastLogin}</Text>
           </View>
         </View>
 
         {/* Preferences */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
+          <Text style={styles.sectionTitle}>Preferencias</Text>
           
           <View style={styles.preferenceItem}>
             <View style={styles.preferenceInfo}>
-              <Text style={styles.preferenceLabel}>Push Notifications</Text>
-              <Text style={styles.preferenceDescription}>Receive alerts and updates</Text>
+              <Text style={styles.preferenceLabel}>Notificaciones Push</Text>
+              <Text style={styles.preferenceDescription}>Recibir alertas y actualizaciones</Text>
             </View>
             <Switch
               value={notificationsEnabled}
@@ -171,8 +243,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
           
           <View style={styles.preferenceItem}>
             <View style={styles.preferenceInfo}>
-              <Text style={styles.preferenceLabel}>Biometric Login</Text>
-              <Text style={styles.preferenceDescription}>Use fingerprint or face ID</Text>
+              <Text style={styles.preferenceLabel}>Autenticación Biométrica</Text>
+              <Text style={styles.preferenceDescription}>Usar huella digital o reconocimiento facial</Text>
             </View>
             <Switch
               value={biometricsEnabled}
@@ -184,8 +256,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
           
           <View style={styles.preferenceItem}>
             <View style={styles.preferenceInfo}>
-              <Text style={styles.preferenceLabel}>Dark Mode</Text>
-              <Text style={styles.preferenceDescription}>Use dark theme</Text>
+              <Text style={styles.preferenceLabel}>Modo Oscuro</Text>
+              <Text style={styles.preferenceDescription}>Usar tema oscuro</Text>
             </View>
             <Switch
               value={darkModeEnabled}
@@ -198,24 +270,24 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
           
           <TouchableOpacity style={styles.actionButton} onPress={handleSecuritySettings}>
             <Text style={styles.actionIcon}>🔒</Text>
-            <Text style={styles.actionText}>Security Settings</Text>
+            <Text style={styles.actionText}>Configuración de Seguridad</Text>
             <Text style={styles.actionArrow}>→</Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.actionButton} onPress={handleSupport}>
             <Text style={styles.actionIcon}>📞</Text>
-            <Text style={styles.actionText}>Contact Support</Text>
+            <Text style={styles.actionText}>Contactar Soporte</Text>
             <Text style={styles.actionArrow}>→</Text>
           </TouchableOpacity>
         </View>
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+          <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
