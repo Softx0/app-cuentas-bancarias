@@ -4,15 +4,15 @@
  * @version 1.0.0
  */
 
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useCallback, useContext, useEffect, useReducer } from 'react';
 
-import { logger } from '../../infrastructure/utils/logger';
-import { jwtUtil } from '../../infrastructure/utils/jwt';
 import { apiService } from '../../infrastructure/services/api.service';
 import { inactivityManager } from '../../infrastructure/utils/inactivity';
-import { STORAGE_KEYS, AUTH_CONSTANTS } from '../../shared/constants';
-import type { AuthState, User, AuthToken } from '../../shared/types';
+import { jwtUtil } from '../../infrastructure/utils/jwt';
+import { logger } from '../../infrastructure/utils/logger';
+import { STORAGE_KEYS } from '../../shared/constants';
+import type { AuthState, AuthToken, User } from '../../shared/types';
 
 /**
  * Authentication actions
@@ -332,7 +332,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       const response = await apiService.put<{ user: User }>(`/users/${state.user.id}`, userData);
       
-      const updatedUser = response.data;
+      const updatedUser = response.data.user;
       
       await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(updatedUser));
       

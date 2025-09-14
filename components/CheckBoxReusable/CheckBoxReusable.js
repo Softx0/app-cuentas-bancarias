@@ -1,5 +1,5 @@
 /**
- * CheckBoxReusable - Custom checkbox component to replace react-native-elements CheckBox
+ * CheckBoxReusable - Custom checkbox component
  * 
  * This component provides a complete replacement for react-native-elements CheckBox
  * using only React Native native components. It maintains full API compatibility

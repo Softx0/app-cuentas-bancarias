@@ -5,7 +5,7 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Colors from "../../themes/Colors";
 import { FontSize } from "../../themes/Fonts";
 import CalendarPickerRangeReusable from "./CalendarPickerRangeReusable";
-import useHumanCalendar from "./hooks/useHumanCalendar";
+import useButtonCalendarReusable from "./hooks/useButtonCalendarReusable";
 
 /**
  * Componente de ejemplo que demuestra el uso del CalendarReusable
@@ -19,13 +19,13 @@ const CalendarReusableExample = () => {
   const twoWeeksForward = new Date(Date.now() + 24 * 60 * 60 * 1000 * 14);
 
   // Ejemplo básico del calendario (con fechas por defecto del hook)
-  const calendar = useHumanCalendar({
+  const calendar = useButtonCalendarReusable({
     // initialStartDate: oneMonthAgo,
     // initialEndDate: today
   });
 
   // Ejemplo de calendario con una fecha y rango personalizado (últimos 6 meses)
-  const singleDateCalendar = useHumanCalendar({
+  const singleDateCalendar = useButtonCalendarReusable({
     canBeSameDay: true,
     minDate: new Date(new Date().getFullYear(), new Date().getMonth() - 6, 1), // 6 meses atras
     maxDate: new Date() // hoy
@@ -34,7 +34,7 @@ const CalendarReusableExample = () => {
   });
 
   // Ejemplo de calendario con rango de fechas, inputs y rango futuro (próximos 3 meses)
-  const fullFeaturedCalendar = useHumanCalendar({
+  const fullFeaturedCalendar = useButtonCalendarReusable({
     enableDateRangeInputs: true,
     canBeSameDay: true,
     minDate: new Date(), // hoy

@@ -10,5 +10,3 @@ export * from './types';
 // Constants
 export * from './constants';
 
-// Hooks
-export * from './hooks/usePerformance';

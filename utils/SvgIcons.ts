@@ -6,6 +6,12 @@
  * and serves as a reference for all available SVG assets.
  */
 
+import { FC } from 'react';
+import { SvgProps } from 'react-native-svg';
+
+// SVG Component Type
+type SvgComponent = FC<SvgProps>;
+
 // Navigation & UI Icons
 export { default as ArrowLeft } from '../assets/icons/arrow-left-blue.svg';
 export { default as ArrowLeftGray } from '../assets/icons/arrow-left-grey.svg';
@@ -101,42 +107,46 @@ export { default as FlagDR } from '../assets/icons/flag-rd.svg';
 export { default as FlagUSA } from '../assets/icons/flag-usa.svg';
 
 /**
- * Icon size presets for consistent usage
+ * Get SVG icon component by name
+ * @param iconName Icon name
+ * @returns SVG Component or null
  */
-export const IconSizes = {
-  xs: 12,
-  sm: 16,
-  md: 20,
-  lg: 24,
-  xl: 28,
-  xxl: 32,
-} as const;
+export const getSvgIcon = (iconName: string): SvgComponent | null => {
+  // Import SVG components with type assertions
+  const ChevronLeft = require('../assets/icons/icon-chevron-left.svg').default as SvgComponent;
+  const ChevronRight = require('../assets/icons/icon-chevron-right.svg').default as SvgComponent;
+  const ChevronDown = require('../assets/icons/icon-chevron-down.svg').default as SvgComponent;
+  const ChevronUp = require('../assets/icons/icon-chevron-up.svg').default as SvgComponent;
+  const ArrowLeft = require('../assets/icons/arrow-left-blue.svg').default as SvgComponent;
+  const Calendar = require('../assets/icons/calendar.svg').default as SvgComponent;
+  const Search = require('../assets/icons/feather-search.svg').default as SvgComponent;
+  const Filter = require('../assets/icons/filter-blue.svg').default as SvgComponent;
+  const Check = require('../assets/icons/check.svg').default as SvgComponent;
+  const CheckCircle = require('../assets/icons/check-circle.svg').default as SvgComponent;
+  const AlertCircle = require('../assets/icons/alert-circle.svg').default as SvgComponent;
+  const Exclamation = require('../assets/icons/exclamation-circle.svg').default as SvgComponent;
+  const Download = require('../assets/icons/download-blue.svg').default as SvgComponent;
+  const Upload = require('../assets/icons/upload-blue.svg').default as SvgComponent;
+  const Edit = require('../assets/icons/pencil-blue.svg').default as SvgComponent;
+  const Delete = require('../assets/icons/trash-red.svg').default as SvgComponent;
+  const Send = require('../assets/icons/send-blue.svg').default as SvgComponent;
+  const Share = require('../assets/icons/share-dark-gray.svg').default as SvgComponent;
+  const Bank = require('../assets/icons/bank.svg').default as SvgComponent;
+  const CreditCard = require('../assets/icons/credit-card-black.svg').default as SvgComponent;
+  const MoneyBlue = require('../assets/icons/moneda-blue.svg').default as SvgComponent;
+  const Gift = require('../assets/icons/gift.svg').default as SvgComponent;
+  const Document = require('../assets/icons/Icon-Document-text.svg').default as SvgComponent;
+  const FileBlue = require('../assets/icons/mini-file-blue.svg').default as SvgComponent;
+  const PdfIcon = require('../assets/icons/icon-pdf.svg').default as SvgComponent;
+  const User = require('../assets/icons/usuario-icon.svg').default as SvgComponent;
+  const Phone = require('../assets/icons/feather-phone.svg').default as SvgComponent;
+  const Home = require('../assets/icons/home-blue.svg').default as SvgComponent;
+  const Plus = require('../assets/icons/plus.svg').default as SvgComponent;
+  const Close = require('../assets/icons/x-close.svg').default as SvgComponent;
+  const Lock = require('../assets/icons/icon-candado.svg').default as SvgComponent;
+  const Shield = require('../assets/icons/shield-icon.svg').default as SvgComponent;
 
-/**
- * Common icon colors for consistent theming
- */
-export const IconColors = {
-  primary: '#007AFF',
-  secondary: '#6B758C',
-  success: '#28A745',
-  warning: '#FFC107',
-  danger: '#DC3545',
-  info: '#17A2B8',
-  light: '#F8F9FA',
-  dark: '#343A40',
-  white: '#FFFFFF',
-  gray: '#6C757D',
-} as const;
-
-/**
- * Helper function to get icon component by name
- * 
- * @example
- * const IconComponent = getIconByName('check');
- * <IconComponent width={20} height={20} />
- */
-export const getIconByName = (iconName: string) => {
-  const iconMap: Record<string, any> = {
+  const iconMap: { [key: string]: SvgComponent } = {
     // Navigation
     'chevron-left': ChevronLeft,
     'chevron-right': ChevronRight,
@@ -189,15 +199,44 @@ export const getIconByName = (iconName: string) => {
   return iconMap[iconName] || null;
 };
 
-export default {
-  // All exports
-  ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
-  Calendar, Search, Filter,
-  Check, CheckCircle, AlertCircle,
-  Download, Upload, Edit, Delete,
-  Bank, CreditCard, MoneyBlue,
-  Document, User, Home,
-  IconSizes,
-  IconColors,
-  getIconByName,
+// Export all icons in a single object for easier access
+export const Icons = {
+  // Navigation
+  ChevronLeft: require('../assets/icons/icon-chevron-left.svg').default as SvgComponent,
+  ChevronRight: require('../assets/icons/icon-chevron-right.svg').default as SvgComponent,
+  ChevronDown: require('../assets/icons/icon-chevron-down.svg').default as SvgComponent,
+  ChevronUp: require('../assets/icons/icon-chevron-up.svg').default as SvgComponent,
+  ArrowLeft: require('../assets/icons/arrow-left-blue.svg').default as SvgComponent,
+  
+  // Form
+  Calendar: require('../assets/icons/calendar.svg').default as SvgComponent,
+  Search: require('../assets/icons/feather-search.svg').default as SvgComponent,
+  Filter: require('../assets/icons/filter-blue.svg').default as SvgComponent,
+  
+  // Status & Feedback
+  Check: require('../assets/icons/check.svg').default as SvgComponent,
+  CheckCircle: require('../assets/icons/check-circle.svg').default as SvgComponent,
+  AlertCircle: require('../assets/icons/alert-circle.svg').default as SvgComponent,
+  
+  // Actions & Operations
+  Download: require('../assets/icons/download-blue.svg').default as SvgComponent,
+  Upload: require('../assets/icons/upload-blue.svg').default as SvgComponent,
+  Edit: require('../assets/icons/pencil-blue.svg').default as SvgComponent,
+  Delete: require('../assets/icons/trash-red.svg').default as SvgComponent,
+  
+  // Business & Financial
+  Bank: require('../assets/icons/bank.svg').default as SvgComponent,
+  CreditCard: require('../assets/icons/credit-card-black.svg').default as SvgComponent,
+  MoneyBlue: require('../assets/icons/moneda-blue.svg').default as SvgComponent,
+  
+  // Documents & Files
+  Document: require('../assets/icons/Icon-Document-text.svg').default as SvgComponent,
+  
+  // User & Profile
+  User: require('../assets/icons/usuario-icon.svg').default as SvgComponent,
+  
+  // Utility & System
+  Home: require('../assets/icons/home-blue.svg').default as SvgComponent,
 };
+
+export default Icons;

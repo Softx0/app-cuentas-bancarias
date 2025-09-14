@@ -1,4 +1,4 @@
-# HumanoCalendar - Documentación
+# ButtonCalendar - Documentación
 
 ## 📋 Índice
 
@@ -16,7 +16,7 @@
 
 ## 🎯 Introducción
 
-`HumanoCalendar` es un componente de calendario para React Native que permite la selección de rangos de fechas. El componente está diseñado para ser altamente personalizable y fácil de usar.
+`ButtonCalendar` es un componente de calendario para React Native que permite la selección de rangos de fechas. El componente está diseñado para ser altamente personalizable y fácil de usar.
 
 ## 🚀 Características
 
@@ -49,9 +49,9 @@ npm install prop-types
 ### Importaciones
 
 ```javascript
-import { HumanoCalendar } from './components/HumanoCalendar/HumanoCalendar';
-import useHumanCalendar from './components/HumanoCalendar/hooks/useHumanCalendar';
-import CalendarPickerRangeReusable from './components/HumanoCalendar/CalendarPickerRangeReusable';
+import { ButtonCalendar } from './components/ButtonCalendar/ButtonCalendar';
+import useButtonCalendarReusable from './components/ButtonCalendar/hooks/useButtonCalendarReusable';
+import CalendarPickerRangeReusable from './components/ButtonCalendar/CalendarPickerRangeReusable';
 import CheckRender from './components/security/CheckRender';
 import { DATE_FORMATS, formatDate, obtenerFechaHoy, unAnoHaciaAtras } from './utils/DateUtil';
 ```
@@ -65,11 +65,11 @@ El nuevo componente reutilizable simplifica enormemente la implementación:
 ```javascript
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import CalendarPickerRangeReusable from './components/HumanoCalendar/CalendarPickerRangeReusable';
-import useHumanCalendar from './components/HumanoCalendar/hooks/useHumanCalendar';
+import CalendarPickerRangeReusable from './components/ButtonCalendar/CalendarPickerRangeReusable';
+import useButtonCalendarReusable from './components/ButtonCalendar/hooks/useButtonCalendarReusable';
 
 const MiComponenteCalendario = () => {
-  const calendar = useHumanCalendar();
+  const calendar = useButtonCalendarReusable();
 
   return (
     <SafeAreaView style={{ flex: 1, padding: 16 }}>
@@ -92,13 +92,13 @@ El patrón original utiliza dos componentes `CheckRender` para manejar la visibi
 ```javascript
 import React from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
-import { HumanoCalendar } from './components/HumanoCalendar/HumanoCalendar';
-import useHumanCalendar from './components/HumanoCalendar/hooks/useHumanCalendar';
+import { ButtonCalendar } from './components/ButtonCalendar/ButtonCalendar';
+import useButtonCalendarReusable from './components/ButtonCalendar/hooks/useButtonCalendarReusable';
 import CheckRender from './components/security/CheckRender';
 import { DATE_FORMATS, formatDate, obtenerFechaHoy, unAnoHaciaAtras } from './utils/DateUtil';
 
 const MiComponenteCalendario = () => {
-  const { selectedDates, isVisibleHumanCalendar, invertVisibleHumanCalendar, onApplyDates } = useHumanCalendar();
+  const { selectedDates, isVisibleHumanCalendar, invertVisibleHumanCalendar, onApplyDates } = useButtonCalendarReusable();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#007AFF', justifyContent: 'center' }}>
@@ -132,7 +132,7 @@ const MiComponenteCalendario = () => {
       {/* CheckRender para mostrar el calendario */}
       <CheckRender allowed={isVisibleHumanCalendar}>
         <View style={{ flex: 1 }}>
-          <HumanoCalendar
+          <ButtonCalendar
             {...selectedDates}
             onApplyDates={onApplyDates}
             cancelButton={invertVisibleHumanCalendar}
@@ -164,7 +164,7 @@ export default MiComponenteCalendario;
 #### Props Básicas
 | Prop | Tipo | Default | Descripción |
 |------|------|---------|-------------|
-| `calendarHook` | `object` | **Requerido** | Hook del calendario (useHumanCalendar) |
+| `calendarHook` | `object` | **Requerido** | Hook del calendario (useButtonCalendarReusable) |
 | `title` | `string` | `""` | Título del componente |
 | `placeholder` | `string` | `""` | Texto placeholder cuando no hay fechas |
 | `showModal` | `boolean` | `true` | Si debe mostrar el modal del calendario |
@@ -196,7 +196,7 @@ export default MiComponenteCalendario;
 | `emptyStartDateFallback` | `string` | `null` | Fallback para fecha de inicio vacía |
 | `emptyEndDateFallback` | `string` | `null` | Fallback para fecha de fin vacía |
 
-### HumanoCalendar Props
+### ButtonCalendar Props
 
 #### Props Básicas
 | Prop | Tipo | Default | Descripción |
@@ -208,11 +208,11 @@ export default MiComponenteCalendario;
 | `minDate` | `Date` | `new Date(new Date().getFullYear() - 1, 0, 1)` | Fecha mínima seleccionable |
 | `maxDate` | `Date` | `new Date()` | Fecha máxima seleccionable |
 
-### useHumanCalendar Hook
+### useButtonCalendarReusable Hook
 
 #### Constructor
 ```javascript
-const calendar = useHumanCalendar(options);
+const calendar = useButtonCalendarReusable(options);
 ```
 
 #### Parámetros
@@ -236,11 +236,11 @@ const calendar = useHumanCalendar(options);
 ```javascript
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import CalendarPickerRangeReusable from './components/HumanoCalendar/CalendarPickerRangeReusable';
-import useHumanCalendar from './components/HumanoCalendar/hooks/useHumanCalendar';
+import CalendarPickerRangeReusable from './components/ButtonCalendar/CalendarPickerRangeReusable';
+import useButtonCalendarReusable from './components/ButtonCalendar/hooks/useButtonCalendarReusable';
 
 const CalendarioBasico = () => {
-  const calendar = useHumanCalendar();
+  const calendar = useButtonCalendarReusable();
 
   return (
     <SafeAreaView style={{ flex: 1, padding: 16 }}>
@@ -261,13 +261,13 @@ export default CalendarioBasico;
 ```javascript
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import CalendarPickerRangeReusable from './components/HumanoCalendar/CalendarPickerRangeReusable';
-import useHumanCalendar from './components/HumanoCalendar/hooks/useHumanCalendar';
+import CalendarPickerRangeReusable from './components/ButtonCalendar/CalendarPickerRangeReusable';
+import useButtonCalendarReusable from './components/ButtonCalendar/hooks/useButtonCalendarReusable';
 import { DATE_FORMATS } from './utils/DateUtil';
 import CustomIcon from './components/CustomIcon';
 
 const CalendarioPersonalizado = () => {
-  const calendar = useHumanCalendar({
+  const calendar = useButtonCalendarReusable({
     canBeSameDay: true,
     minDate: new Date(2023, 0, 1),
     maxDate: new Date(2024, 11, 31)
@@ -319,11 +319,11 @@ export default CalendarioPersonalizado;
 ```javascript
 import React from 'react';
 import { SafeAreaView, TouchableOpacity, Text, View } from 'react-native';
-import CalendarPickerRangeReusable from './components/HumanoCalendar/CalendarPickerRangeReusable';
-import useHumanCalendar from './components/HumanoCalendar/hooks/useHumanCalendar';
+import CalendarPickerRangeReusable from './components/ButtonCalendar/CalendarPickerRangeReusable';
+import useButtonCalendarReusable from './components/ButtonCalendar/hooks/useButtonCalendarReusable';
 
 const CalendarioConBotonPersonalizado = () => {
-  const calendar = useHumanCalendar();
+  const calendar = useButtonCalendarReusable();
 
   const renderCustomButton = ({ onPress, displayText, isNotSelected, icon }) => (
     <TouchableOpacity
@@ -380,13 +380,13 @@ Componente reutilizable que encapsula toda la lógica de mostrar fechas seleccio
 - Manejo de estados disabled
 - Fallbacks personalizables
 
-### HumanoCalendar
+### ButtonCalendar
 
 Componente principal del calendario que maneja la selección de fechas.
 
 ## 🔗 Hooks
 
-### useHumanCalendar
+### useButtonCalendarReusable
 
 Hook que maneja el estado y la lógica del calendario.
 

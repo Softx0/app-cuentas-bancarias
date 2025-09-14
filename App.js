@@ -2,7 +2,7 @@
  * Banking Application - Main Entry Point
  * 
  * This is the main App.js file that serves as the entry point for the banking application.
- * Currently configured with ComponentsDemo as the main screen for development and testing.
+ * Configured with the main navigation system for the production banking app.
  * Enhanced with error handling and debugging to identify crashes.
  * 
  * @description Main application entry point with error boundaries
@@ -15,7 +15,7 @@ import React from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 
 // Import main navigator
-import DemoAppNavigator from "./src/presentation/navigation/DemoAppNavigator";
+import RootNavigation from "./src/presentation/navigation/RootNavigation";
 
 /**
  * Error Boundary Component for catching JavaScript errors
@@ -71,10 +71,10 @@ class ErrorBoundary extends React.Component {
 /**
  * Main App Component
  * 
- * This component sets up the banking application with navigation support.
- * The DemoAppNavigator includes ComponentsDemo as the main screen and
- * provides a foundation for adding more screens in the future.
- * Enhanced with error boundaries and debugging.
+ * This component sets up the banking application with enhanced navigation support.
+ * The RootNavigation includes tab navigation with Home, Profile, and Settings screens,
+ * plus additional stack screens for components demo and examples.
+ * Enhanced with error boundaries, TypeScript support, and proper logging.
  * 
  * @returns {React.Element} Main app with navigation and error handling
  */
@@ -87,8 +87,8 @@ export default function App() {
     return (
       <ErrorBoundary>
         <>
-          {/* Main Navigation */}
-          <DemoAppNavigator />
+          {/* Main Navigation with Tab and Stack Support */}
+          <RootNavigation />
           
           {/* Status Bar Configuration */}
           <StatusBar 

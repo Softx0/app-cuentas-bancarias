@@ -4,8 +4,8 @@
  * @version 1.0.0
  */
 
-import { appConfig } from '../config/app.config';
 import { LOG_LEVELS } from '../../shared/constants';
+import { appConfig } from '../config/app.config';
 
 /**
  * Log level type definition
@@ -177,32 +177,6 @@ class Logger {
   }
 
   /**
-   * Authentication event logging
-   * @param event Authentication event
-   * @param data Event data
-   */
-  public authEvent(event: string, data?: any): void {
-    this.info(
-      `Auth Event: ${event}`,
-      data,
-      'AUTH'
-    );
-  }
-
-  /**
-   * Navigation event logging
-   * @param screen Screen name
-   * @param params Navigation parameters
-   */
-  public navigation(screen: string, params?: any): void {
-    this.debug(
-      `Navigation: ${screen}`,
-      { params },
-      'NAVIGATION'
-    );
-  }
-
-  /**
    * Performance logging
    * @param operation Operation name
    * @param duration Duration in milliseconds
@@ -221,32 +195,3 @@ class Logger {
  * Singleton logger instance
  */
 export const logger = new Logger();
-
-/**
- * Performance measurement decorator
- * @param target Target object
- * @param propertyKey Method name
- * @param descriptor Method descriptor
- */
-export function measurePerformance(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  const originalMethod = descriptor.value;
-
-  descriptor.value = function (...args: any[]) {
-    const startTime = Date.now();
-    const result = originalMethod.apply(this, args);
-
-    if (result instanceof Promise) {
-      return result.finally(() => {
-        const duration = Date.now() - startTime;
-        logger.performance(`${target.constructor.name}.${propertyKey}`, duration);
-      });
-    }
-
-    const duration = Date.now() - startTime;
-    logger.performance(`${target.constructor.name}.${propertyKey}`, duration);
-    
-    return result;
-  };
-
-  return descriptor;
-}

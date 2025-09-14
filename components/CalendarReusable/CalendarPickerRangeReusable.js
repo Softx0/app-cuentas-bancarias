@@ -18,14 +18,14 @@ import { CalendarReusable } from "./CalendarReusable";
  * @example
  * // Uso básico
  * <CalendarPickerRangeReusable
- *   calendarHook={useHumanCalendar()}
+ *   calendarHook={useButtonCalendarReusable()}
  *   title="Seleccionar fechas"
  * />
  *
  * @example
  * // Uso con personalización completa
  * <CalendarPickerRangeReusable
- *   calendarHook={useHumanCalendar()}
+ *   calendarHook={useButtonCalendarReusable()}
  *   title="Período de consulta"
  *   placeholder="Seleccione un rango de fechas"
  *   showModal={true}
@@ -209,7 +209,7 @@ const CalendarPickerRangeReusable = ({
  * PropTypes para validación de tipos
  */
 CalendarPickerRangeReusable.propTypes = {
-  /** Hook del calendario (useHumanCalendar) - REQUERIDO */
+  /** Hook del calendario (useButtonCalendarReusable) - REQUERIDO */
   calendarHook: PropTypes.shape({
     selectedDates: PropTypes.shape({
       startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),

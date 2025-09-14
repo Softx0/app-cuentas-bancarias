@@ -4,25 +4,24 @@
  * @version 1.0.0
  */
 
-import axios, { 
-  AxiosInstance, 
-  AxiosResponse, 
-  AxiosError, 
-  InternalAxiosRequestConfig,
-  AxiosRequestConfig,
-} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 
-import { appConfig } from '../config/app.config';
-import { logger , measurePerformance } from '../utils/logger';
-import { jwtUtil } from '../utils/jwt';
-import { 
-  STORAGE_KEYS, 
-  ERROR_CODES, 
-  HTTP_STATUS, 
+import {
   API_CONSTANTS,
+  ERROR_CODES,
+  HTTP_STATUS,
+  STORAGE_KEYS,
 } from '../../shared/constants';
-import type { ApiResponse, ApiError, PaginatedApiResponse } from '../../shared/types';
+import type { ApiError, ApiResponse, PaginatedApiResponse } from '../../shared/types';
+import { appConfig } from '../config/app.config';
+import { logger } from '../utils/logger';
 
 /**
  * API request configuration with additional options
@@ -34,15 +33,6 @@ interface ApiRequestConfig extends AxiosRequestConfig {
 }
 
 /**
- * Retry configuration
- */
-interface RetryConfig {
-  retries: number;
-  delay: number;
-  retryCondition: (error: AxiosError) => boolean;
-}
-
-/**
  * API service class for handling HTTP requests
  */
 class ApiService {
@@ -50,7 +40,7 @@ class ApiService {
   private readonly baseURL: string;
   private readonly timeout: number;
   private isRefreshingToken = false;
-  private refreshTokenPromise: Promise<string> | null = null;
+  private refreshTokenPromise: Promise<string | null> | null = null;
 
   constructor() {
     this.baseURL = appConfig.apiUrl;
@@ -330,10 +320,14 @@ class ApiService {
     // Add delay before retry
     await this.delay(API_CONSTANTS.RETRY_DELAY);
 
-    return this.client({
-      ...config,
+    // Create new config without custom retries property for Axios
+    const { retries: _, skipAuthRefresh, skipLogging, ...axiosConfig } = config;
+    const retryConfig: ApiRequestConfig = {
+      ...axiosConfig,
       retries,
-    });
+    };
+
+    return this.client.request(retryConfig);
   }
 
   /**
@@ -345,10 +339,13 @@ class ApiService {
     const response = error.response;
     
     if (response) {
+      // Type assertion for response data
+      const responseData = response.data as any;
+      
       return {
-        message: response.data?.message || error.message || 'API request failed',
-        code: response.data?.code || this.getErrorCode(response.status),
-        details: response.data,
+        message: responseData?.message || error.message || 'API request failed',
+        code: responseData?.code || this.getErrorCode(response.status),
+        details: responseData as Record<string, any> | undefined,
         timestamp: new Date().toISOString(),
       };
     }
@@ -374,7 +371,7 @@ class ApiService {
       case HTTP_STATUS.FORBIDDEN:
         return ERROR_CODES.UNAUTHORIZED;
       case HTTP_STATUS.NOT_FOUND:
-        return ERROR_CODES.NOT_FOUND || 'NOT_FOUND';
+        return ERROR_CODES.NOT_FOUND;
       case HTTP_STATUS.CONFLICT:
         return ERROR_CODES.VALIDATION_ERROR;
       case HTTP_STATUS.UNPROCESSABLE_ENTITY:
@@ -386,7 +383,7 @@ class ApiService {
       case HTTP_STATUS.SERVICE_UNAVAILABLE:
         return ERROR_CODES.SERVICE_UNAVAILABLE;
       default:
-        return 'UNKNOWN_ERROR';
+        return ERROR_CODES.UNKNOWN;
     }
   }
 
@@ -427,7 +424,6 @@ class ApiService {
    * @param config Request configuration
    * @returns API response
    */
-  @measurePerformance
   public async get<T = any>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.get<ApiResponse<T>>(url, config);
     return response.data;
@@ -440,7 +436,6 @@ class ApiService {
    * @param config Request configuration
    * @returns API response
    */
-  @measurePerformance
   public async post<T = any>(url: string, data?: any, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.post<ApiResponse<T>>(url, data, config);
     return response.data;
@@ -453,7 +448,6 @@ class ApiService {
    * @param config Request configuration
    * @returns API response
    */
-  @measurePerformance
   public async put<T = any>(url: string, data?: any, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.put<ApiResponse<T>>(url, data, config);
     return response.data;
@@ -466,7 +460,6 @@ class ApiService {
    * @param config Request configuration
    * @returns API response
    */
-  @measurePerformance
   public async patch<T = any>(url: string, data?: any, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.patch<ApiResponse<T>>(url, data, config);
     return response.data;
@@ -478,7 +471,6 @@ class ApiService {
    * @param config Request configuration
    * @returns API response
    */
-  @measurePerformance
   public async delete<T = any>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.client.delete<ApiResponse<T>>(url, config);
     return response.data;
@@ -490,7 +482,6 @@ class ApiService {
    * @param config Request configuration
    * @returns Paginated API response
    */
-  @measurePerformance
   public async getPaginated<T = any>(
     url: string, 
     config?: ApiRequestConfig
@@ -506,7 +497,6 @@ class ApiService {
    * @param config Request configuration
    * @returns API response
    */
-  @measurePerformance
   public async upload<T = any>(
     url: string,
     file: FormData,

@@ -70,13 +70,25 @@ export interface AuthState {
  */
 export interface User {
   id: string;
-  email: string;
   firstName: string;
   lastName: string;
-  avatar?: string;
+  username: string;
+  email: string;
+  createdAt: Date;
+  lastLogin: Date;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+}
+
+/**
+ * Registration data interface
+ */
+export interface RegisterData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
 /**
@@ -84,15 +96,14 @@ export interface User {
  */
 export interface BankAccount {
   id: string;
-  accountNumber: string;
-  accountType: BankAccountType;
-  bankName: string;
-  balance: number;
-  currency: string;
-  isActive: boolean;
   userId: string;
-  createdAt: string;
-  updatedAt: string;
+  accountNumber: string;
+  accountType: 'savings' | 'checking';
+  balance: number;
+  currency: 'USD' | 'EUR' | 'COP';
+  isActive: boolean;
+  createdAt: Date;
+  lastTransactionDate: Date;
 }
 
 /**
@@ -111,17 +122,22 @@ export enum BankAccountType {
 export interface Transaction {
   id: string;
   accountId: string;
-  type: TransactionType;
+  type: 'debit' | 'credit' | 'transfer';
   amount: number;
-  currency: string;
   description: string;
-  category?: string;
-  date: string;
-  status: TransactionStatus;
+  category: TransactionCategory;
+  date: Date;
+  status: 'completed' | 'pending' | 'failed';
   reference?: string;
-  createdAt: string;
-  updatedAt: string;
+  toAccountId?: string; // For transfers
 }
+
+/**
+ * Transaction category type
+ */
+export type TransactionCategory = 
+  | 'transfer' | 'payment' | 'deposit' 
+  | 'withdrawal' | 'fee' | 'interest';
 
 /**
  * Transaction types enumeration

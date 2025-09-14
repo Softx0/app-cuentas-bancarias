@@ -23,6 +23,7 @@ import styles from "./HayErrorResultadosReusableStyles";
  * @param {string} [props.secondaryButtonText="Volver al inicio"] - Texto del botón secundario
  * @param {function} props.onPrimaryButtonPress - Función a ejecutar al presionar el botón principal
  * @param {function} props.onSecondaryButtonPress - Función a ejecutar al presionar el botón secundario
+ * @param {boolean} [props.showSecondaryButton=true] - Si mostrar o no el botón secundario
  * @param {Object} [props.customStyles={}] - Estilos personalizados para sobreescribir los estilos por defecto
  * @returns {React.Component} Componente HayErrorReusable
  */
@@ -33,6 +34,7 @@ const HayErrorResultadosReusable = ({
   secondaryButtonText = "Reintentar",
   onPrimaryButtonPress,
   onSecondaryButtonPress,
+  showSecondaryButton = true,
   customStyles = {}
 }) => {
   // Combinar estilos personalizados con los estilos por defecto
@@ -73,18 +75,20 @@ const HayErrorResultadosReusable = ({
             textColor="#6B758C"
           />
         </View>
-        <View style={mergedStyles.buttonContainer}>
-          <CustomButton
-            title={secondaryButtonText}
-            onPress={onSecondaryButtonPress}
-            backgroundColor="#DEF5FF"
-            height={50}
-            container={styles.primaryButtonCustomContainer}
-            titleStyles={styles.primaryButtonTitleStyles}
-            fontSize={14}
-            textColor="#006A8D"
-          />
-        </View>
+        {showSecondaryButton && (
+          <View style={mergedStyles.buttonContainer}>
+            <CustomButton
+              title={secondaryButtonText}
+              onPress={onSecondaryButtonPress}
+              backgroundColor="#DEF5FF"
+              height={50}
+              container={styles.primaryButtonCustomContainer}
+              titleStyles={styles.primaryButtonTitleStyles}
+              fontSize={14}
+              textColor="#006A8D"
+            />
+          </View>
+        )}
       </View>
     </View>
   );

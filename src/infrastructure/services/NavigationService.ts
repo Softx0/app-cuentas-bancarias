@@ -1,394 +1,206 @@
 /**
- * Navigation Service - Banking Application
+ * Enhanced Navigation Service - Banking Application
  * 
- * Centralized navigation service that provides programmatic navigation capabilities
- * throughout the application without needing to pass navigation props.
+ * Provides type-safe, error-handled navigation utilities with comprehensive logging.
+ * Supports programmatic navigation across the entire application with fallback mechanisms.
  * 
- * @description TypeScript navigation service for programmatic navigation
- * @version 2.0.0
+ * @description Type-safe navigation service with error handling and logging
+ * @version 3.0.0
  * @author Eduardo Valenzuela
  */
 
 import {
   CommonActions,
   createNavigationContainerRef,
-  DrawerActions,
-  RouteProp,
   StackActions
 } from "@react-navigation/native";
+import type { RootStackParamList } from '../../../types/navigation';
 
-// Import types from demo screens
-import { ComponentCategory } from "../../presentation/screens/demo/types/ComponentDemo.types";
-import { DemoNavigationParamList } from "../../presentation/screens/demo/types/NavigationDemo.types";
-
-// ========================================================================================
-// TYPES AND INTERFACES
-// ========================================================================================
+export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 /**
- * Navigation service interface
+ * Enhanced navigation with error handling and comprehensive logging
  */
-export interface NavigationServiceInterface {
-  navigate: (name: keyof DemoNavigationParamList, params?: any) => void;
-  push: (routeName: keyof DemoNavigationParamList, params?: any) => void;
-  navigateAndReset: (routeName: keyof DemoNavigationParamList, params?: any) => void;
-  goBack: () => void;
-  toggleDrawer: () => void;
-  getParam: (route: RouteProp<DemoNavigationParamList>, param: string) => any;
-  getAllParams: (route: RouteProp<DemoNavigationParamList>) => any;
-  getParams: (route: RouteProp<DemoNavigationParamList>, params: string[]) => Record<string, any>;
-  addListenerEvent: (event: string, callback: () => void) => void;
-  removeListenerEvent: (event: string, callback: () => void) => void;
-  isReady: () => boolean;
-  getCurrentRoute: () => string | undefined;
-}
+const navigate = <T extends keyof RootStackParamList>(
+  name: T, 
+  params?: RootStackParamList[T]
+): void => {
+  console.log(`🧭 [NavigationService] Navigating to: ${String(name)}`, 
+    params ? JSON.stringify(params, null, 2) : "no params"
+  );
 
-/**
- * Event listener callback type
- */
-type NavigationEventCallback = () => void;
-
-// ========================================================================================
-// NAVIGATION REF
-// ========================================================================================
-
-/**
- * Navigation container reference for programmatic navigation
- */
-export const navigationRef = createNavigationContainerRef<DemoNavigationParamList>();
-
-// ========================================================================================
-// NAVIGATION FUNCTIONS
-// ========================================================================================
-
-/**
- * Navigate to a specific route
- * 
- * @param name - The name of the route to navigate to
- * @param params - Route parameters
- * 
- * @example
- * NavigationService.navigate('ComponentsDemo');
- * NavigationService.navigate('ComponentDetail', { componentName: 'Button' });
- */
-const navigate = (name: keyof DemoNavigationParamList, params?: any): void => {
   if (navigationRef.isReady()) {
-    navigationRef.navigate(name as any, params);
+    try {
+      navigationRef.navigate(name as any, params as any);
+    } catch (error) {
+      console.error(`❌ [NavigationService] Navigation error to ${String(name)}:`, error);
+    }
   } else {
-    console.warn('NavigationService: Navigation container is not ready');
+    console.warn(`⚠️ [NavigationService] Navigation not ready for: ${String(name)}`);
   }
 };
 
 /**
- * Push a new route to the navigation stack
- * This function will add the new route to the navigation history.
- * The user can go back to the previous screen.
- * 
- * @param routeName - The name of the route to navigate to
- * @param params - Route parameters
- * 
- * @example
- * NavigationService.push('ComponentDetail', { componentName: 'Input' });
- */
-const push = (routeName: keyof DemoNavigationParamList, params?: any): void => {
-  if (navigationRef.isReady()) {
-    navigationRef.dispatch(StackActions.push(routeName as string, params));
-  } else {
-    console.warn('NavigationService: Navigation container is not ready');
-  }
-};
-
-/**
- * Navigate to a specific route and reset the navigation history
- * 
- * This means the user cannot go back. This is useful for example to redirect 
- * from a splashscreen to the main screen: the user should not be able to go 
- * back to the splashscreen.
- * 
- * @param routeName - The name of the route to navigate to
- * @param params - Route parameters
- * 
- * @example
- * NavigationService.navigateAndReset('ComponentsDemo');
- */
-const navigateAndReset = (routeName: keyof DemoNavigationParamList, params?: any): void => {
-  if (navigationRef.isReady()) {
-    navigationRef.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: routeName as string,
-            params
-          }
-        ]
-      })
-    );
-  } else {
-    console.warn('NavigationService: Navigation container is not ready');
-  }
-};
-
-/**
- * Navigate to the previous screen
- * 
- * @example
- * NavigationService.goBack();
+ * Enhanced goBack with safety checks and fallback
  */
 const goBack = (): void => {
+  console.log("🔙 [NavigationService] Going back");
+
   if (navigationRef.isReady()) {
-    navigationRef.goBack();
+    try {
+      const canGoBack = navigationRef.canGoBack();
+
+      if (canGoBack) {
+        navigationRef.goBack();
   } else {
-    console.warn('NavigationService: Navigation container is not ready');
+        console.warn("⚠️ [NavigationService] Cannot go back - navigating to TabMenu");
+        navigateAndReset("TabMenu");
+      }
+    } catch (error) {
+      console.error("❌ [NavigationService] GoBack error:", error);
+      // Fallback to safe navigation
+      navigateAndReset("TabMenu");
+    }
   }
 };
 
 /**
- * Toggle drawer (if using drawer navigator)
- * 
- * @example
- * NavigationService.toggleDrawer();
+ * Push a new screen onto the stack
  */
-const toggleDrawer = (): void => {
+const push = <T extends keyof RootStackParamList>(
+  routeName: T, 
+  params?: RootStackParamList[T]
+): void => {
+  console.log(`📤 [NavigationService] Pushing: ${String(routeName)}`);
+  
   if (navigationRef.isReady()) {
-    navigationRef.dispatch(DrawerActions.toggleDrawer());
-  } else {
-    console.warn('NavigationService: Navigation container is not ready');
+    try {
+      navigationRef.dispatch(StackActions.push(routeName as string, params));
+    } catch (error) {
+      console.error(`❌ [NavigationService] Push error:`, error);
+    }
   }
 };
 
 /**
- * Get a specific parameter from the route
- * 
- * @param route - The route object
- * @param param - The parameter name to retrieve
- * @returns The parameter value or undefined
- * 
- * @example
- * const componentName = NavigationService.getParam(route, 'componentName');
+ * Reset navigation stack to specific route
  */
-const getParam = (route: RouteProp<DemoNavigationParamList>, param: string): any => {
-  return (route?.params as any)?.[param];
-};
-
-/**
- * Get all parameters from the route
- * 
- * @param route - The route object
- * @returns All route parameters
- * 
- * @example
- * const allParams = NavigationService.getAllParams(route);
- */
-const getAllParams = (route: RouteProp<DemoNavigationParamList>): any => {
-  return route?.params;
-};
-
-/**
- * Get specific parameters from the route
- * 
- * @param route - The route object
- * @param params - Array of parameter names to retrieve
- * @returns Object with requested parameters
- * 
- * @example
- * const params = NavigationService.getParams(route, ['componentName', 'componentType']);
- */
-const getParams = (route: RouteProp<DemoNavigationParamList>, params: string[]): Record<string, any> => {
-  return params.reduce((parameters: Record<string, any>, param: string) => {
-    parameters[param] = (route?.params as any)?.[param];
-    return parameters;
-  }, {});
-};
-
-/**
- * Add event listener for navigation events
- * 
- * @param event - The event name
- * @param callback - The callback function
- * 
- * @example
- * NavigationService.addListenerEvent('focus', () => {
- *   console.log('Screen focused');
- * });
- */
-const addListenerEvent = (event: string, callback: NavigationEventCallback): void => {
+const navigateAndReset = <T extends keyof RootStackParamList>(
+  routeName: T, 
+  params?: RootStackParamList[T]
+): void => {
+  console.log(`🔄 [NavigationService] Resetting to: ${String(routeName)}`);
+  
   if (navigationRef.isReady()) {
-    navigationRef.addListener(event as any, (e) => {
+    try {
+      navigationRef.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: routeName as string, params }]
+        })
+      );
+    } catch (error) {
+      console.error(`❌ [NavigationService] Reset error:`, error);
+    }
+  }
+};
+
+/**
+ * Get current route name safely
+ */
+const getCurrentRouteName = (): string | undefined => {
+  try {
+    return navigationRef.getCurrentRoute()?.name;
+  } catch (error) {
+    console.error("❌ [NavigationService] Error getting current route:", error);
+    return undefined;
+  }
+};
+
+/**
+ * Get current route params safely
+ */
+const getCurrentRouteParams = (): any => {
+  try {
+    return navigationRef.getCurrentRoute()?.params;
+  } catch (error) {
+    console.error("❌ [NavigationService] Error getting current route params:", error);
+    return undefined;
+  }
+};
+
+// Parameter utilities with type safety
+const getParam = <T extends keyof RootStackParamList>(
+  route: { params?: RootStackParamList[T] }, 
+  param: keyof RootStackParamList[T]
+): any => {
+  try {
+    return (route?.params as any)?.[param];
+  } catch (error) {
+    console.error("❌ [NavigationService] Error getting param:", error);
+    return undefined;
+  }
+};
+
+const getAllParams = <T extends keyof RootStackParamList>(
+  route: { params?: RootStackParamList[T] }
+): RootStackParamList[T] | undefined => {
+  try {
+    return route?.params;
+  } catch (error) {
+    console.error("❌ [NavigationService] Error getting all params:", error);
+    return undefined;
+  }
+};
+
+// Event listeners with proper cleanup
+const addListenerEvent = (event: string, callback: () => void): (() => void) => {
+  try {
+    const unsubscribe = navigationRef.addListener(event as any, () => {
       callback();
     });
-  } else {
-    console.warn('NavigationService: Navigation container is not ready');
+    return unsubscribe;
+  } catch (error) {
+    console.error("❌ [NavigationService] Error adding listener:", error);
+    return () => {}; // Return empty cleanup function
   }
 };
 
 /**
- * Remove event listener for navigation events
- * 
- * @param event - The event name
- * @param callback - The callback function
- * 
- * @example
- * NavigationService.removeListenerEvent('focus', myCallback);
- */
-const removeListenerEvent = (event: string, callback: NavigationEventCallback): void => {
-  if (navigationRef.isReady()) {
-    navigationRef.removeListener(event as any, (e) => {
-      console.log('removeListenerEvent', e.target);
-      callback();
-    });
-  } else {
-    console.warn('NavigationService: Navigation container is not ready');
-  }
-};
-
-/**
- * Check if navigation container is ready
- * 
- * @returns True if navigation container is ready
- * 
- * @example
- * if (NavigationService.isReady()) {
- *   NavigationService.navigate('ComponentsDemo');
- * }
+ * Navigation readiness check
  */
 const isReady = (): boolean => {
   return navigationRef.isReady();
 };
 
 /**
- * Get the current route name
- * 
- * @returns Current route name or undefined
- * 
- * @example
- * const currentRoute = NavigationService.getCurrentRoute();
+ * Get navigation state for debugging
  */
-const getCurrentRoute = (): string | undefined => {
-  if (navigationRef.isReady()) {
-    return navigationRef.getCurrentRoute()?.name;
+const getNavigationState = (): any => {
+  try {
+    return navigationRef.getState();
+  } catch (error) {
+    console.error("❌ [NavigationService] Error getting navigation state:", error);
+    return null;
   }
-  return undefined;
 };
 
-
-// ========================================================================================
-// DEMO-SPECIFIC NAVIGATION FUNCTIONS
-// ========================================================================================
-
-/**
- * Navigate to component detail screen
- * 
- * @param componentName - Name of the component
- * @param componentType - Type/category of the component
- * @param category - Optional component category for better navigation
- * 
- * @example
- * NavigationService.navigateToComponentDetail('ReusableButton', 'Button Components', ComponentCategory.BUTTON);
- */
-const navigateToComponentDetail = (componentName: string, componentType: string, category?: ComponentCategory): void => {
-  navigate('ComponentDetail', { componentName, componentType, category });
-};
-
-/**
- * Navigate back to components demo screen
- * 
- * @example
- * NavigationService.navigateToComponentsDemo();
- */
-const navigateToComponentsDemo = (): void => {
-  navigate('ComponentsDemo');
-};
-
-/**
- * Reset navigation to components demo screen
- * 
- * @example
- * NavigationService.resetToComponentsDemo();
- */
-const resetToComponentsDemo = (): void => {
-  navigateAndReset('ComponentsDemo');
-};
-
-// ========================================================================================
-// NAVIGATION SERVICE EXPORT
-// ========================================================================================
-
-/**
- * Navigation Service - Complete programmatic navigation solution
- * 
- * This service provides all necessary navigation functions that can be called
- * from anywhere in the application without needing navigation props.
- */
-const NavigationService: NavigationServiceInterface & {
-  navigateToComponentDetail: typeof navigateToComponentDetail;
-  navigateToComponentsDemo: typeof navigateToComponentsDemo;
-  resetToComponentsDemo: typeof resetToComponentsDemo;
-  getCurrentRoute: typeof getCurrentRoute;
-} = {
-  // Core navigation functions
-  navigate,
+export default {
+  // Core navigation methods
   push,
   goBack,
+  navigate,
   navigateAndReset,
-  toggleDrawer,
   
-  // Parameter functions
+  // Utility methods
+  getCurrentRouteName,
+  getCurrentRouteParams,
   getParam,
   getAllParams,
-  getParams,
-  
-  // Event listener functions
   addListenerEvent,
-  removeListenerEvent,
-  
-  // Utility functions
   isReady,
-  getCurrentRoute,
+  getNavigationState,
   
-  // Demo-specific functions
-  navigateToComponentDetail,
-  navigateToComponentsDemo,
-  resetToComponentsDemo
+  // Navigation reference for direct access
+  navigationRef,
 };
-
-export default NavigationService;
-
-// ========================================================================================
-// USAGE EXAMPLES AND DOCUMENTATION
-// ========================================================================================
-
-/**
- * USAGE EXAMPLES:
- * 
- * 1. Basic Navigation:
- *    NavigationService.navigate('ComponentsDemo');
- * 
- * 2. Navigation with Parameters:
- *    NavigationService.navigate('ComponentDetail', { 
- *      componentName: 'ReusableButton',
- *      componentType: 'Button Components'
- *    });
- * 
- * 3. Push to Stack:
- *    NavigationService.push('ComponentDetail', { componentName: 'Input' });
- * 
- * 4. Go Back:
- *    NavigationService.goBack();
- * 
- * 5. Reset Navigation:
- *    NavigationService.navigateAndReset('ComponentsDemo');
- * 
- * 6. Get Route Parameters:
- *    const params = NavigationService.getAllParams(route);
- *    const componentName = NavigationService.getParam(route, 'componentName');
- * 
- * 7. Event Listeners:
- *    NavigationService.addListenerEvent('focus', () => {
- *      console.log('Screen focused');
- *    });
- * 
- * 8. Demo-specific:
- *    NavigationService.navigateToComponentDetail('Button', 'Button Components');
- *    NavigationService.resetToComponentsDemo();
- */

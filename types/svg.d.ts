@@ -1,13 +1,12 @@
 /**
- * SVG TypeScript Declarations
- * Enables importing .svg files as React components
+ * SVG TypeScript Declarations for React Native
+ * Enables importing .svg files as React components using react-native-svg-transformer
  */
 
 declare module "*.svg" {
-  import React from "react";
+  import { FC } from "react";
     import { SvgProps } from "react-native-svg";
-  
-  const content: React.FC<SvgProps>;
+  const content: FC<SvgProps>;
   export default content;
 }
 
@@ -17,21 +16,9 @@ declare module "*.svg?url" {
 }
 
 declare module "*.svg?react" {
-  import React from "react";
+  import { FC } from "react";
     import { SvgProps } from "react-native-svg";
-  
-  const content: React.FC<SvgProps>;
+  const content: FC<SvgProps>;
   export default content;
 }
-
-// Global SVG component type for better IntelliSense
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      svg: React.SVGProps<SVGSVGElement>;
-    }
-  }
-}
-
-export { };
 

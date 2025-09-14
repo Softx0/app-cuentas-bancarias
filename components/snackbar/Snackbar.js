@@ -63,7 +63,7 @@ export const Snackbar = ({
     setIsVisible(visible);
   }, [visible]);
 
-  // Handle auto-hide duration
+  // Handle auto-hide duration - Optimized to prevent infinite loops
   useEffect(() => {
     if (isVisible && duration > 0) {
       console.log("Snackbar: Auto-hide timer started", JSON.stringify({ duration, message }, null, 2));
@@ -76,7 +76,10 @@ export const Snackbar = ({
         clearTimeout(timeout);
       };
     }
-  }, [isVisible, duration, message]);
+    // ✅ Using visible prop instead of isVisible state to trigger timer
+    // ✅ Removed message from dependencies - timer doesn't need to restart on message change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, duration]); // Use visible prop to avoid circular dependency
 
   // Memoized icon component with default fallback
   const renderIcon = useMemo(() => {
