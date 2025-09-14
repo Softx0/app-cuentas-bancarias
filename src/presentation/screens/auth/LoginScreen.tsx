@@ -4,7 +4,8 @@
  * @version 1.0.0
  */
 
-import { useFocusEffect } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
@@ -22,6 +23,7 @@ import InputTextReusable from '../../../../components/custom-input/InputTextReus
 import CustomLoading from '../../../../components/custom-loading-reusable/CustomLoading';
 import { Snackbar } from '../../../../components/snackbar/Snackbar';
 import { Colors, Metrics } from '../../../../themes';
+import type { RootStackParamList } from '../../../../types/navigation';
 import { useAuth } from '../../../context/auth/AuthContext';
 import { handleJavaScriptError, handleValidationErrors } from '../../../infrastructure/utils/errorHandler';
 import { logger } from '../../../infrastructure/utils/logger';
@@ -48,7 +50,15 @@ interface LoginFormState {
  * LoginScreen Component
  * Handles user authentication with comprehensive error handling
  */
+// Navigation type for LoginScreen
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenRouteProp = RouteProp<RootStackParamList, 'Login'>;
+
 export const LoginScreen: React.FC = () => {
+  // Navigation
+  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const route = useRoute<LoginScreenRouteProp>();
+  
   // Auth context
   const { login } = useAuth();
 
@@ -66,21 +76,6 @@ export const LoginScreen: React.FC = () => {
     message: '',
     isError: false,
   });
-
-
-  /**
-   * Reset form when screen gains focus
-   */
-  useFocusEffect(
-    useCallback(() => {
-      logger.info('🔐 Login screen focused', undefined, 'LOGIN_SCREEN');
-      setFormState(prev => ({
-        ...prev,
-        errors: {},
-        isSubmitting: false,
-      }));
-    }, [])
-  );
 
   /**
    * Validates form fields
@@ -130,6 +125,39 @@ export const LoginScreen: React.FC = () => {
       setSnackbar(prev => ({ ...prev, visible: false }));
     }, 3000);
   }, []);
+
+  /**
+   * Reset form when screen gains focus and handle registration success
+   */
+  useFocusEffect(
+    useCallback(() => {
+      logger.info('🔐 Login screen focused', undefined, 'LOGIN_SCREEN');
+      
+      // Get navigation parameters
+      const registeredEmail = route.params?.registeredEmail;
+      const justRegistered = route.params?.justRegistered;
+      
+      // Pre-fill email if coming from registration
+      if (registeredEmail && justRegistered) {
+        logger.info('📝 Pre-filling login with registered email', { email: registeredEmail }, 'LOGIN_SCREEN');
+        setFormState(prev => ({
+          ...prev,
+          email: registeredEmail,
+          errors: {},
+          isSubmitting: false,
+        }));
+        
+        // Show helpful message
+        showSnackbar(`¡Registro exitoso! Ahora inicia sesión con tu nueva cuenta: ${registeredEmail}`, false);
+      } else {
+        setFormState(prev => ({
+          ...prev,
+          errors: {},
+          isSubmitting: false,
+        }));
+      }
+    }, [route.params?.registeredEmail, route.params?.justRegistered, showSnackbar])
+  );
 
   /**
    * Updates form field value
@@ -195,9 +223,13 @@ export const LoginScreen: React.FC = () => {
    */
   const handleNavigateToRegister = useCallback(() => {
     logger.info('📝 Navigate to register', undefined, 'LOGIN_SCREEN');
-    // TODO: Implement navigation to register screen
-    Alert.alert('Registro', 'Navegación a registro no implementada aún');
-  }, []);
+    try {
+      navigation.navigate('Register');
+    } catch (error) {
+      logger.error('Failed to navigate to register screen', error, 'LOGIN_SCREEN');
+      Alert.alert('Error', 'No se pudo navegar a la pantalla de registro');
+    }
+  }, [navigation]);
 
   /**
    * Computed styles

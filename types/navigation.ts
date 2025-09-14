@@ -23,7 +23,10 @@ export type RootStackParamList = {
   Profile: undefined;
   
   // Authentication Screens
-  Login: undefined;
+  Login: {
+    registeredEmail?: string;
+    justRegistered?: boolean;
+  } | undefined;
   Register: undefined;
   
   // Banking Screens

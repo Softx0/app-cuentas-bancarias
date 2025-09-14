@@ -4,16 +4,17 @@
  * @version 1.0.0
  */
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -23,6 +24,7 @@ import InputTextReusable from '../../../../components/custom-input/InputTextReus
 import CustomLoading from '../../../../components/custom-loading-reusable/CustomLoading';
 import { Snackbar } from '../../../../components/snackbar/Snackbar';
 import { Colors, Metrics } from '../../../../themes';
+import type { RootStackParamList } from '../../../../types/navigation';
 import { mockAuthService } from '../../../infrastructure/services/mock/AuthService';
 import type { RegisterRequest } from '../../../infrastructure/services/mock/types/ApiTypes';
 import { handleApiError, handleJavaScriptError, handleValidationErrors } from '../../../infrastructure/utils/errorHandler';
@@ -54,8 +56,6 @@ interface RegisterFormState {
   acceptedTerms: boolean;
   errors: RegisterFormErrors;
   isSubmitting: boolean;
-  showPassword: boolean;
-  showConfirmPassword: boolean;
 }
 
 /**
@@ -71,7 +71,13 @@ interface SnackbarState {
  * RegisterScreen Component
  * Handles user registration with comprehensive validation and error handling
  */
+// Navigation type for RegisterScreen
+type RegisterScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Register'>;
+
 export const RegisterScreen: React.FC = () => {
+  // Navigation
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
+  
   // Form state
   const [formState, setFormState] = useState<RegisterFormState>({
     firstName: '',
@@ -83,8 +89,6 @@ export const RegisterScreen: React.FC = () => {
     acceptedTerms: false,
     errors: {},
     isSubmitting: false,
-    showPassword: false,
-    showConfirmPassword: false,
   });
 
   // Snackbar state
@@ -190,12 +194,7 @@ export const RegisterScreen: React.FC = () => {
     }, isError ? 4000 : 3000);
   }, []);
 
-  /**
-   * Toggles password visibility
-   */
-  const togglePasswordVisibility = useCallback((field: 'showPassword' | 'showConfirmPassword') => {
-    updateField(field, !formState[field]);
-  }, [formState.showPassword, formState.showConfirmPassword, updateField]);
+  // Password visibility toggle removed - InputTextReusable doesn't support rightIcon
 
   /**
    * Handles form submission
@@ -210,7 +209,8 @@ export const RegisterScreen: React.FC = () => {
 
     if (!validateForm()) {
       const errorMessages = Object.values(formState.errors).filter(Boolean);
-      showSnackbar(`Por favor corrige los errores: ${errorMessages[0]}`, true);
+      const firstError = errorMessages.length > 0 ? errorMessages[0] : 'Revisa los campos del formulario';
+      showSnackbar(`Por favor corrige los errores: ${firstError}`, true);
       return;
     }
 
@@ -223,31 +223,24 @@ export const RegisterScreen: React.FC = () => {
         username: formState.username.trim().toLowerCase(),
         email: formState.email.trim().toLowerCase(),
         password: formState.password,
+        confirmPassword: formState.confirmPassword,
       };
 
-      const response = await mockAuthService.register(registerData);
+      await mockAuthService.register(registerData);
       
       logger.info('✅ Registration successful', { 
         email: registerData.email,
         username: registerData.username 
       }, 'REGISTER_SCREEN');
 
-      showSnackbar('¡Cuenta creada exitosamente! Verifica tu correo.', false);
+      showSnackbar('¡Cuenta creada exitosamente! Redirigiendo al login...', false);
 
-      // Reset form after successful registration
+      // Navigate to login after successful registration
       setTimeout(() => {
-        setFormState({
-          firstName: '',
-          lastName: '',
-          username: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          acceptedTerms: false,
-          errors: {},
-          isSubmitting: false,
-          showPassword: false,
-          showConfirmPassword: false,
+        logger.info('🚀 Navigating to login after successful registration', { email: registerData.email }, 'REGISTER_SCREEN');
+        navigation.navigate('Login', { 
+          registeredEmail: registerData.email,
+          justRegistered: true 
         });
       }, 2000);
 
@@ -265,16 +258,20 @@ export const RegisterScreen: React.FC = () => {
     } finally {
       setFormState(prev => ({ ...prev, isSubmitting: false }));
     }
-  }, [formState.email, formState.username, formState.firstName, formState.lastName, formState.password, formState.confirmPassword, formState.acceptedTerms, formState.isSubmitting, formState.errors, validateForm, showSnackbar]);
+  }, [formState.email, formState.username, formState.firstName, formState.lastName, formState.password, formState.confirmPassword, formState.isSubmitting, formState.errors, validateForm, showSnackbar, navigation]);
 
   /**
    * Navigates to login screen
    */
   const handleNavigateToLogin = useCallback(() => {
     logger.info('🔄 Navigate to login', undefined, 'REGISTER_SCREEN');
-    // TODO: Implement navigation to login screen
-    Alert.alert('Iniciar Sesión', 'Navegación a login no implementada aún');
-  }, []);
+    try {
+      navigation.navigate('Login');
+    } catch (error) {
+      logger.error('Failed to navigate to login screen', error, 'REGISTER_SCREEN');
+      Alert.alert('Error', 'No se pudo navegar a la pantalla de inicio de sesión');
+    }
+  }, [navigation]);
 
   /**
    * Computed styles
@@ -363,14 +360,10 @@ export const RegisterScreen: React.FC = () => {
             placeholder="Crea una contraseña segura"
             value={formState.password}
             onChangeText={(value: string) => updateField('password', value)}
-            secureTextEntry={!formState.showPassword}
+            secureTextEntry={true}
             editable={!formState.isSubmitting}
             errorMessage={formState.errors.password}
             style={styles.input}
-            rightIcon={{
-              name: formState.showPassword ? '👁️' : '🙈',
-              onPress: () => togglePasswordVisibility('showPassword'),
-            }}
           />
 
           <InputTextReusable
@@ -378,25 +371,20 @@ export const RegisterScreen: React.FC = () => {
             placeholder="Repite tu contraseña"
             value={formState.confirmPassword}
             onChangeText={(value: string) => updateField('confirmPassword', value)}
-            secureTextEntry={!formState.showConfirmPassword}
+            secureTextEntry={true}
             editable={!formState.isSubmitting}
             errorMessage={formState.errors.confirmPassword}
             style={styles.input}
-            rightIcon={{
-              name: formState.showConfirmPassword ? '👁️' : '🙈',
-              onPress: () => togglePasswordVisibility('showConfirmPassword'),
-            }}
           />
 
           {/* Terms and Conditions */}
           <View style={styles.termsContainer}>
             <CheckBoxReusable
-              isChecked={formState.acceptedTerms}
-              onToggle={(checked: boolean) => updateField('acceptedTerms', checked)}
-              label="Acepto los términos y condiciones de uso"
-              labelStyle={styles.termsLabel}
+              checked={formState.acceptedTerms}
+              onPress={() => updateField('acceptedTerms', !formState.acceptedTerms)}
+              title="Acepto los términos y condiciones de uso"
+              textStyle={styles.termsLabel}
               disabled={formState.isSubmitting}
-              error={!!formState.errors.terms}
             />
             {formState.errors.terms && (
               <Text style={styles.errorText}>{formState.errors.terms}</Text>
