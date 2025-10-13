@@ -175,20 +175,6 @@ class Logger {
       context || 'API'
     );
   }
-
-  /**
-   * Performance logging
-   * @param operation Operation name
-   * @param duration Duration in milliseconds
-   * @param data Additional performance data
-   */
-  public performance(operation: string, duration: number, data?: any): void {
-    this.debug(
-      `Performance: ${operation} took ${duration}ms`,
-      data,
-      'PERFORMANCE'
-    );
-  }
 }
 
 /**

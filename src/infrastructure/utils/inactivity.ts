@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { appConfig } from '../config/app.config';
 import { logger } from './logger';
-import { STORAGE_KEYS, APP_STATES } from '../../shared/constants';
+import { STORAGE_KEYS } from '../../shared/constants';
 
 /**
  * Inactivity event types

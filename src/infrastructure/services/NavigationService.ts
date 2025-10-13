@@ -52,7 +52,7 @@ const goBack = (): void => {
 
       if (canGoBack) {
         navigationRef.goBack();
-  } else {
+      } else {
         console.warn("⚠️ [NavigationService] Cannot go back - navigating to TabMenu");
         navigateAndReset("TabMenu");
       }
