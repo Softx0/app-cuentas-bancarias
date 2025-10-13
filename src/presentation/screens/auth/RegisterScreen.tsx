@@ -8,13 +8,13 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -25,6 +25,7 @@ import CustomLoading from '../../../../components/custom-loading-reusable/Custom
 import { Snackbar } from '../../../../components/snackbar/Snackbar';
 import { Colors, Metrics } from '../../../../themes';
 import type { RootStackParamList } from '../../../../types/navigation';
+// TODO: Reemplazar infraestructure por useAuth del Context para cumplir con Clean Architecture
 import { mockAuthService } from '../../../infrastructure/services/mock/AuthService';
 import type { RegisterRequest } from '../../../infrastructure/services/mock/types/ApiTypes';
 import { handleApiError, handleJavaScriptError } from '../../../infrastructure/utils/errorHandler';

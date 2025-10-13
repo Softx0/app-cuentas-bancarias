@@ -23,6 +23,7 @@ import Colors from '../../../../themes/Colors';
 import Metrics from '../../../../themes/Metrics';
 import { logger } from '../../../infrastructure/utils/logger';
 
+// TODO: Reemplazar infraestructure por useBanking del Context para cumplir con Clean Architecture
 // Mock services (would be replaced with real API calls)
 import { getAccountsByUserId, getTotalBalance } from '../../../infrastructure/services/mock/data/mockAccounts';
 import { getRecentTransactions } from '../../../infrastructure/services/mock/data/mockTransactions';

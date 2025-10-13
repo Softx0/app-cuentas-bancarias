@@ -281,7 +281,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       logger.info('Setting push notifications', { enabled }, 'APP');
       
       dispatch({ type: 'SET_PUSH_NOTIFICATIONS', payload: enabled });
-      // Note: Actual push notification registration/unregistration would happen here
       
       logger.debug('Push notifications setting updated', { enabled }, 'APP');
     } catch (error) {

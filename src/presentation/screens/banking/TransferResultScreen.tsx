@@ -26,6 +26,7 @@ import { handleApiError } from '../../../infrastructure/utils/errorHandler';
 import { logger } from '../../../infrastructure/utils/logger';
 
 // Mock services
+// TODO: Reemplazar infraestructure por useBanking del Context para cumplir con Clean Architecture
 import { getAccountById } from '../../../infrastructure/services/mock/data/mockAccounts';
 import { getTransactionById } from '../../../infrastructure/services/mock/data/mockTransactions';
 import type { BankAccount, Transaction } from '../../../shared/types';

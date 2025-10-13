@@ -7,13 +7,13 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-    FlatList,
-    RefreshControl,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  RefreshControl,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import type { RootStackNavigationProp } from '../../../../types/navigation';
@@ -26,6 +26,7 @@ import { handleApiError } from '../../../infrastructure/utils/errorHandler';
 import { logger } from '../../../infrastructure/utils/logger';
 
 // Mock services
+// TODO: Reemplazar infraestructure por useBanking del Context para cumplir con Clean Architecture
 import { getAccountsByUserId } from '../../../infrastructure/services/mock/data/mockAccounts';
 import type { BankAccount } from '../../../shared/types';
 
