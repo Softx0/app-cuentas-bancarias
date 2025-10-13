@@ -93,14 +93,12 @@ export { default as Lock } from '../assets/icons/icon-candado.svg';
 export { default as Plus } from '../assets/icons/plus.svg';
 export { default as Retry } from '../assets/icons/retry-icon.svg';
 export { default as Shield } from '../assets/icons/shield-icon.svg';
-export { default as CloseGreen } from '../assets/icons/x-close-green-vida.svg';
 export { default as Close } from '../assets/icons/x-close.svg';
 
 // Special & Category
 export { default as ErrorData } from '../assets/icons/error-obtener-datos.svg';
 export { default as Statistics } from '../assets/icons/estadistica-icon.svg';
 export { default as NoData } from '../assets/icons/no-hay-datos.svg';
-export { default as Notification } from '../assets/icons/siniestro-notificar-bell-blue-icon.svg';
 
 // Country Flags
 export { default as FlagDR } from '../assets/icons/flag-rd.svg';
