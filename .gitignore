@@ -158,6 +158,7 @@ eas-build-*.tar.gz
 # Archivos específicos del proyecto que no deben subirse
 TODO-personal.md
 NOTES-dev.md
+skills-lock.json
 
 # =====================================
 # 🔐 IMPORTANTE PARA SEGURIDAD
