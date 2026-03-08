@@ -1,10 +1,9 @@
-import React from "react";
 
 import { Text, TouchableOpacity, View } from "react-native";
 
 import IconCheckSVG from "../../assets/icons/check_small.svg";
 import CheckRender from "../security/CheckRender";
-import Styles from "./style/customCheckboxStyle";
+import Styles from "./style/CustomCheckboxStyle";
 
 /**
  * Componente CustomCheckbox.

@@ -9,7 +9,7 @@ import IconCheckboxBlueLlenoSVG from "../../assets/icons/checbox-blue-lleno.svg"
 import IconCheckboxVacioSVG from "../../assets/icons/checkbox-vacio.svg";
 import Colors from "../../themes/Colors";
 import { IS_IOS } from "../../utils/StyleHelpers";
-import CheckBoxReusable from "../CheckBoxReusable";
+import CheckBoxReusable from "../checkbox-reusable";
 
 /**
  * Componente reutilizable de checkbox con iconos SVG personalizados

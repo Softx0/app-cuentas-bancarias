@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { StyleSheet, Text, View } from "react-native";
 
-import DateTimePickerReusable from "../DateTimePickerReusable";
+import DateTimePickerReusable from "../datetime-picker-reusable";
 
 import Colors from "../../themes/Colors";
 import { FontSize } from "../../themes/Fonts";
