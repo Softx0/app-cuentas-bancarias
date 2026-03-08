@@ -158,7 +158,7 @@ export const createUser = (userData: RegisterData): User => {
     password: userData.password,
   });
 
-  console.log('✅ Mock user created:', JSON.stringify({
+  console.log(' Mock user created:', JSON.stringify({
     id: newUser.id,
     email: newUser.email,
     username: newUser.username,
@@ -176,11 +176,11 @@ export const updateLastLogin = (userId: string): void => {
   if (user) {
     user.lastLogin = new Date();
     
-    console.log('✅ User last login updated:', JSON.stringify({
+    console.log(' User last login updated:', JSON.stringify({
       userId: user.id,
       lastLogin: user.lastLogin.toISOString(),
     }, null, 2));
   }
 };
 
-console.log('🗄️ Mock users database initialized with', mockUsers.length, 'users');
+console.log(' Mock users database initialized with', mockUsers.length, 'users');

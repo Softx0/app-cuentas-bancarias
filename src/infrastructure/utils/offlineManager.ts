@@ -570,6 +570,6 @@ export const offlineManager = new OfflineManager();
 // Export types for use in other files
 export type { NetworkStatus, OfflineDataEntry, OfflineOperation };
 
-console.log('📴 Offline manager initialized');
+console.log(' Offline manager initialized');
 
 export default offlineManager;

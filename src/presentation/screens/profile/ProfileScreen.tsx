@@ -41,7 +41,7 @@ import NavigationService from '../../../infrastructure/services/NavigationServic
  * security settings, and quick access to related features.
  */
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
-  console.log('👤 [ProfileScreen] Component rendered');
+  console.log(' [ProfileScreen] Component rendered');
 
   // Auth context
   const { logout } = useAuth();
@@ -64,13 +64,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
 
   const handleGoBack = useCallback(() => {
-    console.log('🧭 [ProfileScreen] Going back');
+    console.log(' [ProfileScreen] Going back');
     NavigationService.goBack();
   }, []);
 
   // Profile action handlers
   const handleEditProfile = useCallback(() => {
-    console.log('✏️ [ProfileScreen] Edit Profile action triggered');
+    console.log(' [ProfileScreen] Edit Profile action triggered');
     Alert.alert(
       'Editar Perfil',
       'Esta funcionalidad no está disponible en este momento.',
@@ -79,7 +79,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   }, []);
 
   const handleSecuritySettings = useCallback(() => {
-    console.log('🔒 [ProfileScreen] Security Settings action triggered');
+    console.log(' [ProfileScreen] Security Settings action triggered');
     Alert.alert(
       'Configuración de Seguridad',
       'Esta funcionalidad no está disponible en este momento.',
@@ -88,7 +88,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   }, []);
 
   const handleSupport = useCallback(() => {
-    console.log('📞 [ProfileScreen] Support action triggered');
+    console.log(' [ProfileScreen] Support action triggered');
     Alert.alert(
       'Soporte',
       'Esta funcionalidad no está disponible en este momento.',
@@ -97,7 +97,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   }, []);
 
   const handleLogout = useCallback(async () => {
-    console.log('🚪 [ProfileScreen] Logout action triggered');
+    console.log(' [ProfileScreen] Logout action triggered');
     
     Alert.alert(
       'Cerrar Sesión',
@@ -112,12 +112,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
           style: 'destructive',
           onPress: async () => {
             try {
-              console.log('🚪 [ProfileScreen] Performing logout...');
+              console.log(' [ProfileScreen] Performing logout...');
               await logout();
-              console.log('✅ [ProfileScreen] Logout successful');
+              console.log(' [ProfileScreen] Logout successful');
               // Navigation will be handled by the auth state change
             } catch (error) {
-              console.error('❌ [ProfileScreen] Logout failed:', error);
+              console.error(' [ProfileScreen] Logout failed:', error);
               Alert.alert(
                 'Error',
                 'No se pudo cerrar la sesión. Inténtalo de nuevo.',
@@ -132,7 +132,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
 
   // Toggle handlers
   const handleNotificationsToggle = useCallback((value: boolean) => {
-    console.log('🔔 [ProfileScreen] Notifications toggle:', value);
+    console.log(' [ProfileScreen] Notifications toggle:', value);
     setNotificationsEnabled(value);
     
     if (value) {
@@ -145,7 +145,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   }, []);
 
   const handleBiometricsToggle = useCallback((value: boolean) => {
-    console.log('👆 [ProfileScreen] Biometrics toggle:', value);
+    console.log(' [ProfileScreen] Biometrics toggle:', value);
     setBiometricsEnabled(value);
     
     if (value) {
@@ -158,7 +158,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   }, []);
 
   const handleDarkModeToggle = useCallback((value: boolean) => {
-    console.log('🌙 [ProfileScreen] Dark mode toggle:', value);
+    console.log(' [ProfileScreen] Dark mode toggle:', value);
     setDarkModeEnabled(value);
     
     if (value) {

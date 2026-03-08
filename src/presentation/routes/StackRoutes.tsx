@@ -170,7 +170,7 @@ export const getRoutesByCategory = () => {
 /**
  * Log stack routes for debugging
  */
-console.log('📚 [StackRoutes] Configured stack routes:', {
+console.log(' [StackRoutes] Configured stack routes:', {
   routes: getStackRouteNames(),
   count: STACK_ROUTES.length,
   categories: Object.keys(getRoutesByCategory()).map(category => ({

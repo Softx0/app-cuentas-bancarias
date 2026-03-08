@@ -219,7 +219,7 @@ export const getTransactionsByAccountId = (
     .sort((a, b) => b.date.getTime() - a.date.getTime()) // Most recent first
     .slice(offset, offset + limit);
 
-  console.log('📊 Retrieved transactions for account:', JSON.stringify({
+  console.log(' Retrieved transactions for account:', JSON.stringify({
     accountId,
     totalTransactions: mockTransactions.filter(t => t.accountId === accountId).length,
     returnedCount: accountTransactions.length,
@@ -290,7 +290,7 @@ export const getFilteredTransactions = (
   // Apply pagination
   const paginatedTransactions = filteredTransactions.slice(offset, offset + limit);
 
-  console.log('🔍 Filtered transactions:', JSON.stringify({
+  console.log(' Filtered transactions:', JSON.stringify({
     filter,
     totalMatching: filteredTransactions.length,
     returnedCount: paginatedTransactions.length,
@@ -310,7 +310,7 @@ export const getTransactionById = (transactionId: string): Transaction | undefin
   const transaction = mockTransactions.find(t => t.id === transactionId);
   
   if (transaction) {
-    console.log('📄 Retrieved transaction by ID:', JSON.stringify({
+    console.log(' Retrieved transaction by ID:', JSON.stringify({
       id: transaction.id,
       type: transaction.type,
       amount: transaction.amount,
@@ -335,7 +335,7 @@ export const createTransaction = (transactionData: Omit<Transaction, 'id'>): Tra
 
   mockTransactions.push(newTransaction);
 
-  console.log('✅ Transaction created:', JSON.stringify({
+  console.log(' Transaction created:', JSON.stringify({
     id: newTransaction.id,
     accountId: newTransaction.accountId,
     type: newTransaction.type,
@@ -359,7 +359,7 @@ export const getRecentTransactions = (accountIds: string[], limit: number = 5): 
     .sort((a, b) => b.date.getTime() - a.date.getTime())
     .slice(0, limit);
 
-  console.log('🕒 Retrieved recent transactions:', JSON.stringify({
+  console.log(' Retrieved recent transactions:', JSON.stringify({
     accountIds,
     transactionCount: recentTransactions.length,
     limit,
@@ -402,7 +402,7 @@ export const getTransactionStats = (accountId: string, startDate?: Date, endDate
       : 0,
   };
 
-  console.log('📈 Transaction statistics:', JSON.stringify({
+  console.log(' Transaction statistics:', JSON.stringify({
     accountId,
     period: {
       startDate: startDate?.toISOString(),
@@ -414,4 +414,4 @@ export const getTransactionStats = (accountId: string, startDate?: Date, endDate
   return stats;
 };
 
-console.log('💳 Mock transactions database initialized with', mockTransactions.length, 'transactions');
+console.log(' Mock transactions database initialized with', mockTransactions.length, 'transactions');

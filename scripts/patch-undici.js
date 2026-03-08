@@ -7,12 +7,12 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔧 Patching undici for Node.js compatibility...');
+console.log(' Patching undici for Node.js compatibility...');
 
 const undiciWebIdlPath = path.join(__dirname, '..', 'node_modules', 'undici', 'lib', 'web', 'webidl', 'index.js');
 
 if (!fs.existsSync(undiciWebIdlPath)) {
-  console.log('⚠️  undici webidl file not found, skipping patch');
+  console.log('  undici webidl file not found, skipping patch');
   process.exit(0);
 }
 
@@ -21,7 +21,7 @@ try {
   
   // Check if already patched
   if (content.includes('// PATCHED: File API compatibility')) {
-    console.log('✅ undici already patched');
+    console.log(' undici already patched');
     process.exit(0);
   }
 
@@ -78,9 +78,9 @@ if (typeof globalThis.Blob === 'undefined') {
   // Write the patched content
   fs.writeFileSync(undiciWebIdlPath, content, 'utf8');
   
-  console.log('✅ undici successfully patched for File API compatibility');
+  console.log(' undici successfully patched for File API compatibility');
   
 } catch (error) {
-  console.error('❌ Failed to patch undici:', error.message);
+  console.error(' Failed to patch undici:', error.message);
   process.exit(1);
 }

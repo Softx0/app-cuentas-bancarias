@@ -1,6 +1,6 @@
 # ButtonCalendar - Documentación
 
-## 📋 Índice
+##  Índice
 
 1. [Introducción](#introducción)
 2. [Características](#características)
@@ -14,11 +14,11 @@
 10. [Mejores Prácticas](#mejores-prácticas)
 11. [Troubleshooting](#troubleshooting)
 
-## 🎯 Introducción
+##  Introducción
 
 `ButtonCalendar` es un componente de calendario para React Native que permite la selección de rangos de fechas. El componente está diseñado para ser altamente personalizable y fácil de usar.
 
-## 🚀 Características
+##  Características
 
 ### Funcionalidades Core
 - Selección de rango de fechas
@@ -26,9 +26,9 @@
 - Personalización completa de estilos
 - Soporte para localización
 - Validación de fechas mínimas y máximas
-- **Componente reutilizable CalendarPickerRangeReusable** ✨
+- **Componente reutilizable CalendarPickerRangeReusable** 
 
-## 📦 Instalación
+##  Instalación
 
 ### Dependencias Requeridas
 
@@ -56,7 +56,7 @@ import CheckRender from './components/security/CheckRender';
 import { DATE_FORMATS, formatDate, obtenerFechaHoy, unAnoHaciaAtras } from './utils/DateUtil';
 ```
 
-## 🎨 Patrón de Implementación
+##  Patrón de Implementación
 
 ### Usando CalendarPickerRangeReusable (Recomendado) ⭐
 
@@ -157,7 +157,7 @@ export default MiComponenteCalendario;
 7. **Funciones de renderizado personalizadas**
 8. **Mejor mantenibilidad**
 
-## 📚 API Reference
+##  API Reference
 
 ### CalendarPickerRangeReusable Props
 
@@ -229,7 +229,7 @@ const calendar = useButtonCalendarReusable(options);
 | `onApplyDates` | `function` | Función para aplicar fechas seleccionadas |
 | `getCalendarConfig` | `function` | Obtiene configuración actual |
 
-## 🔧 Ejemplos de Uso
+##  Ejemplos de Uso
 
 ### Ejemplo Básico
 
@@ -364,7 +364,7 @@ const CalendarioConBotonPersonalizado = () => {
 export default CalendarioConBotonPersonalizado;
 ```
 
-## 🎨 Componentes
+##  Componentes
 
 ### CalendarPickerRangeReusable
 
@@ -384,13 +384,13 @@ Componente reutilizable que encapsula toda la lógica de mostrar fechas seleccio
 
 Componente principal del calendario que maneja la selección de fechas.
 
-## 🔗 Hooks
+##  Hooks
 
 ### useButtonCalendarReusable
 
 Hook que maneja el estado y la lógica del calendario.
 
-## 🎨 Personalización
+##  Personalización
 
 ### Estilos Personalizados
 
@@ -431,7 +431,7 @@ const customIcons = {
 };
 ```
 
-## ✅ Mejores Prácticas
+##  Mejores Prácticas
 
 1. **Usa CalendarPickerRangeReusable** para nuevas implementaciones
 2. **Proporciona testID** para facilitar las pruebas
@@ -441,7 +441,7 @@ const customIcons = {
 6. **Usa placeholder** para mejorar la UX
 7. **Considera el estado disabled** cuando sea apropiado
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Problemas Comunes
 

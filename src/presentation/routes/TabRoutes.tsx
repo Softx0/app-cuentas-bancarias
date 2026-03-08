@@ -142,7 +142,7 @@ export const getTabRouteNames = (): string[] => {
 /**
  * Log tab routes for debugging
  */
-console.log('📱 [TabRoutes] Configured tab routes:', {
+console.log(' [TabRoutes] Configured tab routes:', {
   routes: getTabRouteNames(),
   count: TAB_ROUTES.length,
   initialRoute: TAB_NAVIGATOR_OPTIONS.initialRouteName,

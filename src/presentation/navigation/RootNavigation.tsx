@@ -43,7 +43,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
  * Stack navigator for login and registration screens.
  */
 const AuthStack: React.FC = () => {
-  console.log('🔐 [AuthStack] Component rendered');
+  console.log(' [AuthStack] Component rendered');
 
   return (
     <Stack.Navigator
@@ -79,7 +79,7 @@ const AuthStack: React.FC = () => {
  * Configured with routes from TabRoutes configuration.
  */
 const TabNavigation: React.FC = () => {
-  console.log('📱 [TabNavigation] Component rendered');
+  console.log(' [TabNavigation] Component rendered');
 
   return (
     <Tab.Navigator
@@ -104,7 +104,7 @@ const TabNavigation: React.FC = () => {
  * Main app stack with tabs and additional screens.
  */
 const AppStack: React.FC = () => {
-  console.log('📱 [AppStack] Component rendered');
+  console.log(' [AppStack] Component rendered');
 
   return (
     <Stack.Navigator
@@ -141,26 +141,26 @@ const AppStack: React.FC = () => {
  * Shows AuthStack when not authenticated, AppStack when authenticated.
  */
 const RootNavigation: React.FC = () => {
-  console.log('🧭 [RootNavigation] Component rendered');
+  console.log(' [RootNavigation] Component rendered');
 
   // Get authentication state
   const { isAuthenticated, isLoading } = useAuth();
 
   // Navigation ready handler
   const handleNavigationReady = useCallback(() => {
-    console.log('🧭 [RootNavigation] Navigation is ready', { isAuthenticated, isLoading });
+    console.log(' [RootNavigation] Navigation is ready', { isAuthenticated, isLoading });
     
     // Log initial navigation state for debugging
     if (__DEV__) {
       const state = navigationRef.getState();
-      console.log('🧭 [RootNavigation] Initial state:', JSON.stringify(state, null, 2));
+      console.log(' [RootNavigation] Initial state:', JSON.stringify(state, null, 2));
     }
   }, [isAuthenticated, isLoading]);
 
   // Navigation state change handler for debugging
   const handleNavigationStateChange = useCallback((state: any) => {
     if (__DEV__) {
-      console.log('🧭 [RootNavigation] State changed:', {
+      console.log(' [RootNavigation] State changed:', {
         routeName: navigationRef.getCurrentRoute()?.name,
         params: navigationRef.getCurrentRoute()?.params,
         isAuthenticated,
@@ -171,11 +171,11 @@ const RootNavigation: React.FC = () => {
 
   // Show loading screen while checking auth state
   if (isLoading) {
-    console.log('🔄 [RootNavigation] Auth loading...');
+    console.log(' [RootNavigation] Auth loading...');
     return null; // Or a loading screen component
   }
 
-  console.log('🧭 [RootNavigation] Rendering navigation', { isAuthenticated });
+  console.log(' [RootNavigation] Rendering navigation', { isAuthenticated });
 
   return (
     <NavigationContainer 
@@ -194,7 +194,7 @@ const RootNavigation: React.FC = () => {
  * Log the complete navigation structure for debugging and documentation.
  */
 if (__DEV__) {
-  console.log('🏗️ [RootNavigation] Navigation Structure:', {
+  console.log(' [RootNavigation] Navigation Structure:', {
     authScreens: ['Login', 'Register'],
     tabRoutes: TAB_ROUTES.map(route => route.name),
     stackRoutes: STACK_ROUTES.map(route => route.name),

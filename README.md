@@ -1,23 +1,23 @@
-# 🏦 Banking Application - App Cuentas Bancarias
+#  Banking Application - App Cuentas Bancarias
 
 Una aplicación móvil para gestión bancaria desarrollada con **React Native** y **Expo**, implementando arquitectura limpia y componentes reutilizables.
 
-## 📋 Tabla de Contenidos
+##  Tabla de Contenidos
 
-- [🔧 Requisitos del Sistema](#-requisitos-del-sistema)
-- [⚙️ Instalación del Ambiente de Desarrollo](#️-instalación-del-ambiente-de-desarrollo)
-- [🚀 Configuración del Proyecto](#-configuración-del-proyecto)
-- [🏃‍♂️ Ejecutar la Aplicación](#️-ejecutar-la-aplicación)
-- [📱 Deployment y Distribución](#-deployment-y-distribución)
-- [🛠️ Scripts Disponibles](#️-scripts-disponibles)
-- [🔍 Debugging y Troubleshooting](#-debugging-y-troubleshooting)
-- [📁 Estructura del Proyecto](#-estructura-del-proyecto)
+- [ Requisitos del Sistema](#-requisitos-del-sistema)
+- [ Instalación del Ambiente de Desarrollo](#-instalación-del-ambiente-de-desarrollo)
+- [ Configuración del Proyecto](#-configuración-del-proyecto)
+- [‍ Ejecutar la Aplicación](#-ejecutar-la-aplicación)
+- [ Deployment y Distribución](#-deployment-y-distribución)
+- [ Scripts Disponibles](#-scripts-disponibles)
+- [ Debugging y Troubleshooting](#-debugging-y-troubleshooting)
+- [ Estructura del Proyecto](#-estructura-del-proyecto)
 
 ---
 
-## 🔧 Requisitos del Sistema
+##  Requisitos del Sistema
 
-### 💻 **macOS (Recomendado para desarrollo iOS/Android)**
+###  **macOS (Recomendado para desarrollo iOS/Android)**
 - **macOS**: 12.0 (Monterey) o superior
 - **Xcode**: 14.0 o superior (para desarrollo iOS)
 - **iOS Simulator**: Incluido con Xcode
@@ -30,15 +30,15 @@ Una aplicación móvil para gestión bancaria desarrollada con **React Native** 
 - **Memory**: Mínimo 8GB RAM (16GB recomendado)
 - **Storage**: 50GB libres mínimo
 
-### 🐧 **Linux (Solo desarrollo Android)**
+###  **Linux (Solo desarrollo Android)**
 - **Ubuntu**: 18.04 LTS o superior
 - **Android Studio**: 2022.1.1 o superior
 
 ---
 
-## ⚙️ Instalación del Ambiente de Desarrollo
+##  Instalación del Ambiente de Desarrollo
 
-### 1. 📦 **Gestores de Paquetes**
+### 1.  **Gestores de Paquetes**
 
 #### **macOS**
 ```bash
@@ -87,7 +87,7 @@ choco install nodejs-lts
 # O descargar desde: https://nodejs.org/
 ```
 
-### 3. 🧶 **Yarn (Gestor de Paquetes)**
+### 3.  **Yarn (Gestor de Paquetes)**
 
 ```bash
 # Instalar Yarn globalmente
@@ -97,7 +97,7 @@ npm install -g yarn@1.22.19
 yarn --version  # 1.22.19
 ```
 
-### 4. 📱 **Expo CLI**
+### 4.  **Expo CLI**
 
 ```bash
 # Instalar Expo CLI globalmente
@@ -107,7 +107,7 @@ npm install -g @expo/cli@latest
 expo --version
 ```
 
-### 5. 🔧 **Git**
+### 5.  **Git**
 
 #### **macOS**
 ```bash
@@ -127,7 +127,7 @@ choco install git
 # O descargar desde: https://git-scm.com/download/win
 ```
 
-### 6. 📱 **Desarrollo iOS (Solo macOS)**
+### 6.  **Desarrollo iOS (Solo macOS)**
 
 ```bash
 # Instalar Xcode desde App Store
@@ -141,7 +141,7 @@ sudo xcodebuild -license accept
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 ```
 
-### 7. 📱 **Desarrollo Android (Todos los OS)**
+### 7.  **Desarrollo Android (Todos los OS)**
 
 #### **Instalar Android Studio**
 1. Descargar desde: https://developer.android.com/studio
@@ -161,7 +161,7 @@ ANDROID_HOME = C:\Users\%USERNAME%\AppData\Local\Android\Sdk
 PATH = %ANDROID_HOME%\emulator;%ANDROID_HOME%\platform-tools
 ```
 
-### 8. 🔧 **Herramientas Adicionales**
+### 8.  **Herramientas Adicionales**
 
 ```bash
 # Watchman (para macOS/Linux - mejora performance)
@@ -177,9 +177,9 @@ npm install -g eas-cli
 
 ---
 
-## 🚀 Configuración del Proyecto
+##  Configuración del Proyecto
 
-### 1. 📥 **Clonar el Repositorio**
+### 1.  **Clonar el Repositorio**
 
 ```bash
 # Clonar el proyecto
@@ -188,10 +188,10 @@ cd app-cuentas-bancarias
 
 # Verificar rama
 git branch -a
-git checkout main  # o la rama de desarrollo
+git checkout master  # o la rama de desarrollo
 ```
 
-### 2. 📦 **Instalar Dependencias**
+### 2.  **Instalar Dependencias**
 
 ```bash
 # Instalar dependencias del proyecto
@@ -204,7 +204,7 @@ cd ios && pod install && cd ..
 yarn start --clear
 ```
 
-### 3. 🔐 **Configurar Variables de Entorno**
+### 3.  **Configurar Variables de Entorno**
 
 ```bash
 # Copiar archivo de ejemplo
@@ -248,7 +248,7 @@ EXPO_PUBLIC_DEBUG_MODE=true
 EXPO_PUBLIC_LOG_LEVEL=debug
 ```
 
-### 4. 🔧 **Verificar Configuración**
+### 4.  **Verificar Configuración**
 
 ```bash
 # Ejecutar script de verificación
@@ -260,9 +260,9 @@ expo doctor
 
 ---
 
-## 🏃‍♂️ Ejecutar la Aplicación
+## ‍ Ejecutar la Aplicación
 
-### 📱 **Desarrollo Local**
+###  **Desarrollo Local**
 
 ```bash
 # Iniciar Metro bundler
@@ -279,7 +279,7 @@ yarn web              # Navegador web
 yarn ios-simulator    # iPhone 16 Pro Max predefinido
 ```
 
-### 🔄 **Scripts de Desarrollo**
+###  **Scripts de Desarrollo**
 
 ```bash
 # Limpiar cache y reiniciar
@@ -297,22 +297,22 @@ yarn lint:fix          # Corregir automáticamente
 yarn format            # Formatear con Prettier
 ```
 
-### 🔐 **Credenciales de Prueba para Desarrollo**
+###  **Credenciales de Prueba para Desarrollo**
 
 Una vez que la aplicación esté funcionando, usa estas credenciales predefinidas para probar el login:
 
 ```bash
 # === CUENTAS DE PRUEBA DISPONIBLES ===
-✅ eduardo@example.com    / password123
-✅ maria@example.com      / password123  
-✅ carlos@example.com     / password123
-✅ demo@banking.com       / demo123
-✅ test@banking.com       / test123
+ eduardo@example.com    / password123
+ maria@example.com      / password123  
+ carlos@example.com     / password123
+ demo@banking.com       / demo123
+ test@banking.com       / test123
 ```
 
-> **💡 Nota:** Estas credenciales funcionan con el sistema de autenticación mock integrado para desarrollo. No necesitas configurar un backend real para probar la aplicación.
+> ** Nota:** Estas credenciales funcionan con el sistema de autenticación mock integrado para desarrollo. No necesitas configurar un backend real para probar la aplicación.
 
-### 📲 **Probar en Dispositivos**
+###  **Probar en Dispositivos**
 
 #### **1. Expo Go (Más fácil para testing)**
 1. Instalar **Expo Go** desde App Store/Google Play
@@ -332,9 +332,9 @@ eas build --profile development --platform ios --local
 
 ---
 
-## 📱 Deployment y Distribución
+##  Deployment y Distribución
 
-### 🏗️ **Builds de Producción**
+###  **Builds de Producción**
 
 #### **Configurar EAS (Expo Application Services)**
 ```bash
@@ -357,7 +357,7 @@ eas build --platform android --profile production
 eas build --platform ios --profile production --local
 ```
 
-### 🚀 **Distribución**
+###  **Distribución**
 
 #### **TestFlight (iOS)**
 ```bash
@@ -382,7 +382,7 @@ eas update --auto
 
 ---
 
-## 🛠️ Scripts Disponibles
+##  Scripts Disponibles
 
 ```bash
 # === DESARROLLO ===
@@ -415,9 +415,9 @@ yarn postinstall          # Scripts post-instalación
 
 ---
 
-## 🔍 Debugging y Troubleshooting
+##  Debugging y Troubleshooting
 
-### 🚨 **Problemas Comunes**
+###  **Problemas Comunes**
 
 #### **1. App Crashea al Iniciar**
 ```bash
@@ -452,8 +452,8 @@ grep -r "SF Pro" src/ themes/
 # Ya está solucionado con sistema mock para desarrollo
 
 # Verificar que estás usando las credenciales correctas:
-✅ eduardo@example.com / password123
-✅ demo@banking.com / demo123
+ eduardo@example.com / password123
+ demo@banking.com / demo123
 
 # Si persisten problemas de JWT:
 # La app usa tokens mock en desarrollo automáticamente
@@ -466,7 +466,7 @@ grep -r "SF Pro" src/ themes/
 yarn add react@18.2.0 react-dom@18.2.0
 ```
 
-### 📊 **Logs y Debugging**
+###  **Logs y Debugging**
 
 ```bash
 # Logs detallados
@@ -480,7 +480,7 @@ yarn start --verbose
 # Instalar desde: https://fbflipper.com/
 ```
 
-### 🔧 **Reset Completo**
+###  **Reset Completo**
 
 ```bash
 # Script de reset total
@@ -496,62 +496,62 @@ yarn start --clear
 
 ---
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 app-cuentas-bancarias/
-├── 📱 App.js                          # Entry point principal
-├── 🔧 index.js                        # Registro de componente raíz
-├── ⚙️ metro.config.js                  # Configuración Metro bundler
-├── 📋 package.json                     # Dependencias y scripts
-├── 🌍 env.example                      # Template variables entorno
+├──  App.js                          # Entry point principal
+├──  index.js                        # Registro de componente raíz
+├──  metro.config.js                  # Configuración Metro bundler
+├──  package.json                     # Dependencias y scripts
+├──  env.example                      # Template variables entorno
 ├── 
-├── 📁 src/                             # Código fuente principal
-│   ├── 🏗️ infrastructure/              # Capa de infraestructura
+├──  src/                             # Código fuente principal
+│   ├──  infrastructure/              # Capa de infraestructura
 │   │   └── services/                   # Servicios externos
-│   ├── 🎯 domain/                      # Lógica de negocio
-│   ├── 🎨 presentation/                # UI y navegación
+│   ├──  domain/                      # Lógica de negocio
+│   ├──  presentation/                # UI y navegación
 │   │   ├── navigation/                 # Configuración navegación
 │   │   └── screens/                    # Pantallas de la app
-│   └── 🔧 shared/                      # Utilidades compartidas
+│   └──  shared/                      # Utilidades compartidas
 ├── 
-├── 🎨 components/                      # Componentes reutilizables
+├──  components/                      # Componentes reutilizables
 │   ├── custom-button/                  # Botones personalizados
 │   ├── custom-input/                   # Inputs personalizados
 │   ├── CalendarReusable/               # Calendario
 │   └── [otros componentes]/
 ├── 
-├── 🎨 themes/                          # Sistema de diseño
+├──  themes/                          # Sistema de diseño
 │   ├── Colors.js                       # Paleta de colores
 │   ├── Fonts.js                        # Tipografías
 │   └── Metrics.js                      # Espaciados y métricas
 ├── 
-├── 🔧 utils/                           # Utilidades generales
-├── 📱 assets/                          # Recursos estáticos
+├──  utils/                           # Utilidades generales
+├──  assets/                          # Recursos estáticos
 │   ├── icons/                          # Iconos SVG
 │   ├── images/                         # Imágenes
 │   └── fonts/                          # Fuentes personalizadas
 ├── 
-├── 📚 docs/                            # Documentación
-├── 🔧 scripts/                         # Scripts de automatización
+├──  docs/                            # Documentación
+├──  scripts/                         # Scripts de automatización
 │   └── debug-check.js                  # Script verificación
-└── 📱 ios/ & android/                  # Configuración nativa
+└──  ios/ & android/                  # Configuración nativa
 ```
 
 ---
 
-## 🔐 Seguridad y Variables de Entorno
+##  Seguridad y Variables de Entorno
 
-### 🚨 **¡IMPORTANTE!**
-- ❌ **NUNCA** commitear el archivo `.env` al repositorio
-- ✅ Usar `env.example` como template
-- ✅ Agregar `.env` al `.gitignore`
-- ✅ Usar variables `EXPO_PUBLIC_` para valores que pueden ser públicos
-- ✅ Mantener secrets en variables sin prefijo (solo para builds)
+###  **¡IMPORTANTE!**
+-  **NUNCA** commitear el archivo `.env` al repositorio
+-  Usar `env.example` como template
+-  Agregar `.env` al `.gitignore`
+-  Usar variables `EXPO_PUBLIC_` para valores que pueden ser públicos
+-  Mantener secrets en variables sin prefijo (solo para builds)
 
 ---
 
-## 👥 Contribuir
+##  Contribuir
 
 1. Fork del repositorio
 2. Crear rama feature: `git checkout -b feature/nueva-funcionalidad`
@@ -561,7 +561,7 @@ app-cuentas-bancarias/
 
 ---
 
-## 🚀 Stack Tecnológico
+##  Stack Tecnológico
 
 - **Frontend**: React Native 0.79.5
 - **Framework**: Expo 53.x
@@ -579,4 +579,4 @@ app-cuentas-bancarias/
 
 ---
 
-**🏦 Banking Application** - Desarrollado con ❤️ por Eduardo Valenzuela
+** Banking Application** - Desarrollado con  por Eduardo Valenzuela

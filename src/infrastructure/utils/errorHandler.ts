@@ -413,4 +413,4 @@ export const handleValidationErrors = (validationErrors: any[]): UserErrorMessag
   return globalErrorHandler.handleValidationErrors(validationErrors);
 };
 
-console.log('🛡️ Global error handler initialized');
+console.log(' Global error handler initialized');

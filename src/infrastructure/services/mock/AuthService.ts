@@ -463,4 +463,4 @@ class MockAuthService {
  */
 export const mockAuthService = new MockAuthService();
 
-console.log('🔐 Mock Authentication Service initialized');
+console.log(' Mock Authentication Service initialized');

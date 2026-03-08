@@ -25,7 +25,7 @@ const navigate = <T extends keyof RootStackParamList>(
   name: T, 
   params?: RootStackParamList[T]
 ): void => {
-  console.log(`🧭 [NavigationService] Navigating to: ${String(name)}`, 
+  console.log(` [NavigationService] Navigating to: ${String(name)}`, 
     params ? JSON.stringify(params, null, 2) : "no params"
   );
 
@@ -33,10 +33,10 @@ const navigate = <T extends keyof RootStackParamList>(
     try {
       navigationRef.navigate(name as any, params as any);
     } catch (error) {
-      console.error(`❌ [NavigationService] Navigation error to ${String(name)}:`, error);
+      console.error(` [NavigationService] Navigation error to ${String(name)}:`, error);
     }
   } else {
-    console.warn(`⚠️ [NavigationService] Navigation not ready for: ${String(name)}`);
+    console.warn(` [NavigationService] Navigation not ready for: ${String(name)}`);
   }
 };
 
@@ -44,7 +44,7 @@ const navigate = <T extends keyof RootStackParamList>(
  * Enhanced goBack with safety checks and fallback
  */
 const goBack = (): void => {
-  console.log("🔙 [NavigationService] Going back");
+  console.log(" [NavigationService] Going back");
 
   if (navigationRef.isReady()) {
     try {
@@ -53,11 +53,11 @@ const goBack = (): void => {
       if (canGoBack) {
         navigationRef.goBack();
       } else {
-        console.warn("⚠️ [NavigationService] Cannot go back - navigating to TabMenu");
+        console.warn(" [NavigationService] Cannot go back - navigating to TabMenu");
         navigateAndReset("TabMenu");
       }
     } catch (error) {
-      console.error("❌ [NavigationService] GoBack error:", error);
+      console.error(" [NavigationService] GoBack error:", error);
       // Fallback to safe navigation
       navigateAndReset("TabMenu");
     }
@@ -71,13 +71,13 @@ const push = <T extends keyof RootStackParamList>(
   routeName: T, 
   params?: RootStackParamList[T]
 ): void => {
-  console.log(`📤 [NavigationService] Pushing: ${String(routeName)}`);
+  console.log(` [NavigationService] Pushing: ${String(routeName)}`);
   
   if (navigationRef.isReady()) {
     try {
       navigationRef.dispatch(StackActions.push(routeName as string, params));
     } catch (error) {
-      console.error(`❌ [NavigationService] Push error:`, error);
+      console.error(` [NavigationService] Push error:`, error);
     }
   }
 };
@@ -89,7 +89,7 @@ const navigateAndReset = <T extends keyof RootStackParamList>(
   routeName: T, 
   params?: RootStackParamList[T]
 ): void => {
-  console.log(`🔄 [NavigationService] Resetting to: ${String(routeName)}`);
+  console.log(` [NavigationService] Resetting to: ${String(routeName)}`);
   
   if (navigationRef.isReady()) {
     try {
@@ -100,7 +100,7 @@ const navigateAndReset = <T extends keyof RootStackParamList>(
         })
       );
     } catch (error) {
-      console.error(`❌ [NavigationService] Reset error:`, error);
+      console.error(` [NavigationService] Reset error:`, error);
     }
   }
 };
@@ -112,7 +112,7 @@ const getCurrentRouteName = (): string | undefined => {
   try {
     return navigationRef.getCurrentRoute()?.name;
   } catch (error) {
-    console.error("❌ [NavigationService] Error getting current route:", error);
+    console.error(" [NavigationService] Error getting current route:", error);
     return undefined;
   }
 };
@@ -124,7 +124,7 @@ const getCurrentRouteParams = (): any => {
   try {
     return navigationRef.getCurrentRoute()?.params;
   } catch (error) {
-    console.error("❌ [NavigationService] Error getting current route params:", error);
+    console.error(" [NavigationService] Error getting current route params:", error);
     return undefined;
   }
 };
@@ -137,7 +137,7 @@ const getParam = <T extends keyof RootStackParamList>(
   try {
     return (route?.params as any)?.[param];
   } catch (error) {
-    console.error("❌ [NavigationService] Error getting param:", error);
+    console.error(" [NavigationService] Error getting param:", error);
     return undefined;
   }
 };
@@ -148,7 +148,7 @@ const getAllParams = <T extends keyof RootStackParamList>(
   try {
     return route?.params;
   } catch (error) {
-    console.error("❌ [NavigationService] Error getting all params:", error);
+    console.error(" [NavigationService] Error getting all params:", error);
     return undefined;
   }
 };
@@ -161,7 +161,7 @@ const addListenerEvent = (event: string, callback: () => void): (() => void) => 
     });
     return unsubscribe;
   } catch (error) {
-    console.error("❌ [NavigationService] Error adding listener:", error);
+    console.error(" [NavigationService] Error adding listener:", error);
     return () => {}; // Return empty cleanup function
   }
 };
@@ -180,7 +180,7 @@ const getNavigationState = (): any => {
   try {
     return navigationRef.getState();
   } catch (error) {
-    console.error("❌ [NavigationService] Error getting navigation state:", error);
+    console.error(" [NavigationService] Error getting navigation state:", error);
     return null;
   }
 };

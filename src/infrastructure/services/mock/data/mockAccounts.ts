@@ -80,7 +80,7 @@ export const mockAccounts: BankAccount[] = [
 export const getAccountsByUserId = (userId: string): BankAccount[] => {
   const userAccounts = mockAccounts.filter(account => account.userId === userId && account.isActive);
   
-  console.log('🏦 Retrieved accounts for user:', JSON.stringify({
+  console.log(' Retrieved accounts for user:', JSON.stringify({
     userId,
     accountCount: userAccounts.length,
     accounts: userAccounts.map(acc => ({
@@ -103,7 +103,7 @@ export const getAccountById = (accountId: string): BankAccount | undefined => {
   const account = mockAccounts.find(acc => acc.id === accountId && acc.isActive);
   
   if (account) {
-    console.log('🏦 Retrieved account by ID:', JSON.stringify({
+    console.log(' Retrieved account by ID:', JSON.stringify({
       id: account.id,
       type: account.accountType,
       balance: account.balance,
@@ -144,7 +144,7 @@ export const updateAccountBalance = (
       account.lastTransactionDate = new Date();
     }
     
-    console.log('💰 Account balance updated:', JSON.stringify({
+    console.log(' Account balance updated:', JSON.stringify({
       accountId: account.id,
       accountNumber: `****${account.accountNumber.slice(-4)}`,
       oldBalance,
@@ -181,7 +181,7 @@ export const hasSufficientFunds = (accountId: string, amount: number): boolean =
   
   const sufficient = account.balance >= amount;
   
-  console.log('💳 Checking sufficient funds:', JSON.stringify({
+  console.log(' Checking sufficient funds:', JSON.stringify({
     accountId: account.id,
     accountNumber: `****${account.accountNumber.slice(-4)}`,
     currentBalance: account.balance,
@@ -201,7 +201,7 @@ export const getTotalBalance = (userId: string): number => {
   const userAccounts = getAccountsByUserId(userId);
   const total = userAccounts.reduce((sum, account) => sum + account.balance, 0);
   
-  console.log('📊 Total balance calculated:', JSON.stringify({
+  console.log(' Total balance calculated:', JSON.stringify({
     userId,
     accountCount: userAccounts.length,
     totalBalance: total,
@@ -236,4 +236,4 @@ export const isValidAccountNumber = (accountNumber: string): boolean => {
   return pattern.test(accountNumber);
 };
 
-console.log('🏦 Mock accounts database initialized with', mockAccounts.length, 'accounts');
+console.log(' Mock accounts database initialized with', mockAccounts.length, 'accounts');

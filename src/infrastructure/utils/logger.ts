@@ -89,7 +89,7 @@ class Logger {
     const entry = this.createLogEntry('debug', message, data, context);
     
     if (!this.isProduction) {
-      console.log(`🐛 ${this.formatLogEntry(entry)}`);
+      console.log(` ${this.formatLogEntry(entry)}`);
     }
   }
 
@@ -118,7 +118,7 @@ class Logger {
 
     const entry = this.createLogEntry('warn', message, data, context);
     
-    console.warn(`⚠️ ${this.formatLogEntry(entry)}`);
+    console.warn(` ${this.formatLogEntry(entry)}`);
   }
 
   /**
@@ -140,7 +140,7 @@ class Logger {
 
     const entry = this.createLogEntry('error', message, errorData, context);
     
-    console.error(`🚫 ${this.formatLogEntry(entry)}`);
+    console.error(` ${this.formatLogEntry(entry)}`);
   }
 
   /**

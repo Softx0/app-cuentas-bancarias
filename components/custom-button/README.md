@@ -6,7 +6,7 @@ This folder contains three distinct button components, each designed for specifi
 
 ## Button Types
 
-### 1. 🔵 **ReusableButton** - Primary Action Button
+### 1.  **ReusableButton** - Primary Action Button
 **File**: `ReusableButton.js`
 
 **Purpose**: Main call-to-action button for forms and primary user actions.
@@ -35,7 +35,7 @@ This folder contains three distinct button components, each designed for specifi
 
 ---
 
-### 2. ⚪ **ButtonLiteReusable** - List/Menu Button
+### 2.  **ButtonLiteReusable** - List/Menu Button
 **File**: `ButtonLiteReusable.js`
 
 **Purpose**: Subtle button for list items, menu options, and secondary actions.
@@ -68,7 +68,7 @@ This folder contains three distinct button components, each designed for specifi
 
 ---
 
-### 3. 📱 **ButtonNavigationBarReusable** - Navigation Bar
+### 3.  **ButtonNavigationBarReusable** - Navigation Bar
 **File**: `ButtonNavigationBarReusable.js`
 
 **Purpose**: Multi-button navigation component for tab-based interfaces.
