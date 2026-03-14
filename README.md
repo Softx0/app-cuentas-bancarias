@@ -563,8 +563,8 @@ app-cuentas-bancarias/
 
 ##  Stack Tecnológico
 
-- **Frontend**: React Native 0.79.5
-- **Framework**: Expo 53.x
+- **Frontend**: React Native 0.83.x +
+- **Framework**: Expo 55.x
 - **Navigation**: React Navigation 7.x
 - **State Management**: React Hooks + Context API + BankingContext
 - **Styling**: StyleSheet + Design System
