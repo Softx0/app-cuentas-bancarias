@@ -24,7 +24,7 @@ Una aplicación móvil para gestión bancaria desarrollada con **React Native** 
 - **Memory**: Mínimo 8GB RAM (16GB recomendado)
 - **Storage**: 50GB libres mínimo
 
-### 🪟 **Windows (Solo desarrollo Android)**
+### **Windows (Solo desarrollo Android)**
 - **Windows**: 10/11 (64-bit)
 - **Android Studio**: 2022.1.1 o superior
 - **Memory**: Mínimo 8GB RAM (16GB recomendado)
@@ -58,7 +58,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 choco --version
 ```
 
-### 2. 🟢 **Node.js (CRÍTICO - Versión Específica)**
+### 2. **Node.js (CRÍTICO - Versión Específica)**
 
 ```bash
 # Versión REQUERIDA para este proyecto
