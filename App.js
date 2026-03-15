@@ -21,6 +21,18 @@ import RootNavigation from "./src/presentation/navigation/RootNavigation";
 // Import root provider
 import { RootProvider } from "./src/context/providers/RootProvider";
 
+import { Amplify } from "aws-amplify";
+import { generateClient } from 'aws-amplify/data';
+// import type { Schema } from './amplify/data/resource';
+// import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
+
+import outputs from "./amplify_outputs.json";
+
+Amplify.configure(outputs);
+
+// Create and export data client
+export const dataClient = generateClient<Schema>();
+
 /**
  * Error Boundary Component for catching JavaScript errors
  */

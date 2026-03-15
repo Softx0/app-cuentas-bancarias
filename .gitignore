@@ -120,6 +120,7 @@ storybook-static/
 .cache/
 .parcel-cache/
 .next/
+.vscode/
 
 # ===== ESPECÍFICO PARA BANKING APP =====
 # Datos de prueba sensibles
@@ -161,6 +162,10 @@ eas-build-*.tar.gz
 TODO-personal.md
 NOTES-dev.md
 skills-lock.json
+
+# ===== AWS =====
+amplify_outputs.json
+.amplify/
 
 # =====================================
 # 🔐 IMPORTANTE PARA SEGURIDAD
