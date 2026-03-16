@@ -1,31 +1,41 @@
 /**
- * @fileoverview Authentication context for managing user authentication state
- * @author Eduardo Valenzuela
- * @version 1.0.0
+ * @fileoverview Authentication context powered by AWS Amplify Auth
+ * @version 2.0.0
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  confirmSignUp,
+  getCurrentUser,
+  signIn,
+  signOut,
+  signUp,
+} from 'aws-amplify/auth';
 import React, { createContext, useCallback, useContext, useEffect, useReducer } from 'react';
 
-import { appConfig, isDevelopment } from '../../infrastructure/config/app.config';
-import { apiService } from '../../infrastructure/services/api.service';
-import { mockAuthService } from '../../infrastructure/services/mock/AuthService';
-import { inactivityManager } from '../../infrastructure/utils/inactivity';
-import { jwtUtil } from '../../infrastructure/utils/jwt';
 import { logger } from '../../infrastructure/utils/logger';
-import { STORAGE_KEYS } from '../../shared/constants';
-import type { AuthState, AuthToken, User } from '../../shared/types';
 
-/**
- * Authentication actions
- */
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+export interface AmplifyUser {
+  userId: string;
+  username: string; // email in our case
+}
+
+interface AuthState {
+  user: AmplifyUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  /** Set when sign-up needs OTP confirmation */
+  pendingConfirmationEmail: string | null;
+}
+
 type AuthAction =
   | { type: 'AUTH_LOADING'; payload: boolean }
-  | { type: 'AUTH_SUCCESS'; payload: { user: User; tokens: AuthToken } }
+  | { type: 'AUTH_SUCCESS'; payload: AmplifyUser }
   | { type: 'AUTH_ERROR'; payload: string }
   | { type: 'AUTH_LOGOUT' }
-  | { type: 'TOKEN_REFRESH'; payload: AuthToken }
-  | { type: 'USER_UPDATE'; payload: User };
+  | { type: 'PENDING_CONFIRMATION'; payload: string };
 
 /**
  * Authentication context value interface
@@ -176,96 +186,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  /**
-   * Clears stored authentication data
-   */
-  const clearAuthData = useCallback(async (): Promise<void> => {
-    try {
-      await Promise.all([
-        AsyncStorage.removeItem(STORAGE_KEYS.USER_DATA),
-        AsyncStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN),
-        AsyncStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN),
-      ]);
-      
-      apiService.clearAuthToken();
-      
-      logger.info('Auth data cleared', undefined, 'AUTH');
-    } catch (error) {
-      logger.error('Failed to clear auth data', error, 'AUTH');
-    }
-  }, []);
-
-  /**
-   * Logs in a user with email and password
-   * @param email User email
-   * @param password User password
-   */
-  const login = useCallback(async (email: string, password: string): Promise<void> => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       dispatch({ type: 'AUTH_LOADING', payload: true });
-      
-      logger.info('Attempting user login', { email }, 'AUTH');
-      
-      // Use mock service in development, real API in production
-      let response;
-      if (isDevelopment() || appConfig.apiUrl.includes('example.com')) {
-        logger.info('🧪 Using mock authentication service', { email }, 'AUTH');
-        const mockResponse = await mockAuthService.login({ email, password });
-        
-        if (!mockResponse.success) {
-          throw new Error(mockResponse.message || 'Authentication failed');
-        }
-        
-        const { user, tokens } = mockResponse.data;
-        response = { data: { user, tokens } };
-      } else {
-        logger.info('🌐 Using real API authentication service', { email }, 'AUTH');
-        response = await apiService.post<{ user: User; tokens: AuthToken }>('/auth/login', {
-          email,
+      const { isSignedIn, nextStep } = await signIn({
+        username: email,
           password,
+        options: { authFlowType: 'USER_PASSWORD_AUTH' },
         });
-      }
-      
-      const { user, tokens } = response.data;
-      
-      await storeAuthData(user, tokens);
-      
-      dispatch({ type: 'AUTH_SUCCESS', payload: { user, tokens } });
-      
-      // Reset inactivity timer after successful login
-      inactivityManager.resetTimer();
-      
-      logger.info('User login successful', { userId: user.id }, 'AUTH');
-    } catch (error: any) {
-      const errorMessage = error.message || 'Login failed';
-      dispatch({ type: 'AUTH_ERROR', payload: errorMessage });
-      logger.error('User login failed', error, 'AUTH');
-      throw error;
-    }
-  }, [storeAuthData]);
 
-  /**
-   * Registers a new user
-   * @param userData User registration data
-   */
-  const register = useCallback(async (userData: RegisterData): Promise<void> => {
-    try {
-      dispatch({ type: 'AUTH_LOADING', payload: true });
-      
-      logger.info('Attempting user registration', { email: userData.email }, 'AUTH');
-      
-      // Use mock service in development, real API in production
-      let response;
-      if (isDevelopment() || appConfig.apiUrl.includes('example.com')) {
-        logger.info('🧪 Using mock registration service', { email: userData.email }, 'AUTH');
-        const mockResponse = await mockAuthService.register(userData as any);
-        
-        if (!mockResponse.success) {
-          throw new Error(mockResponse.message || 'Registration failed');
-        }
-        
-        const { user, tokens } = mockResponse.data;
-        response = { data: { user, tokens } };
+      if (isSignedIn) {
+        const { userId, username } = await getCurrentUser();
+        dispatch({ type: 'AUTH_SUCCESS', payload: { userId, username } });
+        logger.info('Login successful', { userId }, 'AUTH');
+      } else if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
+        dispatch({ type: 'PENDING_CONFIRMATION', payload: email });
+        throw new Error('Debes confirmar tu cuenta. Revisa tu correo.');
       } else {
         logger.info('🌐 Using real API registration service', { email: userData.email }, 'AUTH');
         response = await apiService.post<{ user: User; tokens: AuthToken }>('/auth/register', userData);
@@ -314,209 +250,93 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await clearAuthData();
       dispatch({ type: 'AUTH_LOGOUT' });
     }
-  }, [state.user?.id, state.isAuthenticated, state.tokens?.refreshToken, clearAuthData]);
+  }, []);
 
-  /**
-   * Refreshes the access token
-   */
-  const refreshToken = useCallback(async (): Promise<void> => {
+  const register = useCallback(async (email: string, password: string) => {
+    logger.info('Datos del registro, ', { email, password });
     try {
-      if (!state.tokens?.refreshToken) {
-        throw new Error('No refresh token available');
-      }
-      
-      logger.debug('Refreshing access token', undefined, 'AUTH');
-      
-      const response = await apiService.post<{ tokens: AuthToken }>('/auth/refresh', {
-        refreshToken: state.tokens.refreshToken,
+      const response = await signUp({
+        username: email,
+        password,
+        options: { userAttributes: { email, preferred_username: email } },
       });
       
-      const { tokens } = response.data;
+      logger.info(`response from sign up: ${JSON.stringify(response, null, 2)}`);
       
-      await AsyncStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, tokens.accessToken);
-      if (tokens.refreshToken) {
-        await AsyncStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+      const { nextStep } = response;
+
+      if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
+        dispatch({ type: 'PENDING_CONFIRMATION', payload: email });
+        logger.info('Sign-up pending confirmation', { email }, 'AUTH');
+      } else {
+        // Auto-confirmed (unlikely with email login but handle it)
+        const { userId, username } = await getCurrentUser();
+        dispatch({ type: 'AUTH_SUCCESS', payload: { userId, username } });
       }
-      
-      apiService.setAuthToken(tokens.accessToken);
-      
-      dispatch({ type: 'TOKEN_REFRESH', payload: tokens });
-      
-      logger.info('Access token refreshed successfully', undefined, 'AUTH');
-    } catch (error) {
-      logger.error('Token refresh failed', error, 'AUTH');
-      await logout();
-      throw error;
+    } catch (error: any) {
+      const msg = mapAmplifyError(error);
+      dispatch({ type: 'AUTH_ERROR', payload: msg });
+      throw new Error(msg);
     }
-  }, [state.tokens?.refreshToken, logout]);
+  }, []);
 
-  /**
-   * Updates user data
-   * @param userData Partial user data to update
-   */
-  const updateUser = useCallback(async (userData: Partial<User>): Promise<void> => {
-    try {
-      if (!state.user) {
-        throw new Error('No user to update');
-      }
-      
-      logger.debug('Updating user data', { userId: state.user.id }, 'AUTH');
-      
-      const response = await apiService.put<{ user: User }>(`/users/${state.user.id}`, userData);
-      
-      const updatedUser = response.data.user;
-      
-      await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(updatedUser));
-      
-      dispatch({ type: 'USER_UPDATE', payload: updatedUser });
-      
-      logger.info('User data updated successfully', { userId: updatedUser.id }, 'AUTH');
-    } catch (error) {
-      logger.error('User update failed', error, 'AUTH');
-      throw error;
-    }
-  }, [state.user]);
-
-  /**
-   * Checks if current token is valid
-   * @returns True if token is valid
-   */
-  const checkTokenValidity = useCallback(async (): Promise<boolean> => {
-    try {
-      if (!state.tokens?.accessToken) return false;
-      
-      const verification = await jwtUtil.verifyToken(state.tokens.accessToken);
-      
-      if (!verification.isValid) {
-        if (verification.isExpired && state.tokens.refreshToken) {
-          await refreshToken();
-          return true;
-        }
-        return false;
-      }
-      
-      return true;
-    } catch (error) {
-      logger.error('Token validity check failed', error, 'AUTH');
-      return false;
-    }
-  }, [state.tokens?.accessToken, state.tokens?.refreshToken, refreshToken]);
-
-  /**
-   * Clears authentication state
-   */
-  const clearAuthState = useCallback(async (): Promise<void> => {
-    await clearAuthData();
-    dispatch({ type: 'AUTH_LOGOUT' });
-  }, [clearAuthData]);
-
-  /**
-   * Restores authentication session from storage
-   */
-  const restoreSession = useCallback(async (): Promise<void> => {
+  const confirmRegistration = useCallback(async (email: string, code: string) => {
     try {
       dispatch({ type: 'AUTH_LOADING', payload: true });
+      const { isSignUpComplete } = await confirmSignUp({ username: email, confirmationCode: code });
       
-      logger.debug('Restoring authentication session', undefined, 'AUTH');
-      
-      const [userDataStr, accessToken, refreshToken] = await Promise.all([
-        AsyncStorage.getItem(STORAGE_KEYS.USER_DATA),
-        AsyncStorage.getItem(STORAGE_KEYS.AUTH_TOKEN),
-        AsyncStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN),
-      ]);
-      
-      if (!userDataStr || !accessToken) {
+      if (isSignUpComplete) {
+        // After confirmation the user still needs to sign in
         dispatch({ type: 'AUTH_LOADING', payload: false });
-        return;
-      }
-      
-      const user = JSON.parse(userDataStr) as User;
-      const tokens: AuthToken = {
-        accessToken,
-        refreshToken: refreshToken || undefined,
-        expiresIn: 3600, // Will be updated after token verification
-        tokenType: 'Bearer',
-      };
-      
-      // Verify token validity
-      const isValid = await checkTokenValidity();
-      
-      if (isValid) {
-        apiService.setAuthToken(accessToken);
-        dispatch({ type: 'AUTH_SUCCESS', payload: { user, tokens } });
-        logger.info('Authentication session restored', { userId: user.id }, 'AUTH');
+        logger.info('Confirmation successful', { email }, 'AUTH');
       } else {
-        await clearAuthData();
-        dispatch({ type: 'AUTH_LOADING', payload: false });
-        logger.warn('Stored tokens are invalid, session not restored', undefined, 'AUTH');
-      }
-    } catch (error) {
-      logger.error('Session restoration failed', error, 'AUTH');
-      await clearAuthData();
-      dispatch({ type: 'AUTH_LOADING', payload: false });
+        dispatch({ type: 'AUTH_ERROR', payload: 'Confirmación incompleta' });
+        throw new Error('Confirmación incompleta');
     }
-  }, [checkTokenValidity, clearAuthData]);
-
-  /**
-   * Checks if session is valid
-   * @returns True if session is valid
-   */
-  const isSessionValid = useCallback((): boolean => {
-    return state.isAuthenticated && state.tokens?.accessToken != null;
-  }, [state.isAuthenticated, state.tokens?.accessToken]);
-
-  // Setup inactivity management
-  useEffect(() => {
-    const handleInactivity = (event: string) => {
-      if (event === 'timeout' && state.isAuthenticated) {
-        logger.warn('Session timed out due to inactivity', undefined, 'AUTH');
-        logout();
-      }
-    };
-
-    inactivityManager.onInactivityEvent('auth', handleInactivity);
-
-    return () => {
-      inactivityManager.removeInactivityCallback('auth');
-    };
-  }, [state.isAuthenticated, logout]);
-
-  // Initialize session on mount
-  useEffect(() => {
-    restoreSession();
-  }, [restoreSession]);
-
-  const contextValue: AuthContextValue = {
-    ...state,
-    login,
-    logout,
-    register,
-    refreshToken,
-    updateUser,
-    checkTokenValidity,
-    clearAuthState,
-    restoreSession,
-    isSessionValid,
-  };
+    } catch (error: any) {
+      const msg = mapAmplifyError(error);
+      dispatch({ type: 'AUTH_ERROR', payload: msg });
+      throw new Error(msg);
+    }
+  }, []);
 
   return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={{ ...state, login, logout, register, confirmRegistration }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-/**
- * Hook to use authentication context
- * @returns Authentication context value
- * @throws Error if used outside AuthProvider
- */
 export const useAuth = (): AuthContextValue => {
-  const context = useContext(AuthContext);
-  
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
 };
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function mapAmplifyError(error: any): string {
+  const code = error?.name || error?.code || '';
+  const message = error?.message || '';
+
+  if (code === 'UserNotFoundException' || code === 'NotAuthorizedException') {
+    return 'Correo o contraseña incorrectos';
+  }
+  if (code === 'UserNotConfirmedException') {
+    return 'Debes confirmar tu cuenta. Revisa tu correo.';
+  }
+  if (code === 'UsernameExistsException') {
+    return 'Ya existe una cuenta con ese correo electrónico';
+  }
+  if (code === 'CodeMismatchException') {
+    return 'Código de verificación incorrecto';
+  }
+  if (code === 'ExpiredCodeException') {
+    return 'El código ha expirado. Solicita uno nuevo.';
+  }
+  if (code === 'LimitExceededException') {
+    return 'Demasiados intentos. Espera un momento.';
+  }
+  if (message) return message;
+  return 'Ocurrió un error inesperado';
+}
