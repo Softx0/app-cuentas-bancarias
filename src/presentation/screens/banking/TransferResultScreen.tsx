@@ -91,7 +91,7 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
    */
   const loadTransferDetails = useCallback(async () => {
     try {
-      logger.info('📄 Loading transfer result details', { transactionId }, 'TRANSFER_RESULT_SCREEN');
+      logger.info('Loading transfer result details', { transactionId }, 'TRANSFER_RESULT_SCREEN');
 
       setState(prev => ({ ...prev, loading: true, error: null }));
 
@@ -117,7 +117,7 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
         error: null,
       }));
 
-      logger.info('✅ Transfer result details loaded', {
+      logger.info('Transfer result details loaded', {
         transactionId: transaction.id,
         fromAccountId: fromAccount?.id,
         toAccountId: toAccount?.id,
@@ -138,7 +138,7 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
       }));
 
       showSnackbar(userMessage.message, true);
-      logger.error('❌ Failed to load transfer result details', error, 'TRANSFER_RESULT_SCREEN');
+      logger.error('Failed to load transfer result details', error, 'TRANSFER_RESULT_SCREEN');
     }
   }, [transactionId, showSnackbar]);
 
@@ -147,7 +147,7 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
    */
   useFocusEffect(
     useCallback(() => {
-      logger.info('📄 Transfer result screen focused', { transactionId }, 'TRANSFER_RESULT_SCREEN');
+      logger.info('Transfer result screen focused', { transactionId }, 'TRANSFER_RESULT_SCREEN');
       loadTransferDetails();
     }, [loadTransferDetails, transactionId])
   );
@@ -156,7 +156,7 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
    * Navigation handlers
    */
   const handleBackToHome = useCallback(() => {
-    logger.info('🏠 Navigate back to home', undefined, 'TRANSFER_RESULT_SCREEN');
+    logger.info('Navigate back to home', undefined, 'TRANSFER_RESULT_SCREEN');
     
     try {
       // Option 1: Reset navigation to TabMenu with Home tab
@@ -185,7 +185,7 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
   }, [navigation, showSnackbar]);
 
   const handleNewTransfer = useCallback(() => {
-    logger.info('💸 Navigate to new transfer', undefined, 'TRANSFER_RESULT_SCREEN');
+    logger.info('Navigate to new transfer', undefined, 'TRANSFER_RESULT_SCREEN');
     
     // Navigate to Transfer screen
     navigation.navigate('Transfer' as any);
@@ -193,7 +193,7 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
   }, [navigation, showSnackbar]);
 
   const handleViewTransactionHistory = useCallback(() => {
-    logger.info('📊 Navigate to transaction history', undefined, 'TRANSFER_RESULT_SCREEN');
+    logger.info('Navigate to transaction history', undefined, 'TRANSFER_RESULT_SCREEN');
     
     // Navigate to Transaction History screen
     navigation.navigate('TransactionHistory' as any);
@@ -246,10 +246,10 @@ export const TransferResultScreen: React.FC<TransferResultProps> = ({
 
     try {
       const receipt = `
-🏦 COMPROBANTE DE TRANSFERENCIA
+COMPROBANTE DE TRANSFERENCIA
 
-📄 Referencia: ${state.transaction.reference}
-💰 Monto: ${formatCurrency(state.transaction.amount)}
+Referencia: ${state.transaction.reference}
+Monto: ${formatCurrency(state.transaction.amount)}
 📅 Fecha: ${formatTransactionDate(state.transaction.date)}
 
 👤 Cuenta Origen:
@@ -258,8 +258,8 @@ ${getAccountDisplayName(state.fromAccount)}
 👤 Cuenta Destino:
 ${getAccountDisplayName(state.toAccount)}
 
-📝 Descripción: ${state.transaction.description}
-✅ Estado: ${getStatusText(state.transaction.status)}
+Descripción: ${state.transaction.description}
+Estado: ${getStatusText(state.transaction.status)}
 
 Transferencia completada exitosamente.
       `.trim();
@@ -269,11 +269,11 @@ Transferencia completada exitosamente.
         title: 'Comprobante de Transferencia',
       });
 
-      logger.info('📤 Transfer receipt shared', { transactionId: state.transaction.id }, 'TRANSFER_RESULT_SCREEN');
+      logger.info('Transfer receipt shared', { transactionId: state.transaction.id }, 'TRANSFER_RESULT_SCREEN');
       showSnackbar('Comprobante compartido', false);
 
     } catch (error) {
-      logger.error('❌ Failed to share receipt', error, 'TRANSFER_RESULT_SCREEN');
+      logger.error('Failed to share receipt', error, 'TRANSFER_RESULT_SCREEN');
       showSnackbar('Error al compartir comprobante', true);
     }
   }, [state.transaction, state.fromAccount, state.toAccount, showSnackbar, formatCurrency, formatTransactionDate, getAccountDisplayName, getStatusText]);
@@ -401,7 +401,7 @@ Transferencia completada exitosamente.
           
           {/* From Account */}
           <View style={styles.accountSection}>
-            <Text style={styles.accountLabel}>💸 Cuenta de Origen</Text>
+            <Text style={styles.accountLabel}>Cuenta de Origen</Text>
             <Text style={styles.accountName}>
               {getAccountDisplayName(fromAccount)}
             </Text>
@@ -413,7 +413,7 @@ Transferencia completada exitosamente.
           {/* To Account */}
           {toAccount && (
             <View style={styles.accountSection}>
-              <Text style={styles.accountLabel}>💰 Cuenta de Destino</Text>
+              <Text style={styles.accountLabel}>Cuenta de Destino</Text>
               <Text style={styles.accountName}>
                 {getAccountDisplayName(toAccount)}
               </Text>

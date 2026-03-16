@@ -133,7 +133,7 @@ export const TransferScreen: React.FC = () => {
    */
   const loadAccounts = useCallback(async () => {
     try {
-      logger.info('🏦 Loading user accounts for transfer', undefined, 'TRANSFER_SCREEN');
+      logger.info('Loading user accounts for transfer', undefined, 'TRANSFER_SCREEN');
 
       setState(prev => ({ ...prev, loading: true, error: null }));
 
@@ -151,7 +151,7 @@ export const TransferScreen: React.FC = () => {
         error: null,
       }));
 
-      logger.info('✅ Accounts loaded for transfer', {
+      logger.info('Accounts loaded for transfer', {
         totalAccounts: activeAccounts.length,
       }, 'TRANSFER_SCREEN');
 
@@ -168,7 +168,7 @@ export const TransferScreen: React.FC = () => {
       }));
 
       showSnackbar(userMessage.message, true);
-      logger.error('❌ Failed to load accounts for transfer', error, 'TRANSFER_SCREEN');
+      logger.error('Failed to load accounts for transfer', error, 'TRANSFER_SCREEN');
     }
   }, [currentUserId, showSnackbar]);
 
@@ -177,7 +177,7 @@ export const TransferScreen: React.FC = () => {
    */
   useFocusEffect(
     useCallback(() => {
-      logger.info('💸 Transfer screen focused', undefined, 'TRANSFER_SCREEN');
+      logger.info('Transfer screen focused', undefined, 'TRANSFER_SCREEN');
       loadAccounts();
     }, [loadAccounts])
   );
@@ -187,7 +187,7 @@ export const TransferScreen: React.FC = () => {
    */
   useEffect(() => {
     if (prefilledFromAccountId && prefilledFromAccountData && state.accounts.length > 0) {
-      logger.info('💸 Transfer screen with prefilled account', { 
+      logger.info('Transfer screen with prefilled account', { 
         accountId: prefilledFromAccountId,
         accountType: prefilledFromAccountData.accountType,
         balance: prefilledFromAccountData.balance,
@@ -296,7 +296,7 @@ export const TransferScreen: React.FC = () => {
    */
   const processTransfer = useCallback(async () => {
     try {
-      logger.info('💸 Processing transfer', {
+      logger.info('Processing transfer', {
         fromAccountId: state.formData.fromAccountId,
         toAccountId: state.formData.toAccountId,
         amount: state.formData.amount,
@@ -353,7 +353,7 @@ export const TransferScreen: React.FC = () => {
       showSnackbar('¡Transferencia realizada exitosamente!', false);
 
       // Navigate to transfer result screen
-      logger.info('✅ Transfer completed successfully', {
+      logger.info('Transfer completed successfully', {
         debitTransactionId: debitTransaction.id,
         creditTransactionId: creditTransaction.id,
         amount,
@@ -378,7 +378,7 @@ export const TransferScreen: React.FC = () => {
       }));
 
       showSnackbar(userMessage.message, true);
-      logger.error('❌ Transfer failed', error, 'TRANSFER_SCREEN');
+      logger.error('Transfer failed', error, 'TRANSFER_SCREEN');
     }
   }, [state.formData, showSnackbar, navigation]);
 

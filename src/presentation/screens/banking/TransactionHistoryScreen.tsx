@@ -116,7 +116,7 @@ export const TransactionHistoryScreen: React.FC = () => {
       const userAccounts = getAccountsByUserId(currentUserId);
       setState(prev => ({ ...prev, accounts: userAccounts }));
     } catch (error) {
-      logger.error('❌ Failed to load accounts for filter', error, 'TRANSACTION_HISTORY_SCREEN');
+      logger.error('Failed to load accounts for filter', error, 'TRANSACTION_HISTORY_SCREEN');
     }
   }, [currentUserId]);
 
@@ -128,7 +128,7 @@ export const TransactionHistoryScreen: React.FC = () => {
     isLoadingMore: boolean = false
   ) => {
     try {
-      logger.info('📊 Loading transactions', { 
+      logger.info('Loading transactions', { 
         isRefreshing, 
         isLoadingMore, 
         filters: state.filters 
@@ -169,7 +169,7 @@ export const TransactionHistoryScreen: React.FC = () => {
         page: currentPage,
       }));
 
-      logger.info('✅ Transactions loaded successfully', {
+      logger.info('Transactions loaded successfully', {
         transactionCount: transactions.length,
         totalLoaded: isRefreshing || !isLoadingMore ? transactions.length : state.transactions.length + transactions.length,
         hasMore,
@@ -194,7 +194,7 @@ export const TransactionHistoryScreen: React.FC = () => {
         showSnackbar(userMessage.message, true);
       }
 
-      logger.error('❌ Failed to load transactions', error, 'TRANSACTION_HISTORY_SCREEN');
+      logger.error('Failed to load transactions', error, 'TRANSACTION_HISTORY_SCREEN');
     }
   }, [state.filters, state.limit, state.page, state.transactions.length, showSnackbar]);
 
@@ -203,7 +203,7 @@ export const TransactionHistoryScreen: React.FC = () => {
    */
   useFocusEffect(
     useCallback(() => {
-      logger.info('📊 Transaction history screen focused', undefined, 'TRANSACTION_HISTORY_SCREEN');
+      logger.info('Transaction history screen focused', undefined, 'TRANSACTION_HISTORY_SCREEN');
       loadAccounts();
       loadTransactions();
     }, [loadAccounts, loadTransactions])
@@ -214,7 +214,7 @@ export const TransactionHistoryScreen: React.FC = () => {
    */
   useEffect(() => {
     if (contextAccountId && contextAccountData) {
-      logger.info('📊 Transaction history with account context', { 
+      logger.info('Transaction history with account context', { 
         accountId: contextAccountId,
         accountType: contextAccountData.accountType,
       }, 'TRANSACTION_HISTORY_SCREEN');
@@ -340,7 +340,7 @@ export const TransactionHistoryScreen: React.FC = () => {
     <TouchableOpacity 
       style={styles.transactionItem}
       onPress={() => {
-        logger.info('📋 Transaction item pressed', { transactionId: item.id }, 'TRANSACTION_HISTORY_SCREEN');
+        logger.info('Transaction item pressed', { transactionId: item.id }, 'TRANSACTION_HISTORY_SCREEN');
         Alert.alert(
           'Detalle de Transacción',
           'Vista detallada de transacción no implementada aún',
@@ -478,7 +478,7 @@ export const TransactionHistoryScreen: React.FC = () => {
         <View style={styles.headerTop}>
           <Text style={styles.headerTitle}>Historial de Transacciones</Text>
           <TouchableOpacity style={styles.filterButton} onPress={toggleFilters}>
-            <Text style={styles.filterButtonText}>🔍 Filtros</Text>
+            <Text style={styles.filterButtonText}>Filtros</Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.headerSubtitle}>

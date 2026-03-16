@@ -76,8 +76,8 @@ export const Snackbar = ({
         clearTimeout(timeout);
       };
     }
-    // ✅ Using visible prop instead of isVisible state to trigger timer
-    // ✅ Removed message from dependencies - timer doesn't need to restart on message change
+    // Using visible prop instead of isVisible state to trigger timer
+    // Removed message from dependencies - timer doesn't need to restart on message change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, duration]); // Use visible prop to avoid circular dependency
 

@@ -1,5 +1,5 @@
 # =====================================
-# 🏦 BANKING APP - GIT IGNORE
+# BANKING APP - GIT IGNORE
 # =====================================
 
 # ===== DEPENDENCIAS =====
@@ -168,7 +168,7 @@ amplify_outputs.json
 .amplify/
 
 # =====================================
-# 🔐 IMPORTANTE PARA SEGURIDAD
+# IMPORTANTE PARA SEGURIDAD
 # =====================================
 # 
 # Este .gitignore está configurado para proteger:

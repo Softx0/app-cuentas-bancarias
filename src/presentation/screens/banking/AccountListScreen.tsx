@@ -84,7 +84,7 @@ export const AccountListScreen: React.FC = () => {
    */
   const loadAccounts = useCallback(async (isRefreshing: boolean = false) => {
     try {
-      logger.info('🏦 Loading user accounts', { isRefreshing }, 'ACCOUNT_LIST_SCREEN');
+      logger.info('Loading user accounts', { isRefreshing }, 'ACCOUNT_LIST_SCREEN');
 
       if (!isRefreshing) {
         setState(prev => ({ ...prev, loading: true, error: null }));
@@ -107,7 +107,7 @@ export const AccountListScreen: React.FC = () => {
         error: null,
       }));
 
-      logger.info('✅ Accounts loaded successfully', {
+      logger.info('Accounts loaded successfully', {
         accountCount: userAccounts.length,
       }, 'ACCOUNT_LIST_SCREEN');
 
@@ -128,7 +128,7 @@ export const AccountListScreen: React.FC = () => {
         showSnackbar(userMessage.message, true);
       }
 
-      logger.error('❌ Failed to load accounts', error, 'ACCOUNT_LIST_SCREEN');
+      logger.error('Failed to load accounts', error, 'ACCOUNT_LIST_SCREEN');
     }
   }, [currentUserId, showSnackbar]);
 
@@ -137,7 +137,7 @@ export const AccountListScreen: React.FC = () => {
    */
   useFocusEffect(
     useCallback(() => {
-      logger.info('🏦 Account list screen focused', undefined, 'ACCOUNT_LIST_SCREEN');
+      logger.info('Account list screen focused', undefined, 'ACCOUNT_LIST_SCREEN');
       loadAccounts();
     }, [loadAccounts])
   );
@@ -153,7 +153,7 @@ export const AccountListScreen: React.FC = () => {
    * Navigates to account detail
    */
   const handleAccountPress = useCallback((account: BankAccount) => {
-    logger.info('📋 Navigate to account detail', { accountId: account.id }, 'ACCOUNT_LIST_SCREEN');
+    logger.info('Navigate to account detail', { accountId: account.id }, 'ACCOUNT_LIST_SCREEN');
     navigation.navigate('AccountDetail', { 
       accountId: account.id,
       accountName: `${account.accountType === 'savings' ? 'Ahorros' : 'Corriente'} *${account.accountNumber.slice(-4)}`

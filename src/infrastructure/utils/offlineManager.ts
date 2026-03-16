@@ -96,7 +96,7 @@ class OfflineManager {
    */
   private async initialize() {
     try {
-      logger.info('📴 Initializing offline manager', this.config, 'OFFLINE_MANAGER');
+      logger.info('Initializing offline manager', this.config, 'OFFLINE_MANAGER');
 
       // Set up network listener
       NetInfo.addEventListener(this.handleNetworkChange);
@@ -111,14 +111,14 @@ class OfflineManager {
       // Set up periodic sync
       this.setupPeriodicSync();
 
-      logger.info('✅ Offline manager initialized', {
+      logger.info('Offline manager initialized', {
         cacheSize: this.cache.size,
         syncQueueSize: this.syncQueue.length,
         networkStatus: this.networkStatus,
       }, 'OFFLINE_MANAGER');
 
     } catch (error) {
-      logger.error('❌ Failed to initialize offline manager', error, 'OFFLINE_MANAGER');
+      logger.error('Failed to initialize offline manager', error, 'OFFLINE_MANAGER');
     }
   }
 
@@ -133,7 +133,7 @@ class OfflineManager {
       isInternetReachable: state.isInternetReachable,
     };
 
-    logger.info('📡 Network status changed', {
+    logger.info('Network status changed', {
       previous: previousStatus,
       current: this.networkStatus,
     }, 'OFFLINE_MANAGER');
@@ -143,7 +143,7 @@ class OfflineManager {
       try {
         listener(this.networkStatus);
       } catch (error) {
-        logger.error('❌ Error in network status listener', error, 'OFFLINE_MANAGER');
+        logger.error('Error in network status listener', error, 'OFFLINE_MANAGER');
       }
     });
 
@@ -213,14 +213,14 @@ class OfflineManager {
       // Persist to storage
       await this.saveToStorage();
 
-      logger.debug('💾 Data cached', {
+      logger.debug('Data cached', {
         key,
         dataSize: JSON.stringify(data).length,
         expiresAt: new Date(entry.expiresAt!),
       }, 'OFFLINE_MANAGER');
 
     } catch (error) {
-      logger.error('❌ Failed to cache data', { key, error }, 'OFFLINE_MANAGER');
+      logger.error('Failed to cache data', { key, error }, 'OFFLINE_MANAGER');
       throw error;
     }
   }
@@ -233,7 +233,7 @@ class OfflineManager {
       const entry = this.cache.get(key);
 
       if (!entry) {
-        logger.debug('💾 Cache miss', { key }, 'OFFLINE_MANAGER');
+        logger.debug('Cache miss', { key }, 'OFFLINE_MANAGER');
         return null;
       }
 
@@ -241,11 +241,11 @@ class OfflineManager {
       if (entry.expiresAt && Date.now() > entry.expiresAt) {
         this.cache.delete(key);
         await this.saveToStorage();
-        logger.debug('💾 Cache expired', { key, expiresAt: new Date(entry.expiresAt) }, 'OFFLINE_MANAGER');
+        logger.debug('Cache expired', { key, expiresAt: new Date(entry.expiresAt) }, 'OFFLINE_MANAGER');
         return null;
       }
 
-      logger.debug('💾 Cache hit', { 
+      logger.debug('Cache hit', { 
         key, 
         age: Date.now() - entry.timestamp,
         expiresIn: entry.expiresAt ? entry.expiresAt - Date.now() : null,
@@ -254,7 +254,7 @@ class OfflineManager {
       return entry.data;
 
     } catch (error) {
-      logger.error('❌ Failed to retrieve cached data', { key, error }, 'OFFLINE_MANAGER');
+      logger.error('Failed to retrieve cached data', { key, error }, 'OFFLINE_MANAGER');
       return null;
     }
   }
@@ -293,7 +293,7 @@ class OfflineManager {
 
       await this.saveToStorage();
 
-      logger.info('📝 Operation queued', {
+      logger.info('Operation queued', {
         id: operation.id,
         type,
         endpoint,
@@ -309,7 +309,7 @@ class OfflineManager {
       return operation.id;
 
     } catch (error) {
-      logger.error('❌ Failed to queue operation', { type, endpoint, error }, 'OFFLINE_MANAGER');
+      logger.error('Failed to queue operation', { type, endpoint, error }, 'OFFLINE_MANAGER');
       throw error;
     }
   }
@@ -331,12 +331,12 @@ class OfflineManager {
    */
   async sync(): Promise<{ success: number; failed: number }> {
     if (!this.isOnline()) {
-      logger.warn('📴 Cannot sync - device is offline', undefined, 'OFFLINE_MANAGER');
+      logger.warn('Cannot sync - device is offline', undefined, 'OFFLINE_MANAGER');
       return { success: 0, failed: 0 };
     }
 
     if (this.syncInProgress) {
-      logger.debug('🔄 Sync already in progress', undefined, 'OFFLINE_MANAGER');
+      logger.debug('Sync already in progress', undefined, 'OFFLINE_MANAGER');
       return { success: 0, failed: 0 };
     }
 
@@ -345,7 +345,7 @@ class OfflineManager {
     let failedCount = 0;
 
     try {
-      logger.info('🔄 Starting sync', { queueSize: this.syncQueue.length }, 'OFFLINE_MANAGER');
+      logger.info('Starting sync', { queueSize: this.syncQueue.length }, 'OFFLINE_MANAGER');
 
       const operations = [...this.syncQueue];
       
@@ -362,7 +362,7 @@ class OfflineManager {
           successCount++;
           
         } catch (error) {
-          logger.error('❌ Operation sync failed', {
+          logger.error('Operation sync failed', {
             operationId: operation.id,
             error: error instanceof Error ? error.message : error,
           }, 'OFFLINE_MANAGER');
@@ -377,7 +377,7 @@ class OfflineManager {
             if (index !== -1) {
               this.syncQueue.splice(index, 1);
             }
-            logger.warn('🚫 Operation removed - max retries reached', {
+            logger.warn('Operation removed - max retries reached', {
               operationId: operation.id,
               maxRetries: operation.maxRetries,
             }, 'OFFLINE_MANAGER');
@@ -389,14 +389,14 @@ class OfflineManager {
 
       await this.saveToStorage();
 
-      logger.info('✅ Sync completed', { 
+      logger.info('Sync completed', { 
         success: successCount, 
         failed: failedCount,
         remaining: this.syncQueue.length,
       }, 'OFFLINE_MANAGER');
 
     } catch (error) {
-      logger.error('❌ Sync process failed', error, 'OFFLINE_MANAGER');
+      logger.error('Sync process failed', error, 'OFFLINE_MANAGER');
     } finally {
       this.syncInProgress = false;
     }
@@ -411,7 +411,7 @@ class OfflineManager {
     // In a real implementation, this would make actual API calls
     // For now, we'll simulate the sync
     
-    logger.info('🔄 Syncing operation', {
+    logger.info('Syncing operation', {
       id: operation.id,
       type: operation.type,
       endpoint: operation.endpoint,
@@ -454,7 +454,7 @@ class OfflineManager {
     }
 
     if (cleanedCount > 0) {
-      logger.debug('🧹 Cache cleanup completed', {
+      logger.debug('Cache cleanup completed', {
         entriesRemoved: cleanedCount,
         currentSize: this.cache.size,
       }, 'OFFLINE_MANAGER');
@@ -490,7 +490,7 @@ class OfflineManager {
       );
 
     } catch (error) {
-      logger.error('❌ Failed to save to storage', error, 'OFFLINE_MANAGER');
+      logger.error('Failed to save to storage', error, 'OFFLINE_MANAGER');
     }
   }
 
@@ -513,14 +513,14 @@ class OfflineManager {
         // Clean up expired entries
         await this.cleanupCache();
         
-        logger.info('📦 Data loaded from storage', {
+        logger.info('Data loaded from storage', {
           cacheSize: this.cache.size,
           syncQueueSize: this.syncQueue.length,
         }, 'OFFLINE_MANAGER');
       }
 
     } catch (error) {
-      logger.error('❌ Failed to load from storage', error, 'OFFLINE_MANAGER');
+      logger.error('Failed to load from storage', error, 'OFFLINE_MANAGER');
     }
   }
 
@@ -531,9 +531,9 @@ class OfflineManager {
     try {
       this.cache.clear();
       await AsyncStorage.removeItem(`${this.config.storagePrefix}data`);
-      logger.info('🧹 Cache cleared', undefined, 'OFFLINE_MANAGER');
+      logger.info('Cache cleared', undefined, 'OFFLINE_MANAGER');
     } catch (error) {
-      logger.error('❌ Failed to clear cache', error, 'OFFLINE_MANAGER');
+      logger.error('Failed to clear cache', error, 'OFFLINE_MANAGER');
     }
   }
 

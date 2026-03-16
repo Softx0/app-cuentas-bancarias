@@ -153,7 +153,7 @@ class MockAuthService {
    */
   public async login(data: LoginRequest): MockResponse<LoginResponse> {
     try {
-      logger.info('🔐 Mock login attempt', { email: data.email }, this.serviceName);
+      logger.info('Mock login attempt', { email: data.email }, this.serviceName);
       
       // Simulate network delay
       await this.simulateDelay();
@@ -161,7 +161,7 @@ class MockAuthService {
       // Validate request
       const validationErrors = this.validateLoginRequest(data);
       if (validationErrors.length > 0) {
-        logger.warn('❌ Login validation failed', { errors: validationErrors }, this.serviceName);
+        logger.warn('Login validation failed', { errors: validationErrors }, this.serviceName);
         return createErrorResponse(
           'VALIDATION_ERROR',
           'Login validation failed',
@@ -171,7 +171,7 @@ class MockAuthService {
 
       // Check credentials
       if (!validateCredentials(data.email, data.password)) {
-        logger.warn('❌ Invalid credentials', { email: data.email }, this.serviceName);
+        logger.warn('Invalid credentials', { email: data.email }, this.serviceName);
         return createErrorResponse(
           'INVALID_CREDENTIALS',
           'Invalid email or password'
@@ -181,7 +181,7 @@ class MockAuthService {
       // Find user
       const user = findUserByEmail(data.email);
       if (!user) {
-        logger.error('❌ User not found after credential validation', { email: data.email }, this.serviceName);
+        logger.error('User not found after credential validation', { email: data.email }, this.serviceName);
         return createErrorResponse(
           'USER_NOT_FOUND',
           'User account not found'
@@ -189,7 +189,7 @@ class MockAuthService {
       }
 
       if (!user.isActive) {
-        logger.warn('❌ Inactive user login attempt', { userId: user.id }, this.serviceName);
+        logger.warn('Inactive user login attempt', { userId: user.id }, this.serviceName);
         return createErrorResponse(
           'ACCOUNT_INACTIVE',
           'User account is inactive'
@@ -209,7 +209,7 @@ class MockAuthService {
         sessionId,
       };
 
-      logger.info('✅ Login successful', { 
+      logger.info('Login successful', { 
         userId: user.id, 
         email: user.email,
         sessionId,
@@ -218,7 +218,7 @@ class MockAuthService {
       return createSuccessResponse(responseData, 'Login successful');
 
     } catch (error) {
-      logger.error('💥 Login error', error, this.serviceName);
+      logger.error('Login error', error, this.serviceName);
       return createErrorResponse(
         'INTERNAL_ERROR',
         'An internal error occurred during login'
@@ -233,7 +233,7 @@ class MockAuthService {
    */
   public async register(data: RegisterRequest): MockResponse<RegisterResponse> {
     try {
-      logger.info('📝 Mock registration attempt', { 
+      logger.info('Mock registration attempt', { 
         email: data.email, 
         username: data.username,
       }, this.serviceName);
@@ -244,7 +244,7 @@ class MockAuthService {
       // Validate request
       const validationErrors = this.validateRegisterRequest(data);
       if (validationErrors.length > 0) {
-        logger.warn('❌ Registration validation failed', { errors: validationErrors }, this.serviceName);
+        logger.warn('Registration validation failed', { errors: validationErrors }, this.serviceName);
         return createErrorResponse(
           'VALIDATION_ERROR',
           'Registration validation failed',
@@ -255,7 +255,7 @@ class MockAuthService {
       // Check for conflicts
       const conflictErrors = this.checkUserConflicts(data);
       if (conflictErrors.length > 0) {
-        logger.warn('❌ Registration conflicts found', { errors: conflictErrors }, this.serviceName);
+        logger.warn('Registration conflicts found', { errors: conflictErrors }, this.serviceName);
         return createErrorResponse(
           'CONFLICT_ERROR',
           'User data conflicts found',
@@ -276,7 +276,7 @@ class MockAuthService {
         sessionId,
       };
 
-      logger.info('✅ Registration successful', { 
+      logger.info('Registration successful', { 
         userId: newUser.id, 
         email: newUser.email,
         sessionId,
@@ -285,7 +285,7 @@ class MockAuthService {
       return createSuccessResponse(responseData, 'Account created successfully');
 
     } catch (error) {
-      logger.error('💥 Registration error', error, this.serviceName);
+      logger.error('Registration error', error, this.serviceName);
       return createErrorResponse(
         'INTERNAL_ERROR',
         'An internal error occurred during registration'
@@ -300,14 +300,14 @@ class MockAuthService {
    */
   public async refreshToken(data: RefreshTokenRequest): MockResponse<RefreshTokenResponse> {
     try {
-      logger.info('🔄 Mock token refresh attempt', undefined, this.serviceName);
+      logger.info('Mock token refresh attempt', undefined, this.serviceName);
 
       // Simulate network delay
       await this.simulateDelay(300, 800);
 
       // Validate refresh token
       if (!data.refreshToken) {
-        logger.warn('❌ Refresh token missing', undefined, this.serviceName);
+        logger.warn('Refresh token missing', undefined, this.serviceName);
         return createErrorResponse(
           'VALIDATION_ERROR',
           'Refresh token is required'
@@ -317,7 +317,7 @@ class MockAuthService {
       // Verify refresh token
       const verification = await jwtUtil.verifyToken(data.refreshToken);
       if (!verification.isValid || !verification.payload) {
-        logger.warn('❌ Invalid refresh token', { error: verification.error }, this.serviceName);
+        logger.warn('Invalid refresh token', { error: verification.error }, this.serviceName);
         return createErrorResponse(
           'INVALID_TOKEN',
           'Invalid or expired refresh token'
@@ -326,7 +326,7 @@ class MockAuthService {
 
       // Check if it's actually a refresh token
       if (verification.payload.type !== 'refresh') {
-        logger.warn('❌ Wrong token type for refresh', { type: verification.payload.type }, this.serviceName);
+        logger.warn('Wrong token type for refresh', { type: verification.payload.type }, this.serviceName);
         return createErrorResponse(
           'INVALID_TOKEN',
           'Token is not a refresh token'
@@ -336,7 +336,7 @@ class MockAuthService {
       // Find user
       const user = findUserByEmail(verification.payload.email);
       if (!user || !user.isActive) {
-        logger.warn('❌ User not found or inactive during token refresh', { 
+        logger.warn('User not found or inactive during token refresh', { 
           userId: verification.payload.userId,
         }, this.serviceName);
         return createErrorResponse(
@@ -353,12 +353,12 @@ class MockAuthService {
         expiresIn: 3600, // 1 hour
       };
 
-      logger.info('✅ Token refresh successful', { userId: user.id }, this.serviceName);
+      logger.info('Token refresh successful', { userId: user.id }, this.serviceName);
 
       return createSuccessResponse(responseData, 'Token refreshed successfully');
 
     } catch (error) {
-      logger.error('💥 Token refresh error', error, this.serviceName);
+      logger.error('Token refresh error', error, this.serviceName);
       return createErrorResponse(
         'INTERNAL_ERROR',
         'An internal error occurred during token refresh'
@@ -373,7 +373,7 @@ class MockAuthService {
    */
   public async logout(accessToken: string): MockResponse<{ success: boolean }> {
     try {
-      logger.info('🚪 Mock logout attempt', undefined, this.serviceName);
+      logger.info('Mock logout attempt', undefined, this.serviceName);
 
       // Simulate network delay
       await this.simulateDelay(200, 500);
@@ -381,9 +381,9 @@ class MockAuthService {
       // Verify token (just for logging, not strictly necessary for logout)
       const verification = await jwtUtil.verifyToken(accessToken);
       if (verification.isValid && verification.payload) {
-        logger.info('✅ Logout successful', { userId: verification.payload.userId }, this.serviceName);
+        logger.info('Logout successful', { userId: verification.payload.userId }, this.serviceName);
       } else {
-        logger.info('✅ Logout successful (invalid token)', undefined, this.serviceName);
+        logger.info('Logout successful (invalid token)', undefined, this.serviceName);
       }
 
       // In a real implementation, we would invalidate the token in the database
@@ -392,7 +392,7 @@ class MockAuthService {
       return createSuccessResponse({ success: true }, 'Logout successful');
 
     } catch (error) {
-      logger.error('💥 Logout error', error, this.serviceName);
+      logger.error('Logout error', error, this.serviceName);
       return createErrorResponse(
         'INTERNAL_ERROR',
         'An internal error occurred during logout'
@@ -407,7 +407,7 @@ class MockAuthService {
    */
   public async validateSession(accessToken: string): MockResponse<{ user: User; valid: boolean }> {
     try {
-      logger.debug('🔍 Mock session validation', undefined, this.serviceName);
+      logger.debug('Mock session validation', undefined, this.serviceName);
 
       // Simulate network delay
       await this.simulateDelay(200, 400);
@@ -422,7 +422,7 @@ class MockAuthService {
       // Verify token
       const verification = await jwtUtil.verifyToken(accessToken);
       if (!verification.isValid || !verification.payload) {
-        logger.warn('❌ Invalid session token', { error: verification.error }, this.serviceName);
+        logger.warn('Invalid session token', { error: verification.error }, this.serviceName);
         return createErrorResponse(
           'INVALID_TOKEN',
           'Invalid or expired access token'
@@ -432,7 +432,7 @@ class MockAuthService {
       // Find user
       const user = findUserByEmail(verification.payload.email);
       if (!user || !user.isActive) {
-        logger.warn('❌ User not found or inactive during session validation', { 
+        logger.warn('User not found or inactive during session validation', { 
           userId: verification.payload.userId,
         }, this.serviceName);
         return createErrorResponse(
@@ -441,7 +441,7 @@ class MockAuthService {
         );
       }
 
-      logger.debug('✅ Session validation successful', { userId: user.id }, this.serviceName);
+      logger.debug('Session validation successful', { userId: user.id }, this.serviceName);
 
       return createSuccessResponse(
         { user, valid: true },
@@ -449,7 +449,7 @@ class MockAuthService {
       );
 
     } catch (error) {
-      logger.error('💥 Session validation error', error, this.serviceName);
+      logger.error('Session validation error', error, this.serviceName);
       return createErrorResponse(
         'INTERNAL_ERROR',
         'An internal error occurred during session validation'

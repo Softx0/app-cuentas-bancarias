@@ -96,7 +96,7 @@ export const AccountDetailScreen: React.FC = () => {
    */
   const loadAccountDetails = useCallback(async (isRefreshing: boolean = false) => {
     try {
-      logger.info('🏦 Loading account details', { accountId, isRefreshing }, 'ACCOUNT_DETAIL_SCREEN');
+      logger.info('Loading account details', { accountId, isRefreshing }, 'ACCOUNT_DETAIL_SCREEN');
 
       if (!isRefreshing) {
         setState(prev => ({ ...prev, loading: true, error: null }));
@@ -135,7 +135,7 @@ export const AccountDetailScreen: React.FC = () => {
         error: null,
       }));
 
-      logger.info('✅ Account details loaded successfully', {
+      logger.info('Account details loaded successfully', {
         accountId: account.id,
         transactionCount: recentTransactions.length,
       }, 'ACCOUNT_DETAIL_SCREEN');
@@ -157,7 +157,7 @@ export const AccountDetailScreen: React.FC = () => {
         showSnackbar(userMessage.message, true);
       }
 
-      logger.error('❌ Failed to load account details', error, 'ACCOUNT_DETAIL_SCREEN');
+      logger.error('Failed to load account details', error, 'ACCOUNT_DETAIL_SCREEN');
     }
   }, [accountId, showSnackbar]);
 
@@ -166,7 +166,7 @@ export const AccountDetailScreen: React.FC = () => {
    */
   useFocusEffect(
     useCallback(() => {
-      logger.info('🏦 Account detail screen focused', { accountId }, 'ACCOUNT_DETAIL_SCREEN');
+      logger.info('Account detail screen focused', { accountId }, 'ACCOUNT_DETAIL_SCREEN');
       loadAccountDetails();
     }, [loadAccountDetails, accountId])
   );
@@ -182,12 +182,12 @@ export const AccountDetailScreen: React.FC = () => {
    * Navigation handlers
    */
   const handleTransferMoney = useCallback(() => {
-    logger.info('💸 Transfer money action', { accountId }, 'ACCOUNT_DETAIL_SCREEN');
+    logger.info('Transfer money action', { accountId }, 'ACCOUNT_DETAIL_SCREEN');
     navigation.navigate('Transfer', { fromAccountId: accountId });
   }, [accountId, navigation]);
 
   const handleViewAllTransactions = useCallback(() => {
-    logger.info('📊 View all transactions action', { accountId }, 'ACCOUNT_DETAIL_SCREEN');
+    logger.info('View all transactions action', { accountId }, 'ACCOUNT_DETAIL_SCREEN');
     navigation.navigate('TransactionHistory', { accountId });
   }, [accountId, navigation]);
 

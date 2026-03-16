@@ -57,7 +57,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <View style={errorStyles.container}>
-          <Text style={errorStyles.title}>❌ Application Error</Text>
+          <Text style={errorStyles.title}>Application Error</Text>
           <Text style={errorStyles.message}>
             The app encountered an error and crashed.
           </Text>
@@ -115,7 +115,7 @@ export default function App() {
     
     return (
       <View style={errorStyles.container}>
-        <Text style={errorStyles.title}>❌ Critical Error</Text>
+        <Text style={errorStyles.title}>Critical Error</Text>
         <Text style={errorStyles.message}>
           The application failed to start.
         </Text>

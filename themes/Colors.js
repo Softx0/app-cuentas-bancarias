@@ -36,7 +36,7 @@ const Colors = {
     },
   },
 
-  // 📊 FEEDBACK COLORS - System Status
+  // FEEDBACK COLORS - System Status
   feedback: {
     // 🔴 Error States
     error: {

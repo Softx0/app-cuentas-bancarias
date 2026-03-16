@@ -295,7 +295,7 @@ class JWTUtil {
       
       // Check if token is expired
       if (payload.exp && payload.exp < now) {
-        logger.debug('🧪 Mock token is expired', { 
+        logger.debug('Mock token is expired', { 
           expiration: new Date(payload.exp * 1000).toISOString(),
         }, 'JWT');
         
@@ -306,14 +306,14 @@ class JWTUtil {
         };
       }
 
-      logger.debug('🧪 Mock token verified successfully', { userId: payload.userId }, 'JWT');
+      logger.debug('Mock token verified successfully', { userId: payload.userId }, 'JWT');
 
       return {
         isValid: true,
         payload,
       };
     } catch (error) {
-      logger.warn('🧪 Mock token verification failed', error, 'JWT');
+      logger.warn('Mock token verification failed', error, 'JWT');
       return {
         isValid: false,
         error: 'Invalid mock token',
@@ -352,7 +352,7 @@ class JWTUtil {
 
     const token = `${header}.${encodedPayload}.${signature}`;
     
-    logger.info('🧪 Mock access token generated', { 
+    logger.info('Mock access token generated', { 
       userId: user.id, 
       expiresAt: new Date(expirationTime * 1000).toISOString(),
     }, 'JWT');
@@ -388,7 +388,7 @@ class JWTUtil {
 
     const token = `${header}.${encodedPayload}.${signature}`;
     
-    logger.info('🧪 Mock refresh token generated', { userId: user.id }, 'JWT');
+    logger.info('Mock refresh token generated', { userId: user.id }, 'JWT');
     
     return token;
   }

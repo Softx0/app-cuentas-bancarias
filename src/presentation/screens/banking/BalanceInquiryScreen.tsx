@@ -98,7 +98,7 @@ export const BalanceInquiryScreen: React.FC = () => {
    */
   const loadAccounts = useCallback(async () => {
     try {
-      logger.info('🏦 Loading user accounts for balance inquiry', undefined, 'BALANCE_INQUIRY_SCREEN');
+      logger.info('Loading user accounts for balance inquiry', undefined, 'BALANCE_INQUIRY_SCREEN');
 
       setState(prev => ({ ...prev, loading: true, error: null }));
 
@@ -125,7 +125,7 @@ export const BalanceInquiryScreen: React.FC = () => {
         loadAccountDetails(defaultAccountId, false);
       }
 
-      logger.info('✅ Accounts loaded for balance inquiry', {
+      logger.info('Accounts loaded for balance inquiry', {
         totalAccounts: activeAccounts.length,
         defaultAccountId,
       }, 'BALANCE_INQUIRY_SCREEN');
@@ -143,7 +143,7 @@ export const BalanceInquiryScreen: React.FC = () => {
       }));
 
       showSnackbar(userMessage.message, true);
-      logger.error('❌ Failed to load accounts for balance inquiry', error, 'BALANCE_INQUIRY_SCREEN');
+      logger.error('Failed to load accounts for balance inquiry', error, 'BALANCE_INQUIRY_SCREEN');
     }
   }, [currentUserId, showSnackbar]);
 
@@ -152,7 +152,7 @@ export const BalanceInquiryScreen: React.FC = () => {
    */
   const loadAccountDetails = useCallback(async (accountId: string, isRefreshing: boolean = false) => {
     try {
-      logger.info('📊 Loading account details', { accountId, isRefreshing }, 'BALANCE_INQUIRY_SCREEN');
+      logger.info('Loading account details', { accountId, isRefreshing }, 'BALANCE_INQUIRY_SCREEN');
 
       if (isRefreshing) {
         setState(prev => ({ ...prev, refreshing: true }));
@@ -180,7 +180,7 @@ export const BalanceInquiryScreen: React.FC = () => {
         error: null,
       }));
 
-      logger.info('✅ Account details loaded', {
+      logger.info('Account details loaded', {
         accountId: account.id,
         balance: account.balance,
         transactionCount: stats.totalTransactions,
@@ -202,7 +202,7 @@ export const BalanceInquiryScreen: React.FC = () => {
         showSnackbar(userMessage.message, true);
       }
 
-      logger.error('❌ Failed to load account details', error, 'BALANCE_INQUIRY_SCREEN');
+      logger.error('Failed to load account details', error, 'BALANCE_INQUIRY_SCREEN');
     }
   }, [showSnackbar]);
 
@@ -211,7 +211,7 @@ export const BalanceInquiryScreen: React.FC = () => {
    */
   useFocusEffect(
     useCallback(() => {
-      logger.info('💰 Balance inquiry screen focused', undefined, 'BALANCE_INQUIRY_SCREEN');
+      logger.info('Balance inquiry screen focused', undefined, 'BALANCE_INQUIRY_SCREEN');
       loadAccounts();
     }, [loadAccounts])
   );
@@ -241,10 +241,10 @@ export const BalanceInquiryScreen: React.FC = () => {
 
     try {
       const balanceInfo = `
-💰 CONSULTA DE SALDO
+CONSULTA DE SALDO
 
-🏦 ${getAccountTypeText(state.selectedAccount.accountType)}
-📄 Número: ${formatAccountNumber(state.selectedAccount.accountNumber)}
+${getAccountTypeText(state.selectedAccount.accountType)}
+Número: ${formatAccountNumber(state.selectedAccount.accountNumber)}
 💵 Saldo Disponible: ${formatCurrency(state.selectedAccount.balance)}
 💱 Moneda: ${state.selectedAccount.currency}
 
@@ -258,11 +258,11 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
         title: 'Consulta de Saldo',
       });
 
-      logger.info('📤 Balance info shared', { accountId: state.selectedAccount.id }, 'BALANCE_INQUIRY_SCREEN');
+      logger.info('Balance info shared', { accountId: state.selectedAccount.id }, 'BALANCE_INQUIRY_SCREEN');
       showSnackbar('Información compartida', false);
 
     } catch (error) {
-      logger.error('❌ Failed to share balance info', error, 'BALANCE_INQUIRY_SCREEN');
+      logger.error('Failed to share balance info', error, 'BALANCE_INQUIRY_SCREEN');
       showSnackbar('Error al compartir información', true);
     }
   }, [state.selectedAccount, showSnackbar]);
@@ -276,7 +276,7 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
       return;
     }
 
-    logger.info('💸 Navigate to transfer from balance inquiry', { 
+    logger.info('Navigate to transfer from balance inquiry', { 
       accountId: state.selectedAccountId,
       accountBalance: state.selectedAccount.balance
     }, 'BALANCE_INQUIRY_SCREEN');
@@ -294,7 +294,7 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
       return;
     }
 
-    logger.info('📊 Navigate to transactions from balance inquiry', { 
+    logger.info('Navigate to transactions from balance inquiry', { 
       accountId: state.selectedAccountId,
       accountType: state.selectedAccount.accountType
     }, 'BALANCE_INQUIRY_SCREEN');
@@ -307,7 +307,7 @@ Estado: ${state.selectedAccount.isActive ? 'Activa' : 'Inactiva'}
   }, [state.selectedAccountId, state.selectedAccount, navigation, showSnackbar]);
 
   const handleAccountDetail = useCallback(() => {
-    logger.info('📋 Navigate to account detail from balance inquiry', { accountId: state.selectedAccountId }, 'BALANCE_INQUIRY_SCREEN');
+    logger.info('Navigate to account detail from balance inquiry', { accountId: state.selectedAccountId }, 'BALANCE_INQUIRY_SCREEN');
     Alert.alert(
       'Detalle de Cuenta',
       'Navegación a detalle de cuenta no implementada aún',
